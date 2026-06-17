@@ -327,18 +327,11 @@
       align-items: flex-start;
       justify-content: center;
       gap: 24px;
-      position: relative;
       width: 100%;
-      max-width: 700px;
     }
 
-    .sub-row-connector {
-      height: 2px;
-      background: var(--border);
-      width: 50%;
-      max-width: 400px;
-      margin: 0 auto;
-    }
+    .sub-row-connector { display: none; }
+
     .sub-branch { display: flex; flex-direction: column; align-items: center; }
     .sub-branch-v { width: 2px; height: 24px; background: var(--border); }
 
@@ -408,7 +401,6 @@
 
     @media (max-width: 768px) {
       .sub-row { flex-direction: column; align-items: center; gap: 0; }
-      .sub-row::before { display: none; }
       .org-card.sub, .org-tasks.sub-tasks { max-width: 280px; width: 100%; }
     }
 
@@ -533,7 +525,6 @@
 
         <!-- GROUP: MADRUGADA -->
         <div class="shift-group-label">🌙 Madrugada</div>
-        <div class="sub-row-connector" id="conn-madrugada"></div>
         <div class="sub-row" id="row-madrugada">
           <div class="sub-branch">
             <div class="sub-branch-v"></div>
@@ -564,11 +555,10 @@
           </div>
         </div>
 
-        <div class="sub-connector-v" style="height:20px;margin-top:12px;"></div>
+        <div style="height:20px;margin-top:12px;"></div>
 
         <!-- GROUP: AM -->
         <div class="shift-group-label">☀️ AM</div>
-        <div class="sub-row-connector" id="conn-am"></div>
         <div class="sub-row" id="row-am">
           <div class="sub-branch">
             <div class="sub-branch-v"></div>
@@ -614,13 +604,9 @@
         </div>
       </div>
 
-    <!-- VERTICAL CONNECTOR (hidden) -->
-    <div class="connector-v" style="display:none;"></div>
-    <div class="connector-row" style="display:none;">
-      <div class="connector-branch">
-        <div class="org-card member" style="display:none;"></div>
-      </div>
-    </div>
+    <!-- hidden placeholders -->
+    <div style="display:none;" class="connector-v"></div>
+    <div style="display:none;" class="connector-row"><div class="connector-branch"><div class="org-card member"></div></div></div>
 
   </div>
 </div>
@@ -652,27 +638,7 @@
     const open = subPanel.classList.toggle('open');
     hint.classList.toggle('open', open);
     hint.querySelector('.chevron').textContent = open ? '▴' : '▾';
-    if (open) requestAnimationFrame(sizeConnectors);
   });
-
-  function sizeConnectors() {
-    ['madrugada', 'am'].forEach(id => {
-      const row  = document.getElementById('row-' + id);
-      const conn = document.getElementById('conn-' + id);
-      if (!row || !conn) return;
-      const branches = row.querySelectorAll('.sub-branch');
-      if (branches.length < 2) return;
-      const first = branches[0].getBoundingClientRect();
-      const last  = branches[branches.length - 1].getBoundingClientRect();
-      const rowRect = row.getBoundingClientRect();
-      const left  = first.left + first.width / 2 - rowRect.left;
-      const right = last.left  + last.width  / 2 - rowRect.left;
-      conn.style.width     = (right - left) + 'px';
-      conn.style.marginLeft = left + 'px';
-      conn.style.marginRight = 'auto';
-      conn.style.marginLeft = 'auto';
-    });
-  }
 
   const timesBtn  = document.getElementById('times-btn');
   const timesMenu = document.getElementById('times-menu');
