@@ -500,119 +500,122 @@
   <div class="org-chart">
 
     <!-- HEAD ROW: dois TLs lado a lado -->
-    <div class="tl-row">
-      <div class="org-head">
-        <div class="org-card head" id="head-card">
+    <div class="tl-row" id="tl-row">
+      <div class="org-head" id="tl-matheus">
+        <div class="org-card head" id="head-card-ml">
           <div class="org-avatar head-av">
             <img src="rank-leader.png" alt="Team Leader" style="width:38px;height:38px;object-fit:contain;border-radius:10px;padding:2px;"/>
           </div>
           <div class="org-role">Head · Team Leader</div>
           <div class="org-name">Matheus Logan</div>
           <span class="org-tag leader">Team Leader</span>
-          <div class="expand-hint" id="expand-hint">Ver colaboradores <span class="chevron">▾</span></div>
+          <div class="expand-hint" id="hint-ml">Ver time <span class="chevron">▾</span></div>
         </div>
       </div>
 
-      <div class="tl-sep"></div>
+      <div class="tl-sep" id="tl-sep"></div>
 
-      <div class="org-head">
-        <div class="org-card head">
+      <div class="org-head" id="tl-juliana">
+        <div class="org-card head" id="head-card-jg">
           <div class="org-avatar head-av">
             <img src="rank-leader.png" alt="Team Leader" style="width:38px;height:38px;object-fit:contain;border-radius:10px;padding:2px;"/>
           </div>
           <div class="org-role">Head · Team Leader</div>
           <div class="org-name">Juliana Godinho</div>
           <span class="org-tag leader">Team Leader</span>
+          <div class="expand-hint" id="hint-jg">Ver time <span class="chevron">▾</span></div>
         </div>
       </div>
     </div>
 
-    <!-- SUBORDINATES PANEL — fora do tl-row, centralizado no org-chart -->
-    <div class="subordinates-panel" id="sub-panel" style="margin-top:24px;">
-        <!-- GROUP: MADRUGADA -->
-        <div class="shift-group-label">🌙 Madrugada</div>
-        <div class="sub-row" id="row-madrugada">
-          <div class="sub-branch">
-            <div class="sub-branch-v"></div>
-            <div class="org-card member">
-              <div class="org-avatar member-av">MC</div>
-              <div class="org-role">Operações</div>
-              <div class="org-name">Matheus Campos</div>
-              <span class="org-tag analyst">Analista</span>
-            </div>
-            <div class="org-tasks">
-              <div class="org-task-item">Focal XPT</div>
-              <div class="org-task-item">Focal Calibrações ROUT</div>
-              <div class="org-task-item">Rodízio semanal — distribuição</div>
-            </div>
+    <!-- BACK BUTTON (aparece quando um TL está expandido) -->
+    <div id="back-btn" style="display:none;margin-top:12px;cursor:pointer;" onclick="resetTLs()">
+      <span style="font-size:12px;font-weight:600;color:var(--muted);">← Voltar</span>
+    </div>
+
+    <!-- SUBORDINATES PANEL: Matheus Logan -->
+    <div class="subordinates-panel" id="sub-panel-ml" style="margin-top:24px;width:100%;">
+      <div class="shift-group-label">🌙 Madrugada</div>
+      <div class="sub-row">
+        <div class="sub-branch">
+          <div class="org-card member">
+            <div class="org-avatar member-av">MC</div>
+            <div class="org-role">Operações</div>
+            <div class="org-name">Matheus Campos</div>
+            <span class="org-tag analyst">Analista</span>
           </div>
-          <div class="sub-branch">
-            <div class="sub-branch-v"></div>
-            <div class="org-card member">
-              <div class="org-avatar member-av">EA</div>
-              <div class="org-role">Operações</div>
-              <div class="org-name">Everton Adriano</div>
-              <span class="org-tag analyst">Analista</span>
-            </div>
-            <div class="org-tasks">
-              <div class="org-task-item">Focal Telemetria</div>
-              <div class="org-task-item">Rodízio semanal — distribuição</div>
-            </div>
+          <div class="org-tasks">
+            <div class="org-task-item">Focal XPT</div>
+            <div class="org-task-item">Focal Calibrações ROUT</div>
+            <div class="org-task-item">Rodízio semanal — distribuição</div>
           </div>
         </div>
-
-        <div class="sub-group-divider"></div>
-
-        <!-- GROUP: AM -->
-        <div class="shift-group-label">☀️ AM</div>
-        <div class="sub-row" id="row-am">
-          <div class="sub-branch">
-            <div class="sub-branch-v"></div>
-            <div class="org-card sub">
-              <div class="org-avatar sub-av">BC</div>
-              <div class="org-role">Operações</div>
-              <div class="org-name">Bruno Costa</div>
-              <span class="org-tag sub-tag">Analista</span>
-            </div>
-            <div class="org-tasks sub-tasks">
-              <div class="org-task-item sub-item">Focal DIT</div>
-              <div class="org-task-item sub-item">Suporte AM</div>
-              <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
-            </div>
+        <div class="sub-branch">
+          <div class="org-card member">
+            <div class="org-avatar member-av">EA</div>
+            <div class="org-role">Operações</div>
+            <div class="org-name">Everton Adriano</div>
+            <span class="org-tag analyst">Analista</span>
           </div>
-          <div class="sub-branch">
-            <div class="sub-branch-v"></div>
-            <div class="org-card sub">
-              <div class="org-avatar sub-av">BC</div>
-              <div class="org-role">Operações</div>
-              <div class="org-name">Bruno Cardoso</div>
-              <span class="org-tag sub-tag">Analista</span>
-            </div>
-            <div class="org-tasks sub-tasks">
-              <div class="org-task-item sub-item">Focal Nodos</div>
-              <div class="org-task-item sub-item">Suporte AM</div>
-              <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
-            </div>
-          </div>
-          <div class="sub-branch">
-            <div class="sub-branch-v"></div>
-            <div class="org-card sub">
-              <div class="org-avatar sub-av">BL</div>
-              <div class="org-role">Operações</div>
-              <div class="org-name">Bruna Larissa</div>
-              <span class="org-tag sub-tag">Analista</span>
-            </div>
-            <div class="org-tasks sub-tasks">
-              <div class="org-task-item sub-item">Focal MEE</div>
-              <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
-            </div>
+          <div class="org-tasks">
+            <div class="org-task-item">Focal Telemetria</div>
+            <div class="org-task-item">Rodízio semanal — distribuição</div>
           </div>
         </div>
       </div>
+      <div class="sub-group-divider"></div>
+      <div class="shift-group-label">☀️ AM</div>
+      <div class="sub-row">
+        <div class="sub-branch">
+          <div class="org-card sub">
+            <div class="org-avatar sub-av">BC</div>
+            <div class="org-role">Operações</div>
+            <div class="org-name">Bruno Costa</div>
+            <span class="org-tag sub-tag">Analista</span>
+          </div>
+          <div class="org-tasks sub-tasks">
+            <div class="org-task-item sub-item">Focal DIT</div>
+            <div class="org-task-item sub-item">Suporte AM</div>
+            <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
+          </div>
+        </div>
+        <div class="sub-branch">
+          <div class="org-card sub">
+            <div class="org-avatar sub-av">BC</div>
+            <div class="org-role">Operações</div>
+            <div class="org-name">Bruno Cardoso</div>
+            <span class="org-tag sub-tag">Analista</span>
+          </div>
+          <div class="org-tasks sub-tasks">
+            <div class="org-task-item sub-item">Focal Nodos</div>
+            <div class="org-task-item sub-item">Suporte AM</div>
+            <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
+          </div>
+        </div>
+        <div class="sub-branch">
+          <div class="org-card sub">
+            <div class="org-avatar sub-av">BL</div>
+            <div class="org-role">Operações</div>
+            <div class="org-name">Bruna Larissa</div>
+            <span class="org-tag sub-tag">Analista</span>
+          </div>
+          <div class="org-tasks sub-tasks">
+            <div class="org-task-item sub-item">Focal MEE</div>
+            <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- hidden placeholders -->
-    <div style="display:none;" class="connector-v"></div>
-    <div style="display:none;" class="connector-row"><div class="connector-branch"><div class="org-card member"></div></div></div>
+    <!-- SUBORDINATES PANEL: Juliana Godinho (em breve) -->
+    <div class="subordinates-panel" id="sub-panel-jg" style="margin-top:24px;width:100%;">
+      <div style="text-align:center;padding:2rem 0;">
+        <div style="font-size:32px;margin-bottom:12px;">👥</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">Time da Juliana Godinho</div>
+        <div style="font-size:13px;color:var(--muted);">Colaboradores serão adicionados em breve.</div>
+        <span class="org-tag tl-blue" style="margin-top:12px;display:inline-block;">Em breve</span>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -636,14 +639,46 @@
     btn.textContent = next === 'dark' ? '☀️' : '🌙';
     localStorage.setItem('theme', next);
   });
-  const headCard = document.getElementById('head-card');
-  const subPanel = document.getElementById('sub-panel');
-  const hint     = document.getElementById('expand-hint');
+  const headCardML = document.getElementById('head-card-ml');
+  const headCardJG = document.getElementById('head-card-jg');
+  const tlMatheus  = document.getElementById('tl-matheus');
+  const tlJuliana  = document.getElementById('tl-juliana');
+  const tlSep      = document.getElementById('tl-sep');
+  const subML      = document.getElementById('sub-panel-ml');
+  const subJG      = document.getElementById('sub-panel-jg');
+  const backBtn    = document.getElementById('back-btn');
 
-  headCard.addEventListener('click', () => {
-    const open = subPanel.classList.toggle('open');
-    hint.classList.toggle('open', open);
-    hint.querySelector('.chevron').textContent = open ? '▴' : '▾';
+  function resetTLs() {
+    tlMatheus.style.display = '';
+    tlJuliana.style.display = '';
+    tlSep.style.display     = '';
+    subML.classList.remove('open');
+    subJG.classList.remove('open');
+    backBtn.style.display = 'none';
+    document.getElementById('hint-ml').innerHTML = 'Ver time <span class="chevron">▾</span>';
+    document.getElementById('hint-jg').innerHTML = 'Ver time <span class="chevron">▾</span>';
+  }
+
+  headCardML.addEventListener('click', () => {
+    const isOpen = subML.classList.contains('open');
+    if (isOpen) { resetTLs(); return; }
+    tlJuliana.style.display = 'none';
+    tlSep.style.display     = 'none';
+    subML.classList.add('open');
+    subJG.classList.remove('open');
+    backBtn.style.display = 'block';
+    document.getElementById('hint-ml').innerHTML = 'Fechar <span class="chevron">▴</span>';
+  });
+
+  headCardJG.addEventListener('click', () => {
+    const isOpen = subJG.classList.contains('open');
+    if (isOpen) { resetTLs(); return; }
+    tlMatheus.style.display = 'none';
+    tlSep.style.display     = 'none';
+    subJG.classList.add('open');
+    subML.classList.remove('open');
+    backBtn.style.display = 'block';
+    document.getElementById('hint-jg').innerHTML = 'Fechar <span class="chevron">▴</span>';
   });
 
   const timesBtn  = document.getElementById('times-btn');
