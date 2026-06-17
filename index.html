@@ -463,13 +463,17 @@
       border-radius: 3px;
     }
 
-    .prio.alta  { background: #FDECEA; color: var(--red); }
-    .prio.media { background: #FFF5CC; color: #8A6200; }
-    .prio.baixa { background: #E8F8EF; color: #006634; }
+    .prio.critico { background: #F3E8FF; color: #6B21A8; }
+    .prio.urgente { background: #FDECEA; color: var(--red); }
+    .prio.alta    { background: #FDECEA; color: var(--red); }
+    .prio.media   { background: #FFF5CC; color: #8A6200; }
+    .prio.baixa   { background: #E8F8EF; color: #006634; }
 
-    [data-theme="dark"] .prio.alta  { background: #2A0A0A; color: #FF7B7B; }
-    [data-theme="dark"] .prio.media { background: #2A2500; color: #FFD84D; }
-    [data-theme="dark"] .prio.baixa { background: #00200F; color: #4DCC89; }
+    [data-theme="dark"] .prio.critico { background: #2D1A40; color: #C084FC; }
+    [data-theme="dark"] .prio.urgente { background: #2A0A0A; color: #FF7B7B; }
+    [data-theme="dark"] .prio.alta    { background: #2A0A0A; color: #FF7B7B; }
+    [data-theme="dark"] .prio.media   { background: #2A2500; color: #FFD84D; }
+    [data-theme="dark"] .prio.baixa   { background: #00200F; color: #4DCC89; }
 
     /* ── FOOTER ── */
     footer {
@@ -583,51 +587,15 @@
   </div>
 
   <div class="section-header">
-    <span class="section-tag">Início do turno</span>
-    <span class="section-time">22:00 – 23:30</span>
+    <span class="section-tag">Tarefas do turno</span>
+    <span class="section-time">Madrugada</span>
     <div class="section-line"></div>
   </div>
   <div class="task-table">
     <div class="task-table-head">
       <div></div><div class="th">Tarefa</div><div class="th">Limite</div><div class="th">Prioridade</div><div class="th"></div>
     </div>
-    <div id="list-ativacao"></div>
-  </div>
-
-  <div class="section-header">
-    <span class="section-tag">Monitoramento</span>
-    <span class="section-time">23:30 – 01:00</span>
-    <div class="section-line"></div>
-  </div>
-  <div class="task-table">
-    <div class="task-table-head">
-      <div></div><div class="th">Tarefa</div><div class="th">Limite</div><div class="th">Prioridade</div><div class="th"></div>
-    </div>
-    <div id="list-monitoramento"></div>
-  </div>
-
-  <div class="section-header">
-    <span class="section-tag">Vigilância</span>
-    <span class="section-time">01:00 – 03:00</span>
-    <div class="section-line"></div>
-  </div>
-  <div class="task-table">
-    <div class="task-table-head">
-      <div></div><div class="th">Tarefa</div><div class="th">Limite</div><div class="th">Prioridade</div><div class="th"></div>
-    </div>
-    <div id="list-vigilancia"></div>
-  </div>
-
-  <div class="section-header">
-    <span class="section-tag">Fechamento</span>
-    <span class="section-time">03:00 – 05:00</span>
-    <div class="section-line"></div>
-  </div>
-  <div class="task-table">
-    <div class="task-table-head">
-      <div></div><div class="th">Tarefa</div><div class="th">Limite</div><div class="th">Prioridade</div><div class="th"></div>
-    </div>
-    <div id="list-fechamento"></div>
+    <div id="list-tarefas"></div>
   </div>
 
 </div>
@@ -641,25 +609,17 @@
 
 <script>
 const TASKS = {
-  "list-ativacao": [
-    { id:"t01", name:"Check-in do time e confirmação de headcount", desc:"Confirmar presença de todos os operadores escalados", deadline:"22:15", priority:"alta", urgent:true, link:"#tutorial-checkin" },
-    { id:"t02", name:"Validar painéis de monitoramento ativos", desc:"Datadog, Kibana, Grafana — verificar alertas do turno anterior", deadline:"22:30", priority:"alta", urgent:true, link:"#tutorial-paineis" },
-    { id:"t03", name:"Handoff com turno anterior", desc:"Receber passagem de plantão e registrar pendências abertas", deadline:"22:45", priority:"media", urgent:false, link:"#tutorial-handoff" },
-  ],
-  "list-monitoramento": [
-    { id:"t04", name:"Revisão de incidentes em aberto", desc:"Verificar fila de P1/P2 e atribuir responsáveis", deadline:"00:00", priority:"alta", urgent:false, link:"#tutorial-incidentes" },
-    { id:"t05", name:"Execução do job de reconciliação financeira", desc:"Script batch — conferir saída e log de erros", deadline:"00:30", priority:"alta", urgent:false, link:"#tutorial-reconciliacao" },
-    { id:"t06", name:"Validar filas de mensageria (SQS/Kafka)", desc:"Confirmar lag aceitável em todos os tópicos críticos", deadline:"01:00", priority:"media", urgent:false, link:"#tutorial-filas" },
-  ],
-  "list-vigilancia": [
-    { id:"t07", name:"Revisão de SLOs — uptime e latência", desc:"Confirmar que todos os serviços críticos estão dentro do SLO", deadline:"02:00", priority:"alta", urgent:false, link:"#tutorial-slos" },
-    { id:"t08", name:"Deploy de hotfix agendado (se aplicável)", desc:"Janela de manutenção — baixo tráfego. Seguir runbook de deploy.", deadline:"02:30", priority:"alta", urgent:false, link:"#tutorial-deploy" },
-    { id:"t09", name:"Atualização de status page externa", desc:"Registrar qualquer degradação detectada no turno", deadline:"03:00", priority:"baixa", urgent:false, link:"#tutorial-statuspage" },
-  ],
-  "list-fechamento": [
-    { id:"t10", name:"Geração do relatório de turno", desc:"Resumo de incidentes, deploys e métricas — enviar ao Slack #ops-report", deadline:"04:30", priority:"alta", urgent:false, link:"#tutorial-relatorio" },
-    { id:"t11", name:"Limpeza de alertas resolvidos", desc:"Fechar tickets e silenciar alarmes que não são mais relevantes", deadline:"04:45", priority:"media", urgent:false, link:"#tutorial-limpeza" },
-    { id:"t12", name:"Preparar passagem para o turno da manhã", desc:"Documentar pendências, destaques e contexto para o próximo time", deadline:"05:00", priority:"alta", urgent:false, link:"#tutorial-passagem" },
+  "list-tarefas": [
+    { id:"t01", name:"Priorização e ajuste do layout", desc:"", deadline:"03:00", priority:"critico", urgent:false, link:"#" },
+    { id:"t02", name:"Envio do planification no grupo WhatsApp", desc:"", deadline:"03:00", priority:"media", urgent:false, link:"#" },
+    { id:"t03", name:"Envio do horário de início e fim da roteirização/priorização no grupo "Sinergia - GCHAT"", desc:"", deadline:"04:00", priority:"media", urgent:false, link:"#" },
+    { id:"t04", name:"Linha Bulky", desc:"", deadline:"03:30", priority:"urgente", urgent:true, link:"#" },
+    { id:"t05", name:"Planilha NEX/DC", desc:"", deadline:"04:00", priority:"urgente", urgent:true, link:"#" },
+    { id:"t06", name:"Distribuição de percursos MLP", desc:"", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
+    { id:"t07", name:"Ajuste Layout pós distribuição", desc:"", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
+    { id:"t08", name:"Envio da geral para os MLPs SVC", desc:"Se ultrapassar 05:30, notificar transportadores", deadline:"06:00", priority:"critico", urgent:false, link:"#" },
+    { id:"t09", name:"Envio da geral para XPT", desc:"", deadline:"06:30", priority:"media", urgent:false, link:"#" },
+    { id:"t10", name:"Ajuste de scheduling", desc:"", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
   ]
 };
 
@@ -724,7 +684,7 @@ function updateStats() {
   document.getElementById('stat-total').textContent = total;
   document.getElementById('stat-done').textContent = done;
   document.getElementById('stat-pending').textContent = total - done;
-  document.getElementById('stat-urgent').textContent = all.filter(t => t.urgent && !state[t.id]).length;
+  document.getElementById('stat-urgent').textContent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length;
   const pct = total ? Math.round((done/total)*100) : 0;
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = pct + '%';
