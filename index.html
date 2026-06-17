@@ -130,6 +130,81 @@
     .topbar-nav-link:hover { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
     .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
 
+    /* ── TIMES DROPDOWN ── */
+    .nav-dropdown { position: relative; }
+
+    .nav-dropdown-btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.75);
+      background: none;
+      padding: 4px 12px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,.12);
+      cursor: pointer;
+      font-family: var(--font);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background .15s, color .15s;
+    }
+
+    .nav-dropdown-btn:hover, .nav-dropdown-btn.open {
+      background: rgba(255,230,0,.12);
+      color: var(--yellow);
+      border-color: rgba(255,230,0,.25);
+    }
+
+    .nav-dropdown-btn .dchevron { font-size: 9px; transition: transform .2s; }
+    .nav-dropdown-btn.open .dchevron { transform: rotate(180deg); }
+
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: #1A1A2E;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      min-width: 160px;
+      overflow: hidden;
+      z-index: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    }
+
+    .nav-dropdown-menu.open { display: block; }
+
+    .nav-dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      transition: background .15s;
+      gap: 10px;
+    }
+
+    .nav-dropdown-item:hover { background: rgba(255,230,0,.1); color: var(--yellow); }
+
+    .nav-dropdown-item.wip {
+      color: rgba(255,255,255,.3);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .wip-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
     /* ── DARK MODE TOGGLE ── */
     .theme-btn {
       background: rgba(255,255,255,.08);
@@ -829,7 +904,14 @@
       Sistema online
     </div>
     <a href="index.html" class="topbar-nav-link active">Rotina</a>
-    <a href="madrugadao.html" class="topbar-nav-link">Time Madrugadão</a>
+    <div class="nav-dropdown">
+      <button class="nav-dropdown-btn" id="times-btn">Times <span class="dchevron">▾</span></button>
+      <div class="nav-dropdown-menu" id="times-menu">
+        <a href="madrugadao.html" class="nav-dropdown-item">🌙 Madrugada</a>
+        <a href="madrugadao.html" class="nav-dropdown-item">☀️ AM</a>
+        <span class="nav-dropdown-item wip">🌆 SD <span class="wip-badge">Em breve</span></span>
+      </div>
+    </div>
     <div class="clock-topbar" id="live-clock">00:00:00</div>
     <button class="theme-btn" id="theme-btn" title="Alternar modo escuro">🌙</button>
   </div>
@@ -1161,6 +1243,18 @@ primCb.addEventListener('change', () => {
 });
 primCard.addEventListener('click', (e) => {
   if (e.target.tagName !== 'INPUT') { primCb.checked = !primCb.checked; primCb.dispatchEvent(new Event('change')); }
+});
+// Times dropdown
+const timesBtn  = document.getElementById('times-btn');
+const timesMenu = document.getElementById('times-menu');
+timesBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  timesBtn.classList.toggle('open');
+  timesMenu.classList.toggle('open');
+});
+document.addEventListener('click', () => {
+  timesBtn.classList.remove('open');
+  timesMenu.classList.remove('open');
 });
 </script>
 </body>
