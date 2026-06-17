@@ -329,11 +329,17 @@
       gap: 24px;
       position: relative;
       width: 100%;
+      max-width: 700px;
     }
     .sub-row::before {
-      content: ''; position: absolute; top: 0; left: 50%;
-      transform: translateX(-50%); height: 2px;
-      background: var(--border); width: calc(100% - 200px);
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 2px;
+      background: var(--border);
+      width: calc(100% - 120px);
     }
     .sub-branch { display: flex; flex-direction: column; align-items: center; }
     .sub-branch-v { width: 2px; height: 24px; background: var(--border); }
