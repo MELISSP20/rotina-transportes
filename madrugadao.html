@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Madrugadão — Time da Madrugada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFE600;
+      --navy: #1A1A2E;
+      --bg: #F5F5F5;
+      --surface: #FFFFFF;
+      --text: #333333;
+      --muted: #666666;
+      --border: #E0E0E0;
+      --green: #00A650;
+      --blue: #3483FA;
+      --font: 'Inter', sans-serif;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0F1117;
+      --surface: #1A1D27;
+      --text: #E8EAF2;
+      --muted: #8B90A7;
+      --border: #2A2E3F;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      transition: background .2s, color .2s;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: #1A1A2E;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      gap: 1rem;
+    }
+
+    [data-theme="dark"] .topbar { background: #0A0C14; border-bottom: 1px solid #2A2E3F; }
+
+    .topbar-logo { display: flex; align-items: center; gap: 10px; }
+    .ml-logo-img { height: 28px; width: auto; display: block; }
+    .ml-wordmark { font-weight: 700; font-size: 15px; color: var(--yellow); letter-spacing: -.3px; }
+    .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,.15); }
+    .topbar-section { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.6); }
+
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+    .topbar-nav-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      padding: 4px 12px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,.12);
+      transition: background .15s, color .15s;
+    }
+
+    .topbar-nav-link:hover { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
+
+    .theme-btn {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 6px;
+      color: rgba(255,255,255,.6);
+      font-size: 14px;
+      width: 30px; height: 30px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+
+    .theme-btn:hover { background: rgba(255,255,255,.15); }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--yellow);
+      padding: 0 2rem;
+    }
+
+    [data-theme="dark"] .header { background: #1A1D27; border-bottom: 1px solid #2A2E3F; }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 72px;
+      gap: 1.5rem;
+    }
+
+    .header-logo-img { height: 44px; width: auto; display: block; flex-shrink: 0; }
+
+    .header-divider {
+      width: 1px; height: 32px;
+      background: rgba(26,26,46,.2);
+      flex-shrink: 0;
+    }
+
+    [data-theme="dark"] .header-divider { background: #2A2E3F; }
+
+    .header-title { font-size: 18px; font-weight: 700; color: #1A1A2E; letter-spacing: -.4px; }
+    [data-theme="dark"] .header-title { color: var(--text); }
+    .header-sub { font-size: 12px; font-weight: 500; color: rgba(26,26,46,.6); margin-top: 2px; }
+    [data-theme="dark"] .header-sub { color: var(--muted); }
+
+    /* ── MAIN ── */
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+    }
+
+    /* ── ORG CHART ── */
+    .org-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* HEAD NODE */
+    .org-head {
+      position: relative;
+    }
+
+    .org-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 28px;
+      text-align: center;
+      min-width: 220px;
+      position: relative;
+    }
+
+    .org-card.head {
+      border-top: 3px solid var(--yellow);
+      min-width: 260px;
+    }
+
+    [data-theme="dark"] .org-card.head { border-top-color: var(--yellow); }
+
+    .org-card.member {
+      border-top: 3px solid var(--blue);
+      min-width: 200px;
+    }
+
+    .org-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+    }
+
+    .org-avatar.head-av {
+      background: #FFF5CC;
+      color: #8A6200;
+      font-size: 16px;
+    }
+
+    [data-theme="dark"] .org-avatar.head-av { background: #2A2500; color: #FFD84D; }
+
+    .org-avatar.member-av {
+      background: #EBF2FE;
+      color: #1559B5;
+      font-size: 15px;
+    }
+
+    [data-theme="dark"] .org-avatar.member-av { background: #0A1E40; color: #7EB3FF; }
+
+    .org-role {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .org-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.2px;
+    }
+
+    .org-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 20px;
+    }
+
+    .org-tag.leader {
+      background: #FFF5CC;
+      color: #8A6200;
+    }
+
+    [data-theme="dark"] .org-tag.leader { background: #2A2500; color: #FFD84D; }
+
+    .org-tag.analyst {
+      background: #EBF2FE;
+      color: #1559B5;
+    }
+
+    [data-theme="dark"] .org-tag.analyst { background: #0A1E40; color: #7EB3FF; }
+
+    /* ── CONNECTOR LINES ── */
+    .connector-v {
+      width: 2px;
+      height: 36px;
+      background: var(--border);
+      margin: 0 auto;
+    }
+
+    .connector-row {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      gap: 48px;
+    }
+
+    .connector-row::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 2px;
+      background: var(--border);
+      /* width set via JS or inline */
+      width: calc(100% - 220px);
+    }
+
+    .connector-branch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .connector-branch-v {
+      width: 2px;
+      height: 36px;
+      background: var(--border);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left { font-size: 12px; color: var(--muted); }
+    .footer-right {
+      font-size: 11px; font-weight: 600;
+      color: #1A1A2E;
+      background: #FFF5B3;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    [data-theme="dark"] .footer-right { color: var(--yellow); background: #2A2500; }
+
+    @media (max-width: 600px) {
+      .connector-row { flex-direction: column; align-items: center; gap: 0; }
+      .connector-row::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+    <span class="ml-wordmark">Mercado Livre</span>
+  </div>
+  <div class="topbar-sep"></div>
+  <span class="topbar-section">Transportes · Operações</span>
+  <div class="topbar-right">
+    <a href="index.html" class="topbar-nav-link">Rotina</a>
+    <a href="madrugadao.html" class="topbar-nav-link active">Madrugadão</a>
+    <button class="theme-btn" id="theme-btn" title="Alternar modo escuro">🌙</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <img src="ml-logo.png" alt="Mercado Livre" class="header-logo-img"/>
+    <div class="header-divider"></div>
+    <div>
+      <div class="header-title">Madrugadão</div>
+      <div class="header-sub">Organograma · Time da Madrugada</div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="wrapper">
+  <div class="org-chart">
+
+    <!-- HEAD -->
+    <div class="org-head">
+      <div class="org-card head">
+        <div class="org-avatar head-av">ML</div>
+        <div class="org-role">Head · Team Leader</div>
+        <div class="org-name">Matheus Logan</div>
+        <span class="org-tag leader">Team Leader</span>
+      </div>
+    </div>
+
+    <!-- VERTICAL CONNECTOR -->
+    <div class="connector-v"></div>
+
+    <!-- HORIZONTAL BAR + BRANCHES -->
+    <div class="connector-row">
+      <div class="connector-branch">
+        <div class="connector-branch-v"></div>
+        <div class="org-card member">
+          <div class="org-avatar member-av">MC</div>
+          <div class="org-role">Operações</div>
+          <div class="org-name">Matheus Campos</div>
+          <span class="org-tag analyst">Analista</span>
+        </div>
+      </div>
+
+      <div class="connector-branch">
+        <div class="connector-branch-v"></div>
+        <div class="org-card member">
+          <div class="org-avatar member-av">EA</div>
+          <div class="org-role">Operações</div>
+          <div class="org-name">Everton Adriano</div>
+          <span class="org-tag analyst">Analista</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-left">© Mercado Livre · Transportes · Time da Madrugada</span>
+    <span class="footer-right">v1.1</span>
+  </div>
+</footer>
+
+<script>
+  const html = document.documentElement;
+  const btn = document.getElementById('theme-btn');
+  const saved = localStorage.getItem('theme') || 'light';
+  html.setAttribute('data-theme', saved);
+  btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', next);
+  });
+</script>
+</body>
+</html>

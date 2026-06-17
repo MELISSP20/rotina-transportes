@@ -121,6 +121,20 @@
       letter-spacing: .5px;
     }
 
+    .topbar-nav-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      padding: 4px 12px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,.12);
+      transition: background .15s, color .15s;
+    }
+
+    .topbar-nav-link:hover { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
+
     /* ── DARK MODE TOGGLE ── */
     .theme-btn {
       background: rgba(255,255,255,.08);
@@ -559,6 +573,8 @@
       <div class="online-dot"></div>
       Sistema online
     </div>
+    <a href="index.html" class="topbar-nav-link active">Rotina</a>
+    <a href="madrugadao.html" class="topbar-nav-link">Madrugadão</a>
     <div class="clock-topbar" id="live-clock">00:00:00</div>
     <button class="theme-btn" id="theme-btn" title="Alternar modo escuro">🌙</button>
   </div>
