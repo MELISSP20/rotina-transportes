@@ -518,6 +518,68 @@
 
     .task-info-meta { display: none; }
 
+    /* ── TAREFA PRIMORDIAL ── */
+    .primordial-card {
+      background: var(--surface);
+      border: 1.5px solid #E8D000;
+      border-left: 4px solid #E8D000;
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 1.5rem;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 14px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: background .15s;
+      position: relative;
+    }
+
+    .primordial-card:hover { background: var(--row-hover); }
+    .primordial-card.done { opacity: .5; }
+
+    .primordial-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #7A5C00;
+      background: #FFF5CC;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    [data-theme="dark"] .primordial-badge { background: #2A2500; color: #FFD84D; }
+
+    .primordial-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .primordial-card.done .primordial-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .primordial-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .primordial-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
     /* ── FOOTER ── */
     footer {
       background: var(--surface);
@@ -699,6 +761,21 @@
     </div>
   </div>
 
+  <!-- TAREFA PRIMORDIAL -->
+  <div class="primordial-card" id="primordial-card">
+    <div class="task-check-wrap" style="padding-top:2px">
+      <input type="checkbox" class="task-check" id="primordial-check">
+    </div>
+    <div>
+      <div class="primordial-badge">⭐ Primordial</div>
+      <div class="primordial-title">Análise crítica dos roteiros — Geral</div>
+      <div class="primordial-desc">Análise geral da roteirização do ciclo, compilando pontos de desvios para tratativa em calibração semanal. Imprescindível.</div>
+      <div class="primordial-footer">
+        <span class="prio critico">crítico</span>
+      </div>
+    </div>
+  </div>
+
   <div class="section-header">
     <span class="section-tag">Tarefas do turno</span>
     <span class="section-time">Madrugada</span>
@@ -800,10 +877,12 @@ function renderAll() {
 
 function updateStats() {
   const all = Object.values(TASKS).flat();
-  const total = all.length;
-  const done = all.filter(t => state[t.id]).length;
+  const total = all.length + 1; // +1 primordial
+  const doneTasks = all.filter(t => state[t.id]).length;
+  const donePrim = state['primordial'] ? 1 : 0;
+  const done = doneTasks + donePrim;
   const pending = total - done;
-  const urgent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length;
+  const urgent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length + (state['primordial'] ? 0 : 1);
   const pct = total ? Math.round((done/total)*100) : 0;
 
   document.getElementById('stat-total').textContent   = total;
@@ -844,6 +923,20 @@ btn.addEventListener('click', () => {
 tick();
 setInterval(tick, 1000);
 renderAll();
+
+// Primordial card
+const primCard = document.getElementById('primordial-card');
+const primCb   = document.getElementById('primordial-check');
+if (state['primordial']) { primCb.checked = true; primCard.classList.add('done'); }
+primCb.addEventListener('change', () => {
+  state['primordial'] = primCb.checked;
+  save();
+  primCard.classList.toggle('done', primCb.checked);
+  updateStats();
+});
+primCard.addEventListener('click', (e) => {
+  if (e.target.tagName !== 'INPUT') { primCb.checked = !primCb.checked; primCb.dispatchEvent(new Event('change')); }
+});
 </script>
 </body>
 </html>
