@@ -324,6 +324,19 @@
     .org-tasks.sub-tasks { min-width: 155px; max-width: 175px; }
     .org-task-item.sub-item { border-left-color: #9333EA; font-size: 11px; padding: 5px 10px; }
 
+    .shift-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 14px;
+      margin-bottom: 0;
+    }
+
     @media (max-width: 768px) {
       .sub-row { flex-direction: column; align-items: center; gap: 0; }
       .sub-row::before { display: none; }
@@ -432,6 +445,43 @@
       <!-- SUBORDINATES PANEL -->
       <div class="subordinates-panel" id="sub-panel">
         <div class="sub-connector-v"></div>
+
+        <!-- GROUP: MADRUGADA -->
+        <div class="shift-group-label">🌙 Madrugada</div>
+        <div class="sub-row">
+          <div class="sub-branch">
+            <div class="sub-branch-v"></div>
+            <div class="org-card member">
+              <div class="org-avatar member-av">MC</div>
+              <div class="org-role">Operações</div>
+              <div class="org-name">Matheus Campos</div>
+              <span class="org-tag analyst">Analista</span>
+            </div>
+            <div class="org-tasks">
+              <div class="org-task-item">Focal XPT</div>
+              <div class="org-task-item">Focal Calibrações ROUT</div>
+              <div class="org-task-item">Rodízio semanal — distribuição</div>
+            </div>
+          </div>
+          <div class="sub-branch">
+            <div class="sub-branch-v"></div>
+            <div class="org-card member">
+              <div class="org-avatar member-av">EA</div>
+              <div class="org-role">Operações</div>
+              <div class="org-name">Everton Adriano</div>
+              <span class="org-tag analyst">Analista</span>
+            </div>
+            <div class="org-tasks">
+              <div class="org-task-item">Focal Telemetria</div>
+              <div class="org-task-item">Rodízio semanal — distribuição</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-connector-v" style="height:20px;margin-top:12px;"></div>
+
+        <!-- GROUP: AM -->
+        <div class="shift-group-label">☀️ AM</div>
         <div class="sub-row">
           <div class="sub-branch">
             <div class="sub-branch-v"></div>
@@ -478,38 +528,11 @@
       </div>
     </div>
 
-    <!-- VERTICAL CONNECTOR -->
-    <div class="connector-v"></div>
-
-    <!-- HORIZONTAL BAR + BRANCHES -->
-    <div class="connector-row">
+    <!-- VERTICAL CONNECTOR (now hidden since members are in panel) -->
+    <div class="connector-v" style="display:none;"></div>
+    <div class="connector-row" style="display:none;">
       <div class="connector-branch">
-        <div class="connector-branch-v"></div>
-        <div class="org-card member">
-          <div class="org-avatar member-av">MC</div>
-          <div class="org-role">Operações</div>
-          <div class="org-name">Matheus Campos</div>
-          <span class="org-tag analyst">Analista</span>
-        </div>
-        <div class="org-tasks">
-          <div class="org-task-item">Focal XPT</div>
-          <div class="org-task-item">Focal Calibrações ROUT</div>
-          <div class="org-task-item">Rodízio semanal — distribuição</div>
-        </div>
-      </div>
-
-      <div class="connector-branch">
-        <div class="connector-branch-v"></div>
-        <div class="org-card member">
-          <div class="org-avatar member-av">EA</div>
-          <div class="org-role">Operações</div>
-          <div class="org-name">Everton Adriano</div>
-          <span class="org-tag analyst">Analista</span>
-        </div>
-        <div class="org-tasks">
-          <div class="org-task-item">Focal Telemetria</div>
-          <div class="org-task-item">Rodízio semanal — distribuição</div>
-        </div>
+        <div class="org-card member" style="display:none;"></div>
       </div>
     </div>
 
