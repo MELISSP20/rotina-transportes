@@ -268,7 +268,24 @@
       background: var(--border);
     }
 
-    /* ── FOOTER ── */
+    .org-tasks {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 200px;
+    }
+
+    .org-task-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+    }
     footer {
       background: var(--surface);
       border-top: 1px solid var(--border);
@@ -358,6 +375,11 @@
           <div class="org-name">Matheus Campos</div>
           <span class="org-tag analyst">Analista</span>
         </div>
+        <div class="org-tasks">
+          <div class="org-task-item">Focal XPT</div>
+          <div class="org-task-item">Focal Calibrações ROUT</div>
+          <div class="org-task-item">Rodízio semanal — distribuição</div>
+        </div>
       </div>
 
       <div class="connector-branch">
@@ -367,6 +389,10 @@
           <div class="org-role">Operações</div>
           <div class="org-name">Everton Adriano</div>
           <span class="org-tag analyst">Analista</span>
+        </div>
+        <div class="org-tasks">
+          <div class="org-task-item">Focal Telemetria</div>
+          <div class="org-task-item">Rodízio semanal — distribuição</div>
         </div>
       </div>
     </div>
