@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tutorial — Report Gerencial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFE600;
+      --navy: #1A1A2E;
+      --bg: #F5F5F5;
+      --surface: #FFFFFF;
+      --text: #333333;
+      --muted: #666666;
+      --border: #E0E0E0;
+      --green: #00A650;
+      --blue: #3483FA;
+      --font: 'Inter', sans-serif;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0F1117;
+      --surface: #1A1D27;
+      --text: #E8EAF2;
+      --muted: #8B90A7;
+      --border: #2A2E3F;
+    }
+
+    body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 14px; }
+
+    /* TOPBAR */
+    .topbar { background: #1A1A2E; height: 48px; display: flex; align-items: center; padding: 0 2rem; gap: 1rem; }
+    [data-theme="dark"] .topbar { background: #0A0C14; border-bottom: 1px solid #2A2E3F; }
+    .topbar-logo { display: flex; align-items: center; gap: 10px; }
+    .ml-logo-img { height: 36px; width: auto; display: block; }
+    .ml-wordmark { display: none; }
+    .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,.15); }
+    .topbar-section { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.6); }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .topbar-nav-link { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.75); text-decoration: none; padding: 4px 12px; border-radius: 5px; border: 1px solid rgba(255,255,255,.12); transition: background .15s, color .15s; }
+    .topbar-nav-link:hover { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .theme-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 6px; color: rgba(255,255,255,.6); font-size: 14px; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* HEADER */
+    .header { background: var(--yellow); padding: 0 2rem; }
+    [data-theme="dark"] .header { background: #1A1D27; border-bottom: 1px solid #2A2E3F; }
+    .header-inner { max-width: 900px; margin: 0 auto; height: 90px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+    .header-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: rgba(26,26,46,.55); }
+    [data-theme="dark"] .header-eyebrow { color: var(--muted); }
+    .header-title { font-size: 26px; font-weight: 700; color: #1A1A2E; letter-spacing: -.5px; }
+    [data-theme="dark"] .header-title { color: var(--text); }
+
+    /* WRAPPER */
+    .wrapper { max-width: 900px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+    /* INTRO CARD */
+    .intro-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--blue);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 2rem;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .intro-card strong { color: var(--text); }
+
+    /* SECTION LABEL */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* TEMPLATE CARD */
+    .template-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .template-header {
+      background: #1A1A2E;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    [data-theme="dark"] .template-header { background: #0A0C14; }
+
+    .template-title { font-size: 13px; font-weight: 600; color: var(--yellow); }
+
+    .copy-btn {
+      background: rgba(255,230,0,.15);
+      border: 1px solid rgba(255,230,0,.3);
+      border-radius: 5px;
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background .15s;
+    }
+
+    .copy-btn:hover { background: rgba(255,230,0,.25); }
+    .copy-btn.copied { color: #00D68F; border-color: #00D68F; background: rgba(0,214,143,.1); }
+
+    .template-body {
+      padding: 20px;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 2;
+      color: var(--text);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .template-body .field-label { color: var(--muted); }
+    .template-body .field-blank { color: var(--blue); font-weight: 600; }
+
+    /* FIELD TABLE */
+    .field-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 40px 180px 1fr;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .field-row:last-child { border-bottom: none; }
+    .field-row:hover { background: var(--bg); }
+
+    .field-emoji { font-size: 16px; text-align: center; }
+    .field-name { font-weight: 600; color: var(--text); }
+    .field-desc { color: var(--muted); font-size: 12px; }
+
+    /* FOOTER */
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 14px 2rem; }
+    .footer-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-left { font-size: 12px; color: var(--muted); }
+
+    @media (max-width: 600px) {
+      .topbar { padding: 0 1rem; }
+      .topbar-sep, .topbar-section { display: none; }
+      .wrapper { padding: 1.5rem 1rem 3rem; }
+      .field-row { grid-template-columns: 30px 1fr; grid-template-rows: auto auto; }
+      .field-desc { grid-column: 2; }
+      .template-body { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div style="background:#fff;border-radius:8px;padding:3px 6px;display:flex;align-items:center;">
+      <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+    </div>
+  </div>
+  <div class="topbar-sep"></div>
+  <span class="topbar-section">Transportes · Operações</span>
+  <div class="topbar-right">
+    <a href="index.html" class="topbar-nav-link">Rotina</a>
+    <a href="madrugadao.html" class="topbar-nav-link">Time Madrugadão</a>
+    <button class="theme-btn" id="theme-btn">🌙</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Tutorial · Report Gerencial</div>
+    <div class="header-title">Report Gerencial — Grupo Indicadores</div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="wrapper">
+
+  <div class="intro-card">
+    <strong>Objetivo:</strong> Envio das informações consolidadas da volumetria do ciclo para o Grupo Indicadores.<br/>
+    Preencha todos os campos abaixo com os dados do ciclo atual e envie no grupo correspondente. Limite: <strong>07:00</strong>.
+  </div>
+
+  <div class="section-label">Template de envio</div>
+
+  <div class="template-card">
+    <div class="template-header">
+      <span class="template-title">Copiar template preenchível</span>
+      <button class="copy-btn" id="copy-btn">📋 Copiar</button>
+    </div>
+    <div class="template-body" id="template-text">SSP20 - OPERAÇÃO SOROCABA - AM
+🗓️ //
+📦 IDs Planejado:
+📦 IDs Real:
+📦 CHP:  -
+📦 FAKE:  -
+📦 AM0:
+📊 SPR:
+🏁 Rotas TT:
+🚗 Rotas NODOS:
+🚙 Rotas ME:
+🚚 Rotas FF:
+🚐 Rotas SPOT:
+🚐 Rotas SDD:  -
+🚑 Backups:
+📉 GAP veículos:
+❌ Cancelamento ME:
+🗒️ Observações:</div>
+  </div>
+
+  <div class="section-label">Descrição dos campos</div>
+
+  <div class="field-table">
+    <div class="field-row">
+      <div class="field-emoji">🗓️</div>
+      <div class="field-name">Data</div>
+      <div class="field-desc">Data do ciclo no formato DD/MM — ex: 17/06</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">📦</div>
+      <div class="field-name">IDs Planejado</div>
+      <div class="field-desc">Quantidade de pacotes planejados para o ciclo</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">📦</div>
+      <div class="field-name">IDs Real</div>
+      <div class="field-desc">Quantidade real de pacotes no ciclo após fechamento</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">📦</div>
+      <div class="field-name">CHP</div>
+      <div class="field-desc">Pacotes CHP — quantidade e variação</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">📦</div>
+      <div class="field-name">FAKE</div>
+      <div class="field-desc">Pacotes FAKE — quantidade e variação</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">📦</div>
+      <div class="field-name">AM0</div>
+      <div class="field-desc">Pacotes AM0 — entrega no mesmo dia</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">📊</div>
+      <div class="field-name">SPR</div>
+      <div class="field-desc">Sacas por rota — média do ciclo</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🏁</div>
+      <div class="field-name">Rotas TT</div>
+      <div class="field-desc">Total de rotas do ciclo</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🚗</div>
+      <div class="field-name">Rotas NODOS</div>
+      <div class="field-desc">Rotas destinadas aos Nodos</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🚙</div>
+      <div class="field-name">Rotas ME</div>
+      <div class="field-desc">Rotas Meli Extra</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🚚</div>
+      <div class="field-name">Rotas FF</div>
+      <div class="field-desc">Rotas Full Flex</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🚐</div>
+      <div class="field-name">Rotas SPOT</div>
+      <div class="field-desc">Rotas SPOT contratadas no ciclo</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🚐</div>
+      <div class="field-name">Rotas SDD</div>
+      <div class="field-desc">Rotas SDD — quantidade e variação</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🚑</div>
+      <div class="field-name">Backups</div>
+      <div class="field-desc">Veículos backup acionados no ciclo</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">📉</div>
+      <div class="field-name">GAP veículos</div>
+      <div class="field-desc">Diferença entre veículos planejados e realizados</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">❌</div>
+      <div class="field-name">Cancelamento ME</div>
+      <div class="field-desc">Rotas Meli Extra canceladas no ciclo</div>
+    </div>
+    <div class="field-row">
+      <div class="field-emoji">🗒️</div>
+      <div class="field-name">Observações</div>
+      <div class="field-desc">Pontos relevantes, desvios ou ocorrências do ciclo</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-left">© Mercado Livre · Transportes · Time da Madrugada</span>
+    <span class="footer-left">Developed by <strong>Matheus Logan</strong></span>
+  </div>
+</footer>
+
+<script>
+  const html = document.documentElement;
+  const btn = document.getElementById('theme-btn');
+  const saved = localStorage.getItem('theme') || 'light';
+  html.setAttribute('data-theme', saved);
+  btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', next);
+  });
+
+  document.getElementById('copy-btn').addEventListener('click', function() {
+    const text = document.getElementById('template-text').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      this.textContent = '✓ Copiado!';
+      this.classList.add('copied');
+      setTimeout(() => {
+        this.textContent = '📋 Copiar';
+        this.classList.remove('copied');
+      }, 2000);
+    });
+  });
+</script>
+</body>
+</html>
