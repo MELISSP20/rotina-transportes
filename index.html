@@ -1095,7 +1095,14 @@ tick();
 setInterval(tick, 1000);
 renderAll();
 
-// Feedback modal
+// Feedback modal — EmailJS
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  s.onload = function(){ emailjs.init('tJR2me_Di67O4vLVZ'); };
+  document.head.appendChild(s);
+})();
+
 const overlay  = document.getElementById('feedback-modal');
 const openBtn  = document.getElementById('feedback-open');
 const closeBtn = document.getElementById('feedback-close');
@@ -1106,12 +1113,36 @@ closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
 overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
 
 sendBtn.addEventListener('click', () => {
-  const task = document.getElementById('fb-task').value || 'Não especificado';
-  const desc = document.getElementById('fb-desc').value.trim() || 'Sem descrição.';
-  const subject = encodeURIComponent(`[Obsolescência] ${task}`);
-  const body = encodeURIComponent(`Tarefa: ${task}\n\nDescrição:\n${desc}\n\n---\nEnviado via Rotina Time Madrugada`);
-  window.open(`mailto:matheus.lcunha@mercadolivre.com?subject=${subject}&body=${body}`);
-  overlay.classList.remove('open');
+  const task = document.getElementById('fb-task').value;
+  const desc = document.getElementById('fb-desc').value.trim();
+
+  if (!task) { alert('Selecione a tarefa relacionada.'); return; }
+  if (!desc)  { alert('Preencha a descrição.'); return; }
+
+  sendBtn.textContent = 'Enviando...';
+  sendBtn.disabled = true;
+
+  emailjs.send('service_jhx617e', 'template_71opb38', {
+    subject:  '[Obsolescência] ' + task,
+    task:     task,
+    message:  desc,
+    to_email: 'matheus.lcunha@mercadolivre.com'
+  })
+  .then(() => {
+    sendBtn.textContent = '✓ Enviado!';
+    setTimeout(() => {
+      overlay.classList.remove('open');
+      document.getElementById('fb-task').value = '';
+      document.getElementById('fb-desc').value = '';
+      sendBtn.textContent = 'Enviar por e-mail ↗';
+      sendBtn.disabled = false;
+    }, 1500);
+  })
+  .catch((err) => {
+    console.error('EmailJS error:', err);
+    sendBtn.textContent = 'Erro — tente novamente';
+    sendBtn.disabled = false;
+  });
 });
 
 // Primordial card
