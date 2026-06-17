@@ -286,6 +286,50 @@
       font-weight: 500;
       color: var(--text);
     }
+
+    /* ── EXPAND PANEL ── */
+    .org-card.head { cursor: pointer; user-select: none; transition: box-shadow .2s; }
+    .org-card.head:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+
+    .expand-hint {
+      font-size: 10px; font-weight: 600; color: var(--muted);
+      margin-top: 8px; display: flex; align-items: center;
+      justify-content: center; gap: 4px; letter-spacing: .05em;
+    }
+    .expand-hint .chevron { display: inline-block; transition: transform .3s; }
+    .expand-hint.open .chevron { transform: rotate(180deg); }
+
+    .subordinates-panel { display: none; flex-direction: column; align-items: center; margin-top: 0; }
+    .subordinates-panel.open { display: flex; }
+
+    .sub-connector-v { width: 2px; height: 28px; background: var(--border); }
+
+    .sub-row {
+      display: flex; align-items: flex-start; gap: 20px; position: relative;
+    }
+    .sub-row::before {
+      content: ''; position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%); height: 2px;
+      background: var(--border); width: calc(100% - 160px);
+    }
+    .sub-branch { display: flex; flex-direction: column; align-items: center; }
+    .sub-branch-v { width: 2px; height: 24px; background: var(--border); }
+
+    .org-card.sub { border-top: 3px solid #9333EA; min-width: 155px; max-width: 175px; padding: 14px 16px; }
+    .org-card.sub .org-name { font-size: 13px; }
+    .org-avatar.sub-av { background: #F3E8FF; color: #6B21A8; font-size: 12px; width: 40px; height: 40px; }
+    [data-theme="dark"] .org-avatar.sub-av { background: #2D1A40; color: #C084FC; }
+    .org-tag.sub-tag { background: #F3E8FF; color: #6B21A8; }
+    [data-theme="dark"] .org-tag.sub-tag { background: #2D1A40; color: #C084FC; }
+    .org-tasks.sub-tasks { min-width: 155px; max-width: 175px; }
+    .org-task-item.sub-item { border-left-color: #9333EA; font-size: 11px; padding: 5px 10px; }
+
+    @media (max-width: 768px) {
+      .sub-row { flex-direction: column; align-items: center; gap: 0; }
+      .sub-row::before { display: none; }
+      .org-card.sub, .org-tasks.sub-tasks { max-width: 280px; width: 100%; }
+    }
+
     footer {
       background: var(--surface);
       border-top: 1px solid var(--border);
@@ -375,13 +419,62 @@
 
     <!-- HEAD -->
     <div class="org-head">
-      <div class="org-card head">
+      <div class="org-card head" id="head-card">
         <div class="org-avatar head-av">
           <img src="rank-leader.png" alt="Team Leader" style="width:38px;height:38px;object-fit:contain;border-radius:10px;padding:2px;"/>
         </div>
         <div class="org-role">Head · Team Leader</div>
         <div class="org-name">Matheus Logan</div>
         <span class="org-tag leader">Team Leader</span>
+        <div class="expand-hint" id="expand-hint">Ver colaboradores <span class="chevron">▾</span></div>
+      </div>
+
+      <!-- SUBORDINATES PANEL -->
+      <div class="subordinates-panel" id="sub-panel">
+        <div class="sub-connector-v"></div>
+        <div class="sub-row">
+          <div class="sub-branch">
+            <div class="sub-branch-v"></div>
+            <div class="org-card sub">
+              <div class="org-avatar sub-av">BC</div>
+              <div class="org-role">Operações</div>
+              <div class="org-name">Bruno Costa</div>
+              <span class="org-tag sub-tag">Analista</span>
+            </div>
+            <div class="org-tasks sub-tasks">
+              <div class="org-task-item sub-item">Focal DIT</div>
+              <div class="org-task-item sub-item">Suporte AM</div>
+              <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
+            </div>
+          </div>
+          <div class="sub-branch">
+            <div class="sub-branch-v"></div>
+            <div class="org-card sub">
+              <div class="org-avatar sub-av">BC</div>
+              <div class="org-role">Operações</div>
+              <div class="org-name">Bruno Cardoso</div>
+              <span class="org-tag sub-tag">Analista</span>
+            </div>
+            <div class="org-tasks sub-tasks">
+              <div class="org-task-item sub-item">Focal Nodos</div>
+              <div class="org-task-item sub-item">Suporte AM</div>
+              <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
+            </div>
+          </div>
+          <div class="sub-branch">
+            <div class="sub-branch-v"></div>
+            <div class="org-card sub">
+              <div class="org-avatar sub-av">BL</div>
+              <div class="org-role">Operações</div>
+              <div class="org-name">Bruna Larissa</div>
+              <span class="org-tag sub-tag">Analista</span>
+            </div>
+            <div class="org-tasks sub-tasks">
+              <div class="org-task-item sub-item">Focal MEE</div>
+              <div class="org-task-item sub-item">Rodízio distribuição semanal PM/SD</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -441,6 +534,15 @@
     html.setAttribute('data-theme', next);
     btn.textContent = next === 'dark' ? '☀️' : '🌙';
     localStorage.setItem('theme', next);
+  });
+  const headCard = document.getElementById('head-card');
+  const subPanel = document.getElementById('sub-panel');
+  const hint     = document.getElementById('expand-hint');
+
+  headCard.addEventListener('click', () => {
+    const open = subPanel.classList.toggle('open');
+    hint.classList.toggle('open', open);
+    hint.querySelector('.chevron').textContent = open ? '▴' : '▾';
   });
 </script>
 </body>
