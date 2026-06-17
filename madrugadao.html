@@ -320,7 +320,14 @@
     }
     .subordinates-panel.open { display: flex; }
 
-    .sub-connector-v { width: 2px; height: 28px; background: var(--border); }
+    .sub-connector-v { display: none; }
+
+    .sub-group-divider {
+      width: 60%;
+      height: 1px;
+      background: var(--border);
+      margin: 20px auto 0;
+    }
 
     .sub-row {
       display: flex;
@@ -333,7 +340,7 @@
     .sub-row-connector { display: none; }
 
     .sub-branch { display: flex; flex-direction: column; align-items: center; }
-    .sub-branch-v { width: 2px; height: 24px; background: var(--border); }
+    .sub-branch-v { display: none; }
 
     .org-card.sub { border-top: 3px solid #9333EA; min-width: 155px; max-width: 175px; padding: 14px 16px; }
     .org-card.sub .org-name { font-size: 13px; }
@@ -521,9 +528,7 @@
     </div>
 
     <!-- SUBORDINATES PANEL — fora do tl-row, centralizado no org-chart -->
-    <div class="subordinates-panel" id="sub-panel">
-        <div class="sub-connector-v"></div>
-
+    <div class="subordinates-panel" id="sub-panel" style="margin-top:24px;">
         <!-- GROUP: MADRUGADA -->
         <div class="shift-group-label">🌙 Madrugada</div>
         <div class="sub-row" id="row-madrugada">
@@ -556,7 +561,7 @@
           </div>
         </div>
 
-        <div style="height:20px;margin-top:12px;"></div>
+        <div class="sub-group-divider"></div>
 
         <!-- GROUP: AM -->
         <div class="shift-group-label">☀️ AM</div>
