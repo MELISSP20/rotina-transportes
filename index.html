@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rotina - Time Madrugada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFE600;
+      --yellow-soft: #FFF5B3;
+      --blue: #3483FA;
+      --bg: #F5F5F5;
+      --surface: #FFFFFF;
+      --navy: #1A1A2E;
+      --text: #333333;
+      --muted: #666666;
+      --border: #E0E0E0;
+      --green: #00A650;
+      --red: #E3262F;
+      --orange: #F5A623;
+      --font: 'Inter', sans-serif;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--navy);
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      gap: 1rem;
+    }
+
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ml-wordmark {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--yellow);
+      letter-spacing: -.3px;
+    }
+
+    .topbar-sep {
+      width: 1px;
+      height: 18px;
+      background: rgba(255,255,255,.15);
+    }
+
+    .topbar-section {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,.6);
+    }
+
+    .topbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .online-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,.5);
+    }
+
+    .online-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .clock-topbar {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--yellow);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .5px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--yellow);
+      padding: 0 2rem;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      gap: 2rem;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 1.5rem; }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -.4px;
+    }
+
+    .header-date {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(26,26,46,.65);
+    }
+
+    /* ── MISSÃO BADGE ── */
+    .missao-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--navy);
+      border-radius: var(--radius);
+      padding: 8px 16px 8px 10px;
+    }
+
+    .skull-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .missao-text-block { line-height: 1.2; }
+
+    .missao-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,230,0,.55);
+    }
+
+    .missao-phrase {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: -.2px;
+    }
+
+    /* ── BODY WRAPPER ── */
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 3rem;
+    }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.yellow { background: #FFF5CC; color: #B8860B; }
+    .stat-icon.green  { background: #E8F8EF; color: var(--green); }
+    .stat-icon.blue   { background: #EBF2FE; color: var(--blue); }
+    .stat-icon.red    { background: #FDECEA; color: var(--red); }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .progress-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green) 0%, #00C46A 100%);
+      border-radius: 4px;
+      transition: width .5s ease;
+    }
+
+    .progress-pct {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* ── SECTION ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      margin-top: 1.5rem;
+    }
+
+    .section-tag {
+      background: var(--navy);
+      color: var(--yellow);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    .section-time {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── TASK TABLE ── */
+    .task-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: .5rem;
+    }
+
+    .task-table-head {
+      display: grid;
+      grid-template-columns: 32px 1fr 100px 80px 50px;
+      padding: 8px 16px;
+      background: #F9F9F9;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      align-items: center;
+    }
+
+    .th {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+    }
+
+    .task-row {
+      display: grid;
+      grid-template-columns: 32px 1fr 100px 80px 50px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      align-items: center;
+      transition: background .15s;
+      cursor: pointer;
+    }
+
+    .task-row:last-child { border-bottom: none; }
+
+    .task-row:hover { background: #FAFAFA; }
+
+    .task-row.done { opacity: .55; }
+
+    .task-check-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .task-check {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      appearance: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s;
+      position: relative;
+    }
+
+    .task-check:checked {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .task-check:checked::after {
+      content: '';
+      position: absolute;
+      width: 4px; height: 7px;
+      border: 2px solid white;
+      border-top: none; border-left: none;
+      transform: rotate(45deg) translate(-1px,-1px);
+    }
+
+    .task-name-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-name-link:hover { color: var(--blue); }
+
+    .task-row.done .task-name-link {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .task-desc-text {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .link-arrow {
+      font-size: 11px;
+      color: var(--blue);
+      opacity: 0;
+      transition: opacity .15s;
+    }
+
+    .task-row:hover .link-arrow { opacity: 1; }
+
+    /* ── DEADLINE PILL ── */
+    .dl-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .dl-pill.normal   { background: #EBF2FE; color: #1559B5; }
+    .dl-pill.warning  { background: #FFF5CC; color: #8A6200; }
+    .dl-pill.critical { background: #FDECEA; color: var(--red); }
+
+    /* ── PRIORITY ── */
+    .prio {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+
+    .prio.alta   { background: #FDECEA; color: var(--red); }
+    .prio.media  { background: #FFF5CC; color: #8A6200; }
+    .prio.baixa  { background: #E8F8EF; color: #006634; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--navy);
+      background: var(--yellow-soft);
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .task-table-head { display: none; }
+      .task-row { grid-template-columns: 28px 1fr auto; }
+      .task-row .prio, .task-row .dl-pill-wrap { display: none; }
+      .header-inner { flex-direction: column; height: auto; padding: 14px 0; gap: 12px; }
+      .missao-banner { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg width="28" height="20" viewBox="0 0 28 20" fill="none">
+      <rect width="28" height="20" rx="3" fill="#FFE600"/>
+      <text x="14" y="14" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="#1A1A2E">ML</text>
+    </svg>
+    <span class="ml-wordmark">Mercado Livre</span>
+  </div>
+  <div class="topbar-sep"></div>
+  <span class="topbar-section">Technology · Operações</span>
+  <div class="topbar-right">
+    <div class="online-badge">
+      <div class="online-dot"></div>
+      Sistema online
+    </div>
+    <div class="clock-topbar" id="live-clock">00:00:00</div>
+  </div>
+</div>
+
+<!-- HEADER YELLOW -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div>
+        <div class="header-title">Rotina — Time Madrugada</div>
+        <div class="header-date" id="hero-date">Carregando data...</div>
+      </div>
+    </div>
+
+    <!-- MISSÃO DADA -->
+    <div class="missao-banner">
+      <!-- Caveira / BOPE icon SVG limpo -->
+      <svg class="skull-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="17" fill="#FFE600" stroke="#1A1A2E" stroke-width="1.5"/>
+        <ellipse cx="18" cy="16" rx="9" ry="9.5" fill="#1A1A2E"/>
+        <!-- olhos -->
+        <ellipse cx="14.5" cy="13.5" rx="2.5" ry="2.8" fill="#FFE600"/>
+        <ellipse cx="21.5" cy="13.5" rx="2.5" ry="2.8" fill="#FFE600"/>
+        <!-- nariz -->
+        <path d="M17 18.5 L18 20.5 L19 18.5" stroke="#FFE600" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- boca dentes -->
+        <rect x="12" y="22" width="12" height="2" rx="1" fill="#FFE600"/>
+        <line x1="15" y1="22" x2="15" y2="24" stroke="#1A1A2E" stroke-width="1"/>
+        <line x1="18" y1="22" x2="18" y2="24" stroke="#1A1A2E" stroke-width="1"/>
+        <line x1="21" y1="22" x2="21" y2="24" stroke="#1A1A2E" stroke-width="1"/>
+      </svg>
+      <div class="missao-text-block">
+        <div class="missao-label">Tropa de Elite · BOPE-ML</div>
+        <div class="missao-phrase">Missão dada é missão cumprida</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="wrapper">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon yellow">📋</div>
+      <div>
+        <div class="stat-label">Total</div>
+        <div class="stat-value" id="stat-total">0</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div>
+        <div class="stat-label">Concluídas</div>
+        <div class="stat-value" id="stat-done">0</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">🔵</div>
+      <div>
+        <div class="stat-label">Pendentes</div>
+        <div class="stat-value" id="stat-pending">0</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red">🔴</div>
+      <div>
+        <div class="stat-label">Urgentes</div>
+        <div class="stat-value" id="stat-urgent">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-card">
+    <span class="progress-label">Progresso do turno</span>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+    </div>
+    <span class="progress-pct" id="progress-pct">0%</span>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section-header">
+    <span class="section-tag">Início do turno</span>
+    <span class="section-time">22:00 – 23:30</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="task-table">
+    <div class="task-table-head">
+      <div></div>
+      <div class="th">Tarefa</div>
+      <div class="th">Limite</div>
+      <div class="th">Prioridade</div>
+      <div class="th"></div>
+    </div>
+    <div id="list-ativacao"></div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section-header">
+    <span class="section-tag">Monitoramento</span>
+    <span class="section-time">23:30 – 01:00</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="task-table">
+    <div class="task-table-head">
+      <div></div>
+      <div class="th">Tarefa</div>
+      <div class="th">Limite</div>
+      <div class="th">Prioridade</div>
+      <div class="th"></div>
+    </div>
+    <div id="list-monitoramento"></div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section-header">
+    <span class="section-tag">Vigilância</span>
+    <span class="section-time">01:00 – 03:00</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="task-table">
+    <div class="task-table-head">
+      <div></div>
+      <div class="th">Tarefa</div>
+      <div class="th">Limite</div>
+      <div class="th">Prioridade</div>
+      <div class="th"></div>
+    </div>
+    <div id="list-vigilancia"></div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section-header">
+    <span class="section-tag">Fechamento</span>
+    <span class="section-time">03:00 – 05:00</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="task-table">
+    <div class="task-table-head">
+      <div></div>
+      <div class="th">Tarefa</div>
+      <div class="th">Limite</div>
+      <div class="th">Prioridade</div>
+      <div class="th"></div>
+    </div>
+    <div id="list-fechamento"></div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-left">© Mercado Livre · Operações · Time da Madrugada</span>
+    <span class="footer-right">v1.0 · BOPE-ML</span>
+  </div>
+</footer>
+
+<script>
+const TASKS = {
+  "list-ativacao": [
+    { id:"t01", name:"Check-in do time e confirmação de headcount", desc:"Confirmar presença de todos os operadores escalados", deadline:"22:15", priority:"alta", urgent:true, link:"#tutorial-checkin" },
+    { id:"t02", name:"Validar painéis de monitoramento ativos", desc:"Datadog, Kibana, Grafana — verificar alertas do turno anterior", deadline:"22:30", priority:"alta", urgent:true, link:"#tutorial-paineis" },
+    { id:"t03", name:"Handoff com turno anterior", desc:"Receber passagem de plantão e registrar pendências abertas", deadline:"22:45", priority:"media", urgent:false, link:"#tutorial-handoff" },
+  ],
+  "list-monitoramento": [
+    { id:"t04", name:"Revisão de incidentes em aberto", desc:"Verificar fila de P1/P2 e atribuir responsáveis", deadline:"00:00", priority:"alta", urgent:false, link:"#tutorial-incidentes" },
+    { id:"t05", name:"Execução do job de reconciliação financeira", desc:"Script batch — conferir saída e log de erros", deadline:"00:30", priority:"alta", urgent:false, link:"#tutorial-reconciliacao" },
+    { id:"t06", name:"Validar filas de mensageria (SQS/Kafka)", desc:"Confirmar lag aceitável em todos os tópicos críticos", deadline:"01:00", priority:"media", urgent:false, link:"#tutorial-filas" },
+  ],
+  "list-vigilancia": [
+    { id:"t07", name:"Revisão de SLOs — uptime e latência", desc:"Confirmar que todos os serviços críticos estão dentro do SLO", deadline:"02:00", priority:"alta", urgent:false, link:"#tutorial-slos" },
+    { id:"t08", name:"Deploy de hotfix agendado (se aplicável)", desc:"Janela de manutenção — baixo tráfego. Seguir runbook de deploy.", deadline:"02:30", priority:"alta", urgent:false, link:"#tutorial-deploy" },
+    { id:"t09", name:"Atualização de status page externa", desc:"Registrar qualquer degradação detectada no turno", deadline:"03:00", priority:"baixa", urgent:false, link:"#tutorial-statuspage" },
+  ],
+  "list-fechamento": [
+    { id:"t10", name:"Geração do relatório de turno", desc:"Resumo de incidentes, deploys e métricas — enviar ao Slack #ops-report", deadline:"04:30", priority:"alta", urgent:false, link:"#tutorial-relatorio" },
+    { id:"t11", name:"Limpeza de alertas resolvidos", desc:"Fechar tickets e silenciar alarmes que não são mais relevantes", deadline:"04:45", priority:"media", urgent:false, link:"#tutorial-limpeza" },
+    { id:"t12", name:"Preparar passagem para o turno da manhã", desc:"Documentar pendências, destaques e contexto para o próximo time", deadline:"05:00", priority:"alta", urgent:false, link:"#tutorial-passagem" },
+  ]
+};
+
+const TODAY = new Date().toISOString().slice(0,10);
+const KEY = "rotina-madrugada-" + TODAY;
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
+
+function dlSeverity(dl) {
+  const [h,m] = dl.split(':').map(Number);
+  const now = new Date();
+  const diff = (h*60+m) - (now.getHours()*60+now.getMinutes());
+  if (diff < 0) return 'critical';
+  if (diff < 30) return 'warning';
+  return 'normal';
+}
+
+function buildRow(t) {
+  const done = !!state[t.id];
+  const sev = dlSeverity(t.deadline);
+  const row = document.createElement('div');
+  row.className = 'task-row' + (done ? ' done' : '');
+  row.dataset.id = t.id;
+  row.innerHTML = `
+    <div class="task-check-wrap">
+      <input type="checkbox" class="task-check" ${done?'checked':''}>
+    </div>
+    <div>
+      <a class="task-name-link" href="${t.link}">
+        ${t.name}
+        <span class="link-arrow">↗</span>
+      </a>
+      <div class="task-desc-text">${t.desc}</div>
+    </div>
+    <div><span class="dl-pill ${sev}">⏱ ${t.deadline}</span></div>
+    <div><span class="prio ${t.priority}">${t.priority}</span></div>
+    <div></div>
+  `;
+  const cb = row.querySelector('.task-check');
+  cb.addEventListener('change', () => {
+    state[t.id] = cb.checked;
+    save();
+    row.classList.toggle('done', cb.checked);
+    updateStats();
+  });
+  row.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'A' && e.target.tagName !== 'INPUT') {
+      cb.checked = !cb.checked;
+      cb.dispatchEvent(new Event('change'));
+    }
+  });
+  row.querySelector('.task-name-link').addEventListener('click', e => e.stopPropagation());
+  return row;
+}
+
+function renderAll() {
+  for (const [id, tasks] of Object.entries(TASKS)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.innerHTML = '';
+    tasks.forEach(t => el.appendChild(buildRow(t)));
+  }
+  updateStats();
+}
+
+function updateStats() {
+  const all = Object.values(TASKS).flat();
+  const total = all.length;
+  const done = all.filter(t => state[t.id]).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-pending').textContent = total - done;
+  document.getElementById('stat-urgent').textContent = all.filter(t => t.urgent && !state[t.id]).length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+const DAYS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function tick() {
+  const n = new Date();
+  document.getElementById('live-clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' +
+    String(n.getMinutes()).padStart(2,'0') + ':' +
+    String(n.getSeconds()).padStart(2,'0');
+  document.getElementById('hero-date').textContent =
+    DAYS[n.getDay()] + ', ' + n.getDate() + ' de ' + MONTHS[n.getMonth()] + ' de ' + n.getFullYear();
+}
+
+tick();
+setInterval(tick, 1000);
+renderAll();
+</script>
+</body>
+</html>
