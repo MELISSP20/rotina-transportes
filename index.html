@@ -1199,7 +1199,7 @@ function dlSeverity(dl) {
   const [h,m] = dl.split(':').map(Number);
   const now = new Date();
   const diff = (h*60+m) - (now.getHours()*60+now.getMinutes());
-  if (diff < 0) return 'delayed';
+  if (diff < 0) return 'critical';
   if (diff < 30) return 'warning';
   return 'normal';
 }
@@ -1207,30 +1207,19 @@ function dlSeverity(dl) {
 function buildRow(t) {
   const done = !!state[t.id];
   const sev  = dlSeverity(t.deadline);
-  const isDelayed = sev === 'delayed' && !done;
   const row  = document.createElement('div');
-  row.className = 'task-row' + (done ? ' done' : '') + (isDelayed ? ' delayed' : '');
-
-  const pillClass = isDelayed ? 'critical' : sev;
-  const delayBadge = isDelayed
-    ? `<span class="delay-badge">⚠ Atraso</span>`
-    : '';
-
+  row.className = 'task-row' + (done ? ' done' : '');
   row.innerHTML = `
     <div class="task-check-wrap"><input type="checkbox" class="task-check" ${done?'checked':''}></div>
     <div>
       <a class="task-name-link" href="${t.link}">${t.name}<span class="link-arrow">↗</span></a>
       <div class="task-desc-text">${t.desc}</div>
       <div class="task-info-meta">
-        <span class="dl-pill ${pillClass}">⏱ ${t.deadline}</span>
+        <span class="dl-pill ${sev}">⏱ ${t.deadline}</span>
         <span class="prio ${t.priority}">${t.priority}</span>
-        ${delayBadge}
       </div>
     </div>
-    <div>
-      <span class="dl-pill ${pillClass}">⏱ ${t.deadline}</span>
-      ${isDelayed ? `<br/><span class="delay-badge" style="margin-top:4px;display:inline-flex;">⚠ Atraso</span>` : ''}
-    </div>
+    <div><span class="dl-pill ${sev}">⏱ ${t.deadline}</span></div>
     <div><span class="prio ${t.priority}">${t.priority}</span></div>
     <div></div>
   `;
@@ -1239,7 +1228,6 @@ function buildRow(t) {
     state[t.id] = cb.checked;
     save();
     row.classList.toggle('done', cb.checked);
-    if (cb.checked) row.classList.remove('delayed');
     updateStats();
   });
   row.addEventListener('click', (e) => {
@@ -1306,7 +1294,6 @@ btn.addEventListener('click', () => {
 
 tick();
 setInterval(tick, 1000);
-setInterval(renderAll, 60000); // atualiza badges de atraso a cada minuto
 renderAll();
 
 // Feedback modal — EmailJS
