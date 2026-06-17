@@ -1124,10 +1124,9 @@ sendBtn.addEventListener('click', () => {
   sendBtn.disabled = true;
 
   emailjs.send('service_jhx617e', 'template_71opb38', {
-    subject:  '[Obsolescência] ' + task,
-    task:     task,
-    message:  desc,
-    to_email: 'matheus.lcunha@mercadolivre.com'
+    name:    '[Obsolescência] ' + task,
+    message: 'Tarefa: ' + task + '\n\nDescrição:\n' + desc + '\n\n---\nEnviado via Rotina Time Madrugada',
+    email:   'matheus.lcunha@mercadolivre.com'
   })
   .then(() => {
     sendBtn.textContent = '✓ Enviado!';
