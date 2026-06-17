@@ -144,6 +144,7 @@
       flex-direction: column;
       align-items: center;
       gap: 0;
+      width: 100%;
     }
 
     /* HEAD NODE */
@@ -310,18 +311,29 @@
     .expand-hint .chevron { display: inline-block; transition: transform .3s; }
     .expand-hint.open .chevron { transform: rotate(180deg); }
 
-    .subordinates-panel { display: none; flex-direction: column; align-items: center; margin-top: 0; }
+    .subordinates-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 0;
+      width: 100%;
+    }
     .subordinates-panel.open { display: flex; }
 
     .sub-connector-v { width: 2px; height: 28px; background: var(--border); }
 
     .sub-row {
-      display: flex; align-items: flex-start; gap: 20px; position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 24px;
+      position: relative;
+      width: 100%;
     }
     .sub-row::before {
       content: ''; position: absolute; top: 0; left: 50%;
       transform: translateX(-50%); height: 2px;
-      background: var(--border); width: calc(100% - 160px);
+      background: var(--border); width: calc(100% - 200px);
     }
     .sub-branch { display: flex; flex-direction: column; align-items: center; }
     .sub-branch-v { width: 2px; height: 24px; background: var(--border); }
