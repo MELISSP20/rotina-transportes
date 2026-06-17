@@ -159,7 +159,7 @@
       margin: 0 auto;
       display: flex;
       align-items: center;
-      height: 84px;
+      height: 90px;
       gap: 1.5rem;
     }
 
@@ -181,7 +181,7 @@
     [data-theme="dark"] .header-divider { background: #2A2E3F; }
 
     .header-title {
-      font-size: 22px;
+      font-size: 28px;
       font-weight: 700;
       color: #1A1A2E;
       letter-spacing: -.5px;
@@ -581,6 +581,132 @@
       margin-top: 10px;
     }
 
+    /* ── FEEDBACK BUTTON ── */
+    .feedback-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--navy);
+      color: var(--yellow);
+      border: none;
+      border-radius: 50px;
+      padding: 10px 18px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+      z-index: 200;
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    [data-theme="dark"] .feedback-btn { background: var(--yellow); color: #1A1A2E; }
+
+    .feedback-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+
+    /* ── FEEDBACK MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .form-select:focus, .form-textarea:focus { border-color: var(--blue); }
+
+    .form-textarea { resize: vertical; min-height: 90px; }
+
+    .form-send-btn {
+      width: 100%;
+      background: #1A1A2E;
+      color: var(--yellow);
+      border: none;
+      border-radius: var(--radius);
+      padding: 11px;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: opacity .15s;
+    }
+
+    [data-theme="dark"] .form-send-btn { background: var(--yellow); color: #1A1A2E; }
+    .form-send-btn:hover { opacity: .88; }
+
     /* ── FOOTER ── */
     footer {
       background: var(--surface);
@@ -703,7 +829,7 @@
       Sistema online
     </div>
     <a href="index.html" class="topbar-nav-link active">Rotina</a>
-    <a href="madrugadao.html" class="topbar-nav-link">Madrugadão</a>
+    <a href="madrugadao.html" class="topbar-nav-link">Time Madrugadão</a>
     <div class="clock-topbar" id="live-clock">00:00:00</div>
     <button class="theme-btn" id="theme-btn" title="Alternar modo escuro">🌙</button>
   </div>
@@ -712,8 +838,6 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-inner">
-    <img src="ml-logo.png" alt="Mercado Livre" class="header-logo-img"/>
-    <div class="header-divider"></div>
     <div>
       <div class="header-title">Rotina — Time Madrugada</div>
       <div class="header-date" id="hero-date">Carregando data...</div>
@@ -799,6 +923,50 @@
     <span class="footer-right">v1.1</span>
   </div>
 </footer>
+
+<!-- FEEDBACK BUTTON -->
+<button class="feedback-btn" id="feedback-open">
+  ✉ Feedback obsolescência
+</button>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="feedback-modal">
+  <div class="modal">
+    <button class="modal-close" id="feedback-close">✕</button>
+    <div class="modal-title">Feedback de Obsolescência</div>
+    <div class="modal-sub">Notifique sobre uma tarefa ou formulário desatualizado.</div>
+
+    <div class="form-group">
+      <label class="form-label" for="fb-task">Tarefa relacionada</label>
+      <select class="form-select" id="fb-task">
+        <option value="">Selecione a tarefa...</option>
+        <option>Análise crítica dos roteiros — Geral</option>
+        <option>Priorização e ajuste do layout</option>
+        <option>Envio do planification no grupo WhatsApp</option>
+        <option>Envio do horário de início/fim — Sinergia GCHAT</option>
+        <option>Linha Bulky</option>
+        <option>Planilha NEX/DC</option>
+        <option>Distribuição de percursos MLP</option>
+        <option>Ajuste Layout pós distribuição</option>
+        <option>Envio da geral para os MLPs SVC</option>
+        <option>Disponibilizar Link para atribuição de placas</option>
+        <option>Envio da geral para XPT</option>
+        <option>Ajuste de scheduling</option>
+        <option>Imprimir a Geral para operação</option>
+        <option>Realizar input do arquivo de placas</option>
+        <option>Enviar listagem Meli Extra</option>
+        <option>Outro / Geral</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="fb-desc">Descrição</label>
+      <textarea class="form-textarea" id="fb-desc" placeholder="Descreva o que está desatualizado ou precisa ser revisado..."></textarea>
+    </div>
+
+    <button class="form-send-btn" id="feedback-send">Enviar por e-mail ↗</button>
+  </div>
+</div>
 
 <script>
 const TASKS = {
@@ -926,6 +1094,25 @@ btn.addEventListener('click', () => {
 tick();
 setInterval(tick, 1000);
 renderAll();
+
+// Feedback modal
+const overlay  = document.getElementById('feedback-modal');
+const openBtn  = document.getElementById('feedback-open');
+const closeBtn = document.getElementById('feedback-close');
+const sendBtn  = document.getElementById('feedback-send');
+
+openBtn.addEventListener('click', () => overlay.classList.add('open'));
+closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+
+sendBtn.addEventListener('click', () => {
+  const task = document.getElementById('fb-task').value || 'Não especificado';
+  const desc = document.getElementById('fb-desc').value.trim() || 'Sem descrição.';
+  const subject = encodeURIComponent(`[Obsolescência] ${task}`);
+  const body = encodeURIComponent(`Tarefa: ${task}\n\nDescrição:\n${desc}\n\n---\nEnviado via Rotina Time Madrugada`);
+  window.open(`mailto:matheus.lcunha@mercadolivre.com?subject=${subject}&body=${body}`);
+  overlay.classList.remove('open');
+});
 
 // Primordial card
 const primCard = document.getElementById('primordial-card');
