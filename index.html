@@ -1139,7 +1139,9 @@ sendBtn.addEventListener('click', () => {
     }, 1500);
   })
   .catch((err) => {
-    console.error('EmailJS error:', err);
+    console.error('EmailJS error status:', err.status);
+    console.error('EmailJS error text:', err.text);
+    console.error('EmailJS full error:', JSON.stringify(err));
     sendBtn.textContent = 'Erro — tente novamente';
     sendBtn.disabled = false;
   });
