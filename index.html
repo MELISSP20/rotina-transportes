@@ -968,13 +968,7 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div class="topbar-logo">
-    <div style="background:#fff;border-radius:8px;padding:3px 6px;display:flex;align-items:center;">
-      <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
-    </div>
-    <span class="ml-wordmark">Mercado Livre</span>
-  </div>
-  <div class="topbar-sep"></div>
+  <div class="topbar-sep" style="display:none;"></div>
   <span class="topbar-section">Transportes · Operações</span>
   <div class="topbar-right">
     <div class="online-badge">
@@ -991,9 +985,14 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-inner" style="justify-content:space-between;">
-    <div>
-      <div class="header-title">Assignments — Transportes SSP20</div>
-      <div class="header-date" id="hero-date">Carregando data...</div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="background:#fff;border-radius:10px;padding:4px 8px;display:flex;align-items:center;mix-blend-mode:multiply;">
+        <img src="ml-logo.png" alt="Mercado Livre" style="height:52px;width:auto;display:block;"/>
+      </div>
+      <div>
+        <div class="header-title">Assignments — Transportes SSP20</div>
+        <div class="header-date" id="hero-date">Carregando data...</div>
+      </div>
     </div>
     <div class="shift-selector">
       <button class="shift-btn active" data-shift="madrugada">🌙 Madrugada</button>
