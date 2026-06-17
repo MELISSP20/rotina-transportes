@@ -759,6 +759,94 @@
 
     [data-theme="dark"] .delay-badge { background: rgba(227,38,47,.18); }
 
+    /* ── DIÁRIO DE BORDO ── */
+    .diario-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    .diario-input {
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 7px 10px;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .diario-input:focus { border-color: var(--blue); }
+
+    .diario-textarea {
+      width: 100%;
+      min-height: 110px;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      outline: none;
+      resize: vertical;
+      line-height: 1.6;
+      transition: border-color .15s;
+    }
+
+    .diario-textarea:focus { border-color: var(--blue); }
+
+    .diario-save-btn {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--yellow);
+      background: #1A1A2E;
+      border: none;
+      border-radius: var(--radius);
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+
+    [data-theme="dark"] .diario-save-btn { background: var(--yellow); color: #1A1A2E; }
+    .diario-save-btn:hover { opacity: .88; }
+
+    /* ── HISTÓRICO MODAL ── */
+    .hist-entry {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hist-entry:last-child { border-bottom: none; }
+
+    .hist-entry-date {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .hist-entry-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .hist-empty {
+      padding: 2rem;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
     /* ── FEEDBACK BUTTON ── */
     .feedback-btn {
       position: fixed;
@@ -1111,6 +1199,31 @@
     <div id="list-tarefas"></div>
   </div>
 
+  <!-- DIÁRIO DE BORDO -->
+  <div class="section-header" style="margin-top:2rem;">
+    <span class="section-tag">📓 Diário de Bordo</span>
+    <div class="section-line"></div>
+    <button id="historico-btn" style="
+      font-family:var(--font);font-size:11px;font-weight:600;
+      color:var(--blue);background:none;border:1px solid rgba(52,131,250,.25);
+      border-radius:5px;padding:4px 12px;cursor:pointer;white-space:nowrap;
+      transition:background .15s;
+    ">📋 Histórico</button>
+  </div>
+
+  <div class="diario-card">
+    <div class="diario-form">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+        <input type="date" id="diario-date" class="diario-input" style="width:160px;"/>
+        <span style="font-size:12px;color:var(--muted);">Registro do ciclo</span>
+      </div>
+      <textarea id="diario-text" class="diario-textarea" placeholder="Descreva os principais acontecimentos do ciclo: desvios identificados, ocorrências, pontos de atenção e observações relevantes para o próximo turno..."></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+        <button id="diario-save" class="diario-save-btn">💾 Salvar registro</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- WIP: AM -->
@@ -1136,6 +1249,16 @@
     <span class="footer-right">v1.1</span>
   </div>
 </footer>
+
+<!-- HISTÓRICO MODAL -->
+<div class="modal-overlay" id="historico-modal">
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" id="historico-close">✕</button>
+    <div class="modal-title">📓 Histórico — Diário de Bordo</div>
+    <div class="modal-sub">Registros dos ciclos anteriores</div>
+    <div id="historico-list" style="max-height:400px;overflow-y:auto;margin-top:12px;border:1px solid var(--border);border-radius:var(--radius);"></div>
+  </div>
+</div>
 
 <!-- FEEDBACK BUTTON -->
 <button class="feedback-btn" id="feedback-open">
@@ -1309,6 +1432,70 @@ btn.addEventListener('click', () => {
 tick();
 setInterval(tick, 1000);
 renderAll();
+
+// Diário de Bordo
+const DIARIO_KEY = 'diario-bordo';
+
+function loadDiario() {
+  try { return JSON.parse(localStorage.getItem(DIARIO_KEY)) || {}; } catch { return {}; }
+}
+
+function saveDiario(data) {
+  try { localStorage.setItem(DIARIO_KEY, JSON.stringify(data)); } catch {}
+}
+
+// Set today's date as default
+const diarioDateEl = document.getElementById('diario-date');
+diarioDateEl.value = new Date().toISOString().slice(0,10);
+
+// Load any existing entry for today
+const diarioTextEl = document.getElementById('diario-text');
+const existingEntry = loadDiario()[diarioDateEl.value];
+if (existingEntry) diarioTextEl.value = existingEntry;
+
+diarioDateEl.addEventListener('change', () => {
+  const entry = loadDiario()[diarioDateEl.value];
+  diarioTextEl.value = entry || '';
+});
+
+document.getElementById('diario-save').addEventListener('click', () => {
+  const date = diarioDateEl.value;
+  const text = diarioTextEl.value.trim();
+  if (!date || !text) { alert('Preencha a data e o resumo.'); return; }
+  const data = loadDiario();
+  data[date] = text;
+  saveDiario(data);
+  const btn = document.getElementById('diario-save');
+  btn.textContent = '✓ Salvo!';
+  setTimeout(() => { btn.textContent = '💾 Salvar registro'; }, 1800);
+});
+
+// Histórico modal
+const histModal  = document.getElementById('historico-modal');
+const histBtn    = document.getElementById('historico-btn');
+const histClose  = document.getElementById('historico-close');
+const histList   = document.getElementById('historico-list');
+
+histBtn.addEventListener('click', () => {
+  const data    = loadDiario();
+  const entries = Object.entries(data).sort((a,b) => b[0].localeCompare(a[0]));
+  if (entries.length === 0) {
+    histList.innerHTML = '<div class="hist-empty">Nenhum registro encontrado.</div>';
+  } else {
+    histList.innerHTML = entries.map(([date, text]) => {
+      const [y,m,d] = date.split('-');
+      const label   = `${d}/${m}/${y}`;
+      return `<div class="hist-entry">
+        <div class="hist-entry-date">📅 ${label}</div>
+        <div class="hist-entry-text">${text.replace(/</g,'&lt;')}</div>
+      </div>`;
+    }).join('');
+  }
+  histModal.classList.add('open');
+});
+
+histClose.addEventListener('click', () => histModal.classList.remove('open'));
+histModal.addEventListener('click', (e) => { if (e.target === histModal) histModal.classList.remove('open'); });
 
 // Feedback modal — EmailJS
 (function(){
