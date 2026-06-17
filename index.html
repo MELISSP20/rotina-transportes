@@ -656,6 +656,84 @@
       margin-top: 10px;
     }
 
+    /* ── SHIFT SELECTOR ── */
+    .shift-selector {
+      display: flex;
+      gap: 6px;
+      background: rgba(26,26,46,.1);
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    [data-theme="dark"] .shift-selector { background: rgba(0,0,0,.2); }
+
+    .shift-btn {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(26,26,46,.55);
+      background: transparent;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    [data-theme="dark"] .shift-btn { color: rgba(255,255,255,.4); }
+
+    .shift-btn:hover { background: rgba(26,26,46,.08); color: rgba(26,26,46,.8); }
+    [data-theme="dark"] .shift-btn:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.7); }
+
+    .shift-btn.active {
+      background: #1A1A2E;
+      color: var(--yellow);
+    }
+
+    [data-theme="dark"] .shift-btn.active { background: rgba(255,230,0,.15); color: var(--yellow); }
+
+    /* ── WIP OVERLAY ── */
+    .wip-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .wip-overlay.visible { display: flex; }
+
+    .wip-icon { font-size: 48px; }
+
+    .wip-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .wip-sub {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 360px;
+      line-height: 1.6;
+    }
+
+    .wip-badge-big {
+      background: #FFF5CC;
+      color: #8A6200;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      padding: 5px 16px;
+      border-radius: 20px;
+    }
+
+    [data-theme="dark"] .wip-badge-big { background: #2A2500; color: #FFD84D; }
+
     /* ── FEEDBACK BUTTON ── */
     .feedback-btn {
       position: fixed;
@@ -912,10 +990,15 @@
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-inner">
+  <div class="header-inner" style="justify-content:space-between;">
     <div>
-      <div class="header-title">Rotina — Time Madrugada</div>
+      <div class="header-title">Assignments — Transportes SSP20</div>
       <div class="header-date" id="hero-date">Carregando data...</div>
+    </div>
+    <div class="shift-selector">
+      <button class="shift-btn active" data-shift="madrugada">🌙 Madrugada</button>
+      <button class="shift-btn" data-shift="am">☀️ AM</button>
+      <button class="shift-btn" data-shift="sd">🌆 SD</button>
     </div>
   </div>
 </div>
@@ -990,6 +1073,22 @@
     <div id="list-tarefas"></div>
   </div>
 
+</div>
+
+<!-- WIP: AM -->
+<div class="wrapper wip-overlay" id="wip-am">
+  <div class="wip-icon">☀️</div>
+  <div class="wip-title">Turno AM</div>
+  <div class="wip-sub">As rotinas do turno AM estão sendo estruturadas e em breve estarão disponíveis aqui.</div>
+  <span class="wip-badge-big">Em desenvolvimento</span>
+</div>
+
+<!-- WIP: SD -->
+<div class="wrapper wip-overlay" id="wip-sd">
+  <div class="wip-icon">🌆</div>
+  <div class="wip-title">Turno SD</div>
+  <div class="wip-sub">As rotinas do turno SD estão sendo estruturadas e em breve estarão disponíveis aqui.</div>
+  <span class="wip-badge-big">Em desenvolvimento</span>
 </div>
 
 <footer>
@@ -1237,6 +1336,33 @@ primCb.addEventListener('change', () => {
 primCard.addEventListener('click', (e) => {
   if (e.target.tagName !== 'INPUT') { primCb.checked = !primCb.checked; primCb.dispatchEvent(new Event('change')); }
 });
+// Shift selector
+const shiftBtns   = document.querySelectorAll('.shift-btn');
+const mainContent = document.querySelector('.wrapper:not(.wip-overlay)');
+const wipAM       = document.getElementById('wip-am');
+const wipSD       = document.getElementById('wip-sd');
+
+shiftBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    shiftBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const shift = btn.dataset.shift;
+    if (shift === 'madrugada') {
+      mainContent.style.display = '';
+      wipAM.classList.remove('visible');
+      wipSD.classList.remove('visible');
+    } else if (shift === 'am') {
+      mainContent.style.display = 'none';
+      wipAM.classList.add('visible');
+      wipSD.classList.remove('visible');
+    } else {
+      mainContent.style.display = 'none';
+      wipAM.classList.remove('visible');
+      wipSD.classList.add('visible');
+    }
+  });
+});
+
 // Times dropdown
 const timesBtn  = document.getElementById('times-btn');
 const timesMenu = document.getElementById('times-menu');
