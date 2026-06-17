@@ -516,6 +516,8 @@
     [data-theme="dark"] .prio.media   { background: #2A2500; color: #FFD84D; }
     [data-theme="dark"] .prio.baixa   { background: #00200F; color: #4DCC89; }
 
+    .task-info-meta { display: none; }
+
     /* ── FOOTER ── */
     footer {
       background: var(--surface);
@@ -545,11 +547,78 @@
     [data-theme="dark"] .footer-right { color: var(--yellow); }
 
     @media (max-width: 768px) {
-      .stats-row { grid-template-columns: 1fr 1fr; }
+      /* TOPBAR */
+      .topbar { padding: 0 1rem; gap: .6rem; height: 44px; }
+      .ml-logo-img { height: 30px; }
+      .topbar-sep { display: none; }
+      .topbar-section { display: none; }
+      .online-badge { display: none; }
+      .clock-topbar { font-size: 12px; }
+      .topbar-nav-link { font-size: 11px; padding: 3px 9px; }
+
+      /* HEADER */
+      .header { padding: 0 1rem; }
+      .header-inner { height: auto; padding: 12px 0; gap: 1rem; }
+      .header-logo-img { height: 44px; }
+      .header-title { font-size: 16px; }
+      .header-date { font-size: 11px; }
+      .header-divider { height: 28px; }
+
+      /* WRAPPER */
+      .wrapper { padding: 1rem 1rem 3rem; }
+
+      /* DASHBOARD */
+      .dashboard-row { grid-template-columns: 1fr; gap: 10px; }
+
+      .stats-unified { grid-template-columns: repeat(2, 1fr); }
+
+      .stat-item { padding: 12px 14px; }
+      .stat-item .stat-value { font-size: 22px; }
+      .stat-item .stat-sub { display: none; }
+
+      .progress-card { padding: 14px 16px; gap: 10px; flex-direction: row; align-items: center; }
+      .progress-card-top { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .progress-pct { font-size: 22px; }
+      .progress-card-foot { display: none; }
+      .progress-bar-bg { flex: 1; }
+
+      /* SECTION */
+      .section-header { margin-top: 1.2rem; }
+      .section-time { display: none; }
+
+      /* TASK TABLE */
       .task-table-head { display: none; }
-      .task-row { grid-template-columns: 28px 1fr auto; }
-      .task-row > div:nth-child(4), .task-row > div:nth-child(5) { display: none; }
-      .header-inner { height: auto; padding: 14px 0; }
+      .task-row {
+        grid-template-columns: 32px 1fr;
+        grid-template-rows: auto auto;
+        padding: 10px 12px;
+        gap: 6px;
+      }
+      .task-row > div:nth-child(3),
+      .task-row > div:nth-child(4),
+      .task-row > div:nth-child(5) { display: none; }
+
+      /* Show deadline + priority inline below name on mobile */
+      .task-info-meta {
+        display: flex;
+        gap: 6px;
+        margin-top: 4px;
+        flex-wrap: wrap;
+      }
+      .task-name-link { font-size: 13px; }
+      .task-desc-text { font-size: 11px; }
+      .link-arrow { opacity: 1; }
+
+      /* FOOTER */
+      footer { padding: 12px 1rem; }
+      .footer-left { font-size: 11px; }
+      .footer-right { display: none; }
+    }
+
+    @media (max-width: 400px) {
+      .stats-unified { grid-template-columns: repeat(2, 1fr); }
+      .topbar-nav-link { padding: 3px 7px; font-size: 10px; }
+      .header-title { font-size: 14px; }
     }
   </style>
 </head>
@@ -696,6 +765,10 @@ function buildRow(t) {
     <div>
       <a class="task-name-link" href="${t.link}">${t.name}<span class="link-arrow">↗</span></a>
       <div class="task-desc-text">${t.desc}</div>
+      <div class="task-info-meta">
+        <span class="dl-pill ${sev}">⏱ ${t.deadline}</span>
+        <span class="prio ${t.priority}">${t.priority}</span>
+      </div>
     </div>
     <div><span class="dl-pill ${sev}">⏱ ${t.deadline}</span></div>
     <div><span class="prio ${t.priority}">${t.priority}</span></div>
