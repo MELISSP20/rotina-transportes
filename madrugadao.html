@@ -331,15 +331,13 @@
       width: 100%;
       max-width: 700px;
     }
-    .sub-row::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
+
+    .sub-row-connector {
       height: 2px;
       background: var(--border);
-      width: calc(100% - 120px);
+      width: 50%;
+      max-width: 400px;
+      margin: 0 auto;
     }
     .sub-branch { display: flex; flex-direction: column; align-items: center; }
     .sub-branch-v { width: 2px; height: 24px; background: var(--border); }
@@ -535,7 +533,8 @@
 
         <!-- GROUP: MADRUGADA -->
         <div class="shift-group-label">🌙 Madrugada</div>
-        <div class="sub-row">
+        <div class="sub-row-connector" id="conn-madrugada"></div>
+        <div class="sub-row" id="row-madrugada">
           <div class="sub-branch">
             <div class="sub-branch-v"></div>
             <div class="org-card member">
@@ -569,7 +568,8 @@
 
         <!-- GROUP: AM -->
         <div class="shift-group-label">☀️ AM</div>
-        <div class="sub-row">
+        <div class="sub-row-connector" id="conn-am"></div>
+        <div class="sub-row" id="row-am">
           <div class="sub-branch">
             <div class="sub-branch-v"></div>
             <div class="org-card sub">
@@ -653,7 +653,27 @@
     const open = subPanel.classList.toggle('open');
     hint.classList.toggle('open', open);
     hint.querySelector('.chevron').textContent = open ? '▴' : '▾';
+    if (open) requestAnimationFrame(sizeConnectors);
   });
+
+  function sizeConnectors() {
+    ['madrugada', 'am'].forEach(id => {
+      const row  = document.getElementById('row-' + id);
+      const conn = document.getElementById('conn-' + id);
+      if (!row || !conn) return;
+      const branches = row.querySelectorAll('.sub-branch');
+      if (branches.length < 2) return;
+      const first = branches[0].getBoundingClientRect();
+      const last  = branches[branches.length - 1].getBoundingClientRect();
+      const rowRect = row.getBoundingClientRect();
+      const left  = first.left + first.width / 2 - rowRect.left;
+      const right = last.left  + last.width  / 2 - rowRect.left;
+      conn.style.width     = (right - left) + 'px';
+      conn.style.marginLeft = left + 'px';
+      conn.style.marginRight = 'auto';
+      conn.style.marginLeft = 'auto';
+    });
+  }
 
   const timesBtn  = document.getElementById('times-btn');
   const timesMenu = document.getElementById('times-menu');
