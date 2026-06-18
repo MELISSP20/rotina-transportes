@@ -1322,10 +1322,10 @@ const TASKS = {
 const TODAY = new Date().toISOString().slice(0,10);
 const KEY   = `rotina-transportes-${TODAY}`;
 
-// ── FIREBASE REALTIME SYNC (SSE stream) ────────────────────────────────────
+// ── FIREBASE REALTIME SYNC ─────────────────────────────────────────────────
 const FB_URL = 'https://rotina-lastmile-default-rtdb.firebaseio.com';
 let state = {};
-let saving = false;
+let lastSaveTime = 0;
 
 function setSyncStatus(ok) {
   const dot = document.getElementById('sync-dot');
@@ -1334,37 +1334,38 @@ function setSyncStatus(ok) {
   dot.title = ok ? 'Sincronizado' : 'Reconectando...';
 }
 
-// Write to Firebase
 async function save() {
+  lastSaveTime = Date.now();
+  const payload = Object.assign({}, state, { _ts: lastSaveTime });
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-  saving = true;
   try {
     await fetch(`${FB_URL}/turnos/${KEY}.json`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state)
+      body: JSON.stringify(payload)
     });
     setSyncStatus(true);
   } catch { setSyncStatus(false); }
-  saving = false;
 }
 
-// Apply remote state to UI without triggering save loop
 function applyRemoteState(data) {
   if (!data || typeof data !== 'object') return;
-  state = data;
+  // ignore if this is our own write (within 2s)
+  if (data._ts && Math.abs(data._ts - lastSaveTime) < 2000) return;
+  const clean = Object.assign({}, data);
+  delete clean._ts;
+  state = clean;
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
   renderAll();
   refreshPrimordial();
   updateStats();
 }
 
-// Firebase SSE — pushes changes instantly to all connected clients
 function startStream() {
   const es = new EventSource(`${FB_URL}/turnos/${KEY}.json`);
 
   es.addEventListener('put', (e) => {
-    if (saving) return; // ignore echo of our own write
+    console.log('[FB put]', e.data);
     try {
       const payload = JSON.parse(e.data);
       if (payload.data) applyRemoteState(payload.data);
@@ -1373,15 +1374,12 @@ function startStream() {
   });
 
   es.addEventListener('patch', (e) => {
-    if (saving) return;
+    console.log('[FB patch]', e.data);
     try {
       const payload = JSON.parse(e.data);
       if (payload.data) {
-        Object.assign(state, payload.data);
-        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-        renderAll();
-        refreshPrimordial();
-        updateStats();
+        const merged = Object.assign({}, state, payload.data);
+        applyRemoteState(merged);
       }
     } catch {}
     setSyncStatus(true);
@@ -1390,13 +1388,11 @@ function startStream() {
   es.onerror = () => {
     setSyncStatus(false);
     es.close();
-    setTimeout(startStream, 3000); // reconnect
+    setTimeout(startStream, 3000);
   };
 }
 
-// Bootstrap: load from Firebase first, then start stream
 async function initState() {
-  // try localStorage while Firebase loads
   try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { state = {}; }
   renderAll();
   refreshPrimordial();
@@ -1405,7 +1401,12 @@ async function initState() {
     const res  = await fetch(`${FB_URL}/turnos/${KEY}.json`);
     const data = await res.json();
     if (data && typeof data === 'object') {
-      applyRemoteState(data);
+      const clean = Object.assign({}, data);
+      delete clean._ts;
+      state = clean;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+      renderAll();
+      refreshPrimordial();
       setSyncStatus(true);
     }
   } catch { setSyncStatus(false); }
