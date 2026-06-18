@@ -1322,27 +1322,28 @@ const TASKS = {
 const TODAY = new Date().toISOString().slice(0,10);
 const KEY   = `rotina-transportes-${TODAY}`;
 
-// ── FIREBASE REALTIME SYNC ─────────────────────────────────────────────────
-const FB_URL = 'https://rotina-lastmile-default-rtdb.firebaseio.com';
-let state = {};
-let lastSaveTime = 0;
+const FB_URL  = 'https://rotina-lastmile-default-rtdb.firebaseio.com';
+let state     = {};
+let ownWrites = new Set();
 
 function setSyncStatus(ok) {
   const dot = document.getElementById('sync-dot');
   if (!dot) return;
   dot.style.background = ok ? 'var(--green)' : '#FF3D57';
-  dot.title = ok ? 'Sincronizado' : 'Reconectando...';
 }
 
-async function save() {
-  lastSaveTime = Date.now();
-  const payload = Object.assign({}, state, { _ts: lastSaveTime });
+// Save a single changed key via PATCH (not full PUT)
+async function save(changedKey) {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+  ownWrites.add(changedKey);
+  setTimeout(() => ownWrites.delete(changedKey), 6000);
+  const patch = {};
+  patch[changedKey] = state[changedKey] !== undefined ? state[changedKey] : null;
   try {
     await fetch(`${FB_URL}/turnos/${KEY}.json`, {
-      method: 'PUT',
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(patch)
     });
     setSyncStatus(true);
   } catch { setSyncStatus(false); }
@@ -1350,11 +1351,12 @@ async function save() {
 
 function applyRemoteState(data) {
   if (!data || typeof data !== 'object') return;
-  // ignore if this is our own write (within 2s)
-  if (data._ts && Math.abs(data._ts - lastSaveTime) < 2000) return;
-  const clean = Object.assign({}, data);
-  delete clean._ts;
-  state = clean;
+  let changed = false;
+  for (const [k, v] of Object.entries(data)) {
+    if (ownWrites.has(k)) continue;
+    if (state[k] !== v) { state[k] = v; changed = true; }
+  }
+  if (!changed) return;
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
   renderAll();
   refreshPrimordial();
@@ -1363,54 +1365,30 @@ function applyRemoteState(data) {
 
 function startStream() {
   const es = new EventSource(`${FB_URL}/turnos/${KEY}.json`);
-
   es.addEventListener('put', (e) => {
-    console.log('[FB put]', e.data);
-    try {
-      const payload = JSON.parse(e.data);
-      if (payload.data) applyRemoteState(payload.data);
-    } catch {}
+    try { const p = JSON.parse(e.data); if (p.data) applyRemoteState(p.data); } catch {}
     setSyncStatus(true);
   });
-
   es.addEventListener('patch', (e) => {
-    console.log('[FB patch]', e.data);
-    try {
-      const payload = JSON.parse(e.data);
-      if (payload.data) {
-        const merged = Object.assign({}, state, payload.data);
-        applyRemoteState(merged);
-      }
-    } catch {}
+    try { const p = JSON.parse(e.data); if (p.data) applyRemoteState(p.data); } catch {}
     setSyncStatus(true);
   });
-
-  es.onerror = () => {
-    setSyncStatus(false);
-    es.close();
-    setTimeout(startStream, 3000);
-  };
+  es.onerror = () => { setSyncStatus(false); es.close(); setTimeout(startStream, 3000); };
 }
 
 async function initState() {
   try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { state = {}; }
   renderAll();
   refreshPrimordial();
-
   try {
     const res  = await fetch(`${FB_URL}/turnos/${KEY}.json`);
     const data = await res.json();
     if (data && typeof data === 'object') {
-      const clean = Object.assign({}, data);
-      delete clean._ts;
-      state = clean;
+      state = data;
       try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-      renderAll();
-      refreshPrimordial();
-      setSyncStatus(true);
+      renderAll(); refreshPrimordial(); setSyncStatus(true);
     }
   } catch { setSyncStatus(false); }
-
   startStream();
 }
 
@@ -1421,7 +1399,6 @@ function refreshPrimordial() {
   primCb.checked = !!state['primordial'];
   primCard.classList.toggle('done', !!state['primordial']);
 }
-
 function dlSeverity(dl) {
   const [h,m] = dl.split(':').map(Number);
   const now = new Date();
@@ -1453,7 +1430,7 @@ function buildRow(t) {
   const cb = row.querySelector('.task-check');
   cb.addEventListener('change', () => {
     state[t.id] = cb.checked;
-    save();
+    save(t.id);
     row.classList.toggle('done', cb.checked);
     updateStats();
   });
@@ -1642,7 +1619,9 @@ sendBtn.addEventListener('click', () => {
 document.getElementById('uncheck-all-btn').addEventListener('click', () => {
   if (!confirm('Desmarcar todas as tarefas do turno?')) return;
   state = {};
-  save();
+  // full clear: PATCH all keys to null then PUT empty
+  fetch(`${FB_URL}/turnos/${KEY}.json`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: '{}' }).catch(()=>{});
+  try { localStorage.setItem(KEY, '{}'); } catch {}
   renderAll();
   refreshPrimordial();
   updateStats();
@@ -1653,7 +1632,7 @@ const primCard = document.getElementById('primordial-card');
 const primCb   = document.getElementById('primordial-check');
 primCb.addEventListener('change', () => {
   state['primordial'] = primCb.checked;
-  save();
+  save('primordial');
   primCard.classList.toggle('done', primCb.checked);
   updateStats();
 });
