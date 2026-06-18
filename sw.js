@@ -1,4 +1,4 @@
-const CACHE = 'rotina-transportes-v1';
+const CACHE = 'rotina-transportes-v2';
 const ASSETS = [
   '/rotina-transportes/',
   '/rotina-transportes/index.html',
@@ -26,6 +26,11 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Never cache Firebase requests — let them go to network
+  if (e.request.url.includes('firebaseio.com') || e.request.url.includes('firebase')) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('/rotina-transportes/')))
   );
