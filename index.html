@@ -1373,20 +1373,27 @@ function applyRemoteState(data) {
 
 function initFirebase() {
   try {
+    console.log('[FB] Iniciando Firebase...');
     if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
     db    = firebase.database();
     dbRef = db.ref(`turnos/${KEY}`);
+    console.log('[FB] dbRef criado:', `turnos/${KEY}`);
 
     dbRef.on('value', (snap) => {
+      console.log('[FB] snapshot recebido, ignoreNext=', ignoreNext, 'data=', snap.val());
       if (ignoreNext) return;
       const data = snap.val();
       if (data && typeof data === 'object') applyRemoteState(data);
       setSyncStatus(true);
-    }, () => setSyncStatus(false));
+    }, (err) => {
+      console.error('[FB] erro no listener:', err);
+      setSyncStatus(false);
+    });
 
     setSyncStatus(true);
+    console.log('[FB] Firebase OK, listener ativo');
   } catch(e) {
-    console.error('Firebase init error:', e);
+    console.error('[FB] Firebase init error:', e);
     setSyncStatus(false);
   }
 }
