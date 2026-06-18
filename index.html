@@ -11,9 +11,6 @@
   <meta name="apple-mobile-web-app-title" content="Rotina"/>
   <link rel="apple-touch-icon" href="icon-192.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1325,84 +1322,91 @@ const TASKS = {
 const TODAY = new Date().toISOString().slice(0,10);
 const KEY   = `rotina-transportes-${TODAY}`;
 
-// ── FIREBASE SDK ──────────────────────────────────────────────────────────
-const FB_CONFIG = {
-  apiKey: "AIzaSyDtBT_hB4TLWwbjGEFS6OXr4pObmE29ZZE",
-  databaseURL: "https://rotina-lastmile-default-rtdb.firebaseio.com"
-};
-
-let state    = {};
-let db       = null;
-let dbRef    = null;
-let ignoreNext = false;
+// ── SYNC via Firebase REST + polling ──────────────────────────────────────
+const FB = 'https://rotina-lastmile-default-rtdb.firebaseio.com/turnos';
+let state       = {};
+let lastHash    = '';
+let ownWriteTs  = 0;
 
 function setSyncStatus(ok) {
   const dot = document.getElementById('sync-dot');
-  if (!dot) return;
-  dot.style.background = ok ? '#00A650' : '#FF3D57';
+  if (dot) dot.style.background = ok ? '#00A650' : '#FF3D57';
 }
 
-function save(changedKey) {
+function stateHash(s) {
+  return JSON.stringify(s);
+}
+
+async function save(changedKey) {
+  ownWriteTs = Date.now();
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-  if (!db) return;
-  ignoreNext = true;
   const patch = {};
   patch[changedKey] = state[changedKey] !== undefined ? state[changedKey] : null;
-  db.ref(`turnos/${KEY}`).update(patch)
-    .then(() => { setSyncStatus(true); setTimeout(() => { ignoreNext = false; }, 500); })
-    .catch(() => { setSyncStatus(false); ignoreNext = false; });
-}
-
-function saveAll() {
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-  if (!db) return;
-  ignoreNext = true;
-  db.ref(`turnos/${KEY}`).set(state)
-    .then(() => { setSyncStatus(true); setTimeout(() => { ignoreNext = false; }, 500); })
-    .catch(() => { setSyncStatus(false); ignoreNext = false; });
-}
-
-function applyRemoteState(data) {
-  if (!data || typeof data !== 'object') return;
-  state = data;
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-  renderAll();
-  refreshPrimordial();
-  updateStats();
-}
-
-function initFirebase() {
   try {
-    console.log('[FB] Iniciando Firebase...');
-    if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
-    db    = firebase.database();
-    dbRef = db.ref(`turnos/${KEY}`);
-    console.log('[FB] dbRef criado:', `turnos/${KEY}`);
-
-    dbRef.on('value', (snap) => {
-      console.log('[FB] snapshot recebido, ignoreNext=', ignoreNext, 'data=', snap.val());
-      if (ignoreNext) return;
-      const data = snap.val();
-      if (data && typeof data === 'object') applyRemoteState(data);
-      setSyncStatus(true);
-    }, (err) => {
-      console.error('[FB] erro no listener:', err);
-      setSyncStatus(false);
+    const res = await fetch(`${FB}/${KEY}.json`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch)
     });
+    if (res.ok) {
+      setSyncStatus(true);
+      lastHash = stateHash(state);
+    } else setSyncStatus(false);
+  } catch { setSyncStatus(false); }
+}
 
+async function saveAll() {
+  ownWriteTs = Date.now();
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+  try {
+    await fetch(`${FB}/${KEY}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state)
+    });
     setSyncStatus(true);
-    console.log('[FB] Firebase OK, listener ativo');
-  } catch(e) {
-    console.error('[FB] Firebase init error:', e);
-    setSyncStatus(false);
-  }
+    lastHash = stateHash(state);
+  } catch { setSyncStatus(false); }
+}
+
+async function poll() {
+  // skip poll if we just wrote (within 4s)
+  if (Date.now() - ownWriteTs < 4000) return;
+  try {
+    const res  = await fetch(`${FB}/${KEY}.json`);
+    const data = await res.json();
+    if (data && typeof data === 'object') {
+      const h = stateHash(data);
+      if (h !== lastHash) {
+        lastHash = h;
+        state = data;
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+        renderAll();
+        refreshPrimordial();
+        updateStats();
+      }
+      setSyncStatus(true);
+    }
+  } catch { setSyncStatus(false); }
 }
 
 async function initState() {
   try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { state = {}; }
   renderAll();
   refreshPrimordial();
-  initFirebase();
+  try {
+    const res  = await fetch(`${FB}/${KEY}.json`);
+    const data = await res.json();
+    if (data && typeof data === 'object') {
+      state = data;
+      lastHash = stateHash(state);
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+      renderAll();
+      refreshPrimordial();
+      setSyncStatus(true);
+    }
+  } catch { setSyncStatus(false); }
+  setInterval(poll, 2000); // poll every 2 seconds
 }
 
 function refreshPrimordial() {
