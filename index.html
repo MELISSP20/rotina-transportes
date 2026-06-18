@@ -1370,14 +1370,15 @@ async function saveAll() {
 }
 
 async function poll() {
-  // skip poll if we just wrote (within 4s)
-  if (Date.now() - ownWriteTs < 4000) return;
+  // skip poll if we just wrote (within 2s)
+  if (Date.now() - ownWriteTs < 2000) return;
   try {
     const res  = await fetch(`${FB}/${KEY}.json`);
     const data = await res.json();
     if (data && typeof data === 'object') {
       const h = stateHash(data);
       if (h !== lastHash) {
+        console.log('[SYNC] estado mudou, atualizando...');
         lastHash = h;
         state = data;
         try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
@@ -1387,7 +1388,7 @@ async function poll() {
       }
       setSyncStatus(true);
     }
-  } catch { setSyncStatus(false); }
+  } catch(e) { console.error('[SYNC] erro poll:', e); setSyncStatus(false); }
 }
 
 async function initState() {
