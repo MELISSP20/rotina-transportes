@@ -1519,39 +1519,59 @@ setInterval(tick, 1000);
 initState(); // loads from Firebase, then starts polling
 
 // Diário de Bordo
-const DIARIO_KEY = 'diario-bordo';
+// ── DIÁRIO DE BORDO (Firebase) ─────────────────────────────────────────────
+const FB_DIARIO = 'https://rotina-lastmile-default-rtdb.firebaseio.com/diario';
 
-function loadDiario() {
-  try { return JSON.parse(localStorage.getItem(DIARIO_KEY)) || {}; } catch { return {}; }
+async function loadDiario() {
+  try {
+    const res  = await fetch(`${FB_DIARIO}.json`);
+    const data = await res.json();
+    return (data && typeof data === 'object') ? data : {};
+  } catch {
+    try { return JSON.parse(localStorage.getItem('diario-bordo')) || {}; } catch { return {}; }
+  }
 }
 
-function saveDiario(data) {
-  try { localStorage.setItem(DIARIO_KEY, JSON.stringify(data)); } catch {}
+async function saveDiario(data) {
+  try { localStorage.setItem('diario-bordo', JSON.stringify(data)); } catch {}
+  try {
+    await fetch(`${FB_DIARIO}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  } catch {}
 }
 
 // Set today's date as default
 const diarioDateEl = document.getElementById('diario-date');
 diarioDateEl.value = new Date().toISOString().slice(0,10);
 
-// Load any existing entry for today
 const diarioTextEl = document.getElementById('diario-text');
-const existingEntry = loadDiario()[diarioDateEl.value];
-if (existingEntry) diarioTextEl.value = existingEntry;
 
-diarioDateEl.addEventListener('change', () => {
-  const entry = loadDiario()[diarioDateEl.value];
-  diarioTextEl.value = entry || '';
+// Load today's entry on init
+loadDiario().then(data => {
+  const entry = data[diarioDateEl.value];
+  if (entry) diarioTextEl.value = entry;
 });
 
-document.getElementById('diario-save').addEventListener('click', () => {
+diarioDateEl.addEventListener('change', async () => {
+  const data  = await loadDiario();
+  diarioTextEl.value = data[diarioDateEl.value] || '';
+});
+
+document.getElementById('diario-save').addEventListener('click', async () => {
   const date = diarioDateEl.value;
   const text = diarioTextEl.value.trim();
   if (!date || !text) { alert('Preencha a data e o resumo.'); return; }
-  const data = loadDiario();
+  const btn  = document.getElementById('diario-save');
+  btn.textContent = 'Salvando...';
+  btn.disabled = true;
+  const data = await loadDiario();
   data[date] = text;
-  saveDiario(data);
-  const btn = document.getElementById('diario-save');
+  await saveDiario(data);
   btn.textContent = '✓ Salvo!';
+  btn.disabled = false;
   setTimeout(() => { btn.textContent = '💾 Salvar registro'; }, 1800);
 });
 
@@ -1561,22 +1581,22 @@ const histBtn    = document.getElementById('historico-btn');
 const histClose  = document.getElementById('historico-close');
 const histList   = document.getElementById('historico-list');
 
-histBtn.addEventListener('click', () => {
-  const data    = loadDiario();
+histBtn.addEventListener('click', async () => {
+  histList.innerHTML = '<div class="hist-empty">Carregando...</div>';
+  histModal.classList.add('open');
+  const data    = await loadDiario();
   const entries = Object.entries(data).sort((a,b) => b[0].localeCompare(a[0]));
   if (entries.length === 0) {
     histList.innerHTML = '<div class="hist-empty">Nenhum registro encontrado.</div>';
   } else {
     histList.innerHTML = entries.map(([date, text]) => {
       const [y,m,d] = date.split('-');
-      const label   = `${d}/${m}/${y}`;
       return `<div class="hist-entry">
-        <div class="hist-entry-date">📅 ${label}</div>
+        <div class="hist-entry-date">📅 ${d}/${m}/${y}</div>
         <div class="hist-entry-text">${text.replace(/</g,'&lt;')}</div>
       </div>`;
     }).join('');
   }
-  histModal.classList.add('open');
 });
 
 histClose.addEventListener('click', () => histModal.classList.remove('open'));
