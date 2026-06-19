@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diário de Bordo — Transportes SSP20</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --yellow: #FFE600; --navy: #1A1A2E; --font: 'Inter', sans-serif;
+      --bg: #F5F5F5; --surface: #FFFFFF; --text: #333333;
+      --muted: #666666; --border: #E0E0E0;
+      --green: #00A650; --blue: #3483FA;
+      --radius: 8px; --radius-lg: 12px;
+    }
+    [data-theme="dark"] {
+      --bg: #0F1117; --surface: #1A1D27; --text: #E8EAF2;
+      --muted: #8B90A7; --border: #2A2E3F;
+    }
+
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; transition: background .2s; }
+
+    /* TOPBAR */
+    .topbar { background: var(--navy); height: 48px; display: flex; align-items: center; padding: 0 2rem; gap: 1rem; position: sticky; top: 0; z-index: 100; }
+    [data-theme="dark"] .topbar { background: #0A0C14; }
+    .topbar-logo { display: flex; align-items: center; gap: 10px; }
+    .ml-logo-img { height: 36px; width: auto; display: block; }
+    .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,.15); }
+    .topbar-section { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.6); }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .topbar-nav-link { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.75); text-decoration: none; padding: 4px 12px; border-radius: 5px; border: 1px solid rgba(255,255,255,.12); transition: background .15s, color .15s; }
+    .topbar-nav-link:hover { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
+    .theme-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 6px; color: rgba(255,255,255,.6); font-size: 14px; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* HEADER */
+    .header { background: var(--yellow); padding: 0 2rem; }
+    [data-theme="dark"] .header { background: #1A1D27; border-bottom: 1px solid var(--border); }
+    .header-inner { max-width: 800px; margin: 0 auto; height: 80px; display: flex; align-items: center; justify-content: space-between; }
+    .header-title { font-size: 24px; font-weight: 700; color: var(--navy); letter-spacing: -.4px; }
+    [data-theme="dark"] .header-title { color: var(--text); }
+    .header-sub { font-size: 12px; color: rgba(26,26,46,.6); margin-top: 3px; }
+    [data-theme="dark"] .header-sub { color: var(--muted); }
+
+    /* WRAPPER */
+    .wrapper { max-width: 800px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+    /* LOADING */
+    .loading { text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
+    .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; margin-bottom: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* EMPTY */
+    .empty { text-align: center; padding: 4rem 2rem; }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .empty-sub { font-size: 13px; color: var(--muted); }
+
+    /* TIMELINE */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--yellow), var(--border));
+      border-radius: 2px;
+    }
+
+    .timeline-entry {
+      position: relative;
+      margin-bottom: 2rem;
+      animation: fadeIn .4s ease both;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    .timeline-entry:nth-child(1) { animation-delay: .05s; }
+    .timeline-entry:nth-child(2) { animation-delay: .1s; }
+    .timeline-entry:nth-child(3) { animation-delay: .15s; }
+    .timeline-entry:nth-child(4) { animation-delay: .2s; }
+    .timeline-entry:nth-child(5) { animation-delay: .25s; }
+
+    /* Dot on timeline */
+    .timeline-dot {
+      position: absolute;
+      left: -27px;
+      top: 14px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--yellow);
+      border: 2px solid var(--navy);
+      z-index: 1;
+    }
+
+    [data-theme="dark"] .timeline-dot { border-color: #0F1117; }
+
+    .timeline-entry:first-child .timeline-dot {
+      background: var(--navy);
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 4px rgba(255,230,0,.15);
+    }
+
+    [data-theme="dark"] .timeline-entry:first-child .timeline-dot {
+      background: var(--yellow);
+      border-color: #0F1117;
+    }
+
+    /* Card */
+    .timeline-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: box-shadow .2s;
+    }
+
+    .timeline-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+
+    .timeline-entry:first-child .timeline-card {
+      border-color: rgba(255,230,0,.4);
+      border-left: 3px solid var(--yellow);
+    }
+
+    .card-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .card-date {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .today-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      background: var(--yellow);
+      color: var(--navy);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .card-actions { display: flex; gap: 8px; }
+
+    .btn-edit {
+      font-size: 11px; font-weight: 600;
+      color: var(--blue); background: none;
+      border: 1px solid rgba(52,131,250,.2);
+      border-radius: 5px; padding: 3px 10px;
+      cursor: pointer; font-family: var(--font);
+      transition: background .15s;
+    }
+    .btn-edit:hover { background: rgba(52,131,250,.08); }
+
+    .btn-delete {
+      font-size: 11px; font-weight: 600;
+      color: #E3262F; background: none;
+      border: 1px solid rgba(227,38,47,.2);
+      border-radius: 5px; padding: 3px 10px;
+      cursor: pointer; font-family: var(--font);
+      transition: background .15s;
+    }
+    .btn-delete:hover { background: rgba(227,38,47,.08); }
+
+    .card-body { padding: 16px 18px; }
+
+    .card-text {
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    /* Edit mode */
+    .card-edit-area {
+      display: none;
+      padding: 16px 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .edit-textarea {
+      width: 100%;
+      min-height: 100px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    .edit-textarea:focus { border-color: var(--blue); }
+
+    .edit-actions { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+
+    .btn-save { font-size: 12px; font-weight: 600; background: var(--navy); color: var(--yellow); border: none; border-radius: var(--radius); padding: 7px 16px; cursor: pointer; font-family: var(--font); }
+    [data-theme="dark"] .btn-save { background: var(--yellow); color: var(--navy); }
+    .btn-cancel { font-size: 12px; font-weight: 600; background: none; color: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 14px; cursor: pointer; font-family: var(--font); }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      margin-bottom: 2rem;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .stats-bar strong { color: var(--text); font-size: 18px; font-weight: 700; display: block; }
+
+    @media (max-width: 600px) {
+      .topbar { padding: 0 1rem; }
+      .topbar-sep, .topbar-section { display: none; }
+      .wrapper { padding: 1rem 1rem 4rem; }
+      .timeline { padding-left: 24px; }
+      .timeline-dot { left: -20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div style="background:#fff;border-radius:8px;padding:3px 6px;display:flex;align-items:center;">
+      <img src="ml-logo.png" alt="ML" class="ml-logo-img"/>
+    </div>
+  </div>
+  <div class="topbar-sep"></div>
+  <span class="topbar-section">Transportes · Operações</span>
+  <div class="topbar-right">
+    <a href="index.html" class="topbar-nav-link">Rotina</a>
+    <a href="madrugadao.html" class="topbar-nav-link">Organograma Transportes</a>
+    <a href="dit-report.html" class="topbar-nav-link">DIT Report</a>
+    <button class="theme-btn" id="theme-btn">🌙</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">📓 Diário de Bordo</div>
+      <div class="header-sub">Histórico de registros dos ciclos</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+  <div id="stats-bar" class="stats-bar" style="display:none">
+    <div><strong id="total-registros">0</strong>Registros</div>
+    <div><strong id="primeiro-registro">—</strong>Primeiro ciclo</div>
+    <div><strong id="ultimo-registro">—</strong>Último ciclo</div>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div><br/>Carregando registros...
+  </div>
+
+  <div id="empty" class="empty" style="display:none">
+    <div class="empty-icon">📭</div>
+    <div class="empty-title">Nenhum registro ainda</div>
+    <div class="empty-sub">Os registros do Diário de Bordo aparecerão aqui.</div>
+  </div>
+
+  <div class="timeline" id="timeline" style="display:none"></div>
+</div>
+
+<script>
+// Theme
+const html = document.documentElement;
+const tbtn = document.getElementById('theme-btn');
+const saved = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', saved);
+tbtn.textContent = saved === 'dark' ? '☀️' : '🌙';
+tbtn.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  tbtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', next);
+});
+
+const FB_DIARIO = 'https://rotina-lastmile-default-rtdb.firebaseio.com/diario';
+const TODAY = new Date().toISOString().slice(0,10);
+const DAYS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function formatDate(dateStr) {
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  return `${DAYS[dt.getDay()]}, ${d} de ${MONTHS[m-1]} de ${y}`;
+}
+
+async function loadDiario() {
+  try {
+    const res  = await fetch(`${FB_DIARIO}.json`);
+    const data = await res.json();
+    return (data && typeof data === 'object') ? data : {};
+  } catch {
+    // fallback localStorage
+    try { return JSON.parse(localStorage.getItem('diario-bordo')) || {}; } catch { return {}; }
+  }
+}
+
+async function saveDiario(data) {
+  try { localStorage.setItem('diario-bordo', JSON.stringify(data)); } catch {}
+  await fetch(`${FB_DIARIO}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+}
+
+function renderTimeline(data) {
+  const entries = Object.entries(data).sort((a,b) => b[0].localeCompare(a[0]));
+
+  document.getElementById('loading').style.display = 'none';
+
+  if (entries.length === 0) {
+    document.getElementById('empty').style.display = 'block';
+    return;
+  }
+
+  // Stats
+  const statsBar = document.getElementById('stats-bar');
+  statsBar.style.display = 'flex';
+  document.getElementById('total-registros').textContent = entries.length;
+  const oldest = entries[entries.length-1][0].split('-').reverse().join('/');
+  const newest = entries[0][0].split('-').reverse().join('/');
+  document.getElementById('primeiro-registro').textContent = oldest;
+  document.getElementById('ultimo-registro').textContent = newest;
+
+  const tl = document.getElementById('timeline');
+  tl.style.display = 'block';
+  tl.innerHTML = '';
+
+  entries.forEach(([date, text], i) => {
+    const isToday = date === TODAY;
+    const dateLabel = formatDate(date);
+    const shortDate = date.split('-').slice(1).reverse().join('/') + '/' + date.slice(0,4);
+
+    const entry = document.createElement('div');
+    entry.className = 'timeline-entry';
+    entry.dataset.date = date;
+    entry.style.animationDelay = `${i * 0.05}s`;
+
+    entry.innerHTML = `
+      <div class="timeline-dot"></div>
+      <div class="timeline-card">
+        <div class="card-header">
+          <div class="card-date">
+            📅 ${dateLabel}
+            ${isToday ? '<span class="today-badge">Hoje</span>' : ''}
+          </div>
+          <div class="card-actions">
+            <button class="btn-edit" onclick="toggleEdit('${date}')">✏️ Editar</button>
+            <button class="btn-delete" onclick="deleteEntry('${date}')">🗑</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-text" id="text-${date}">${text.replace(/</g,'&lt;')}</div>
+        </div>
+        <div class="card-edit-area" id="edit-${date}">
+          <textarea class="edit-textarea" id="ta-${date}">${text}</textarea>
+          <div class="edit-actions">
+            <button class="btn-cancel" onclick="cancelEdit('${date}')">Cancelar</button>
+            <button class="btn-save" onclick="saveEdit('${date}')">💾 Salvar</button>
+          </div>
+        </div>
+      </div>`;
+
+    tl.appendChild(entry);
+  });
+}
+
+function toggleEdit(date) {
+  const editArea = document.getElementById('edit-'+date);
+  const isOpen = editArea.style.display === 'block';
+  editArea.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) document.getElementById('ta-'+date).focus();
+}
+
+function cancelEdit(date) {
+  document.getElementById('edit-'+date).style.display = 'none';
+}
+
+async function saveEdit(date) {
+  const newText = document.getElementById('ta-'+date).value.trim();
+  if (!newText) return;
+  const data = await loadDiario();
+  data[date] = newText;
+  await saveDiario(data);
+  document.getElementById('text-'+date).textContent = newText;
+  document.getElementById('edit-'+date).style.display = 'none';
+}
+
+async function deleteEntry(date) {
+  if (!confirm(`Excluir o registro de ${date.split('-').reverse().join('/')}?`)) return;
+  const data = await loadDiario();
+  delete data[date];
+  await saveDiario(data);
+  const entry = document.querySelector(`[data-date="${date}"]`);
+  if (entry) {
+    entry.style.opacity = '0';
+    entry.style.transform = 'translateX(-20px)';
+    entry.style.transition = 'all .3s';
+    setTimeout(() => { renderTimeline(data); }, 300);
+  }
+}
+
+// Init
+loadDiario().then(renderTimeline);
+</script>
+</body>
+</html>

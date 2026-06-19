@@ -1197,12 +1197,12 @@
   <div class="section-header" style="margin-top:2rem;">
     <span class="section-tag">📓 Diário de Bordo</span>
     <div class="section-line"></div>
-    <button id="historico-btn" style="
-      font-family:var(--font);font-size:11px;font-weight:600;
-      color:var(--blue);background:none;border:1px solid rgba(52,131,250,.25);
-      border-radius:5px;padding:4px 12px;cursor:pointer;white-space:nowrap;
+    <a href="diario.html" target="_blank" style="
+      font-size:11px;font-weight:600;color:var(--blue);
+      text-decoration:none;border:1px solid rgba(52,131,250,.25);
+      border-radius:5px;padding:4px 12px;white-space:nowrap;
       transition:background .15s;
-    ">📋 Histórico</button>
+    ">📋 Ver histórico ↗</a>
   </div>
 
   <div class="diario-card">
@@ -1244,15 +1244,7 @@
   </div>
 </footer>
 
-<!-- HISTÓRICO MODAL -->
-<div class="modal-overlay" id="historico-modal">
-  <div class="modal" style="max-width:560px;">
-    <button class="modal-close" id="historico-close">✕</button>
-    <div class="modal-title">📓 Histórico — Diário de Bordo</div>
-    <div class="modal-sub">Registros dos ciclos anteriores</div>
-    <div id="historico-list" style="max-height:400px;overflow-y:auto;margin-top:12px;border:1px solid var(--border);border-radius:var(--radius);"></div>
-  </div>
-</div>
+
 
 <!-- FEEDBACK BUTTON -->
 <button class="feedback-btn" id="feedback-open">
@@ -1576,32 +1568,7 @@ document.getElementById('diario-save').addEventListener('click', async () => {
   setTimeout(() => { btn.textContent = '💾 Salvar registro'; }, 1800);
 });
 
-// Histórico modal
-const histModal  = document.getElementById('historico-modal');
-const histBtn    = document.getElementById('historico-btn');
-const histClose  = document.getElementById('historico-close');
-const histList   = document.getElementById('historico-list');
-
-histBtn.addEventListener('click', async () => {
-  histList.innerHTML = '<div class="hist-empty">Carregando...</div>';
-  histModal.classList.add('open');
-  const data    = await loadDiario();
-  const entries = Object.entries(data).sort((a,b) => b[0].localeCompare(a[0]));
-  if (entries.length === 0) {
-    histList.innerHTML = '<div class="hist-empty">Nenhum registro encontrado.</div>';
-  } else {
-    histList.innerHTML = entries.map(([date, text]) => {
-      const [y,m,d] = date.split('-');
-      return `<div class="hist-entry">
-        <div class="hist-entry-date">📅 ${d}/${m}/${y}</div>
-        <div class="hist-entry-text">${text.replace(/</g,'&lt;')}</div>
-      </div>`;
-    }).join('');
-  }
 });
-
-histClose.addEventListener('click', () => histModal.classList.remove('open'));
-histModal.addEventListener('click', (e) => { if (e.target === histModal) histModal.classList.remove('open'); });
 
 // Feedback modal — EmailJS
 (function(){
