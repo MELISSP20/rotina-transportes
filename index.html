@@ -1710,15 +1710,17 @@ shiftBtns.forEach(btn => {
 // Times dropdown
 const timesBtn  = document.getElementById('times-btn');
 const timesMenu = document.getElementById('times-menu');
-timesBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  timesBtn.classList.toggle('open');
-  timesMenu.classList.toggle('open');
-});
-document.addEventListener('click', () => {
-  timesBtn.classList.remove('open');
-  timesMenu.classList.remove('open');
-});
+if (timesBtn && timesMenu) {
+  timesBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    timesBtn.classList.toggle('open');
+    timesMenu.classList.toggle('open');
+  });
+  document.addEventListener('click', () => {
+    timesBtn.classList.remove('open');
+    timesMenu.classList.remove('open');
+  });
+}
 </script>
 </body>
 </html>
