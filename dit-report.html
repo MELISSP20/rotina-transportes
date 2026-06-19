@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIT Report – SSP20</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root { --yellow: #FFE600; --navy: #1A1A2E; --font: 'Inter', sans-serif; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .topbar-logo { display: flex; align-items: center; gap: 10px; }
+  .ml-logo-img { height: 36px; width: auto; display: block; }
+  .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,.15); }
+  .topbar-section { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.6); font-family: var(--font); }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .topbar-nav-link {
+    font-size: 13px; font-weight: 600; color: rgba(255,255,255,.75);
+    text-decoration: none; padding: 4px 12px; border-radius: 5px;
+    border: 1px solid rgba(255,255,255,.12); font-family: var(--font);
+    transition: background .15s, color .15s;
+  }
+  .topbar-nav-link:hover { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+  .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
+
+  /* ── HEADER ── */
+  .header { background: var(--yellow); padding: 0 2rem; }
+  .header-inner { max-width: 900px; margin: 0 auto; height: 72px; display: flex; align-items: center; gap: 12px; }
+  .header-title { font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: -.4px; font-family: var(--font); }
+  .header-sub { font-size: 12px; font-weight: 500; color: rgba(26,26,46,.6); font-family: var(--font); margin-top: 2px; }
+
+  /* ── BODY ── */
+  body { font-family: var(--font); background: #0f0f10; color: #e8e6df; min-height: 100vh; }
+
+  .wrapper { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  h1 { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #666; margin-bottom: 4px; }
+  .logo { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 32px; }
+  .logo span { color: #f0b429; }
+
+  .upload-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 32px; }
+  .upload-zone { border: 1.5px dashed #333; border-radius: 12px; padding: 28px 20px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; background: #161618; position: relative; }
+  .upload-zone:hover, .upload-zone.drag { border-color: #f0b429; background: #1c1a14; }
+  .upload-zone.loaded-csv { border-color: #2ecc71; border-style: solid; }
+  .upload-zone.loaded-img { border-color: #3b82f6; border-style: solid; }
+  .upload-icon { font-size: 28px; margin-bottom: 10px; }
+  .upload-type { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .upload-type.csv-type { color: #2ecc71; }
+  .upload-type.img-type { color: #3b82f6; }
+  .upload-label { font-size: 13px; color: #888; line-height: 1.4; }
+  .upload-label strong { color: #e8e6df; }
+  .file-input { display: none; }
+  .ocr-status { font-size: 11px; color: #3b82f6; margin-top: 8px; min-height: 14px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  .kpi { background: #161618; border: 0.5px solid #222; border-radius: 10px; padding: 16px 18px; }
+  .kpi label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #555; display: block; margin-bottom: 6px; }
+  .kpi input { background: transparent; border: none; outline: none; font-size: 26px; font-weight: 700; color: #fff; width: 100%; font-family: inherit; }
+  .kpi input::placeholder { color: #333; }
+
+  .sections { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+  .card { background: #161618; border: 0.5px solid #222; border-radius: 10px; overflow: hidden; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 0.5px solid #1e1e20; }
+  .card-title { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .card-stats { font-size: 12px; color: #666; display: flex; gap: 12px; align-items: center; }
+  .card-stats .qty { font-size: 15px; font-weight: 600; color: #e8e6df; }
+  .card-stats .pct { color: #f0b429; font-weight: 500; }
+  .card-body { padding: 14px 16px; }
+  textarea { width: 100%; background: transparent; border: none; outline: none; color: #c8c6bf; font-size: 13px; line-height: 1.7; resize: none; font-family: inherit; min-height: 80px; }
+  textarea::placeholder { color: #333; }
+  .auto-badge { font-size: 10px; background: #1a2e1a; color: #2ecc71; border-radius: 4px; padding: 2px 7px; font-weight: 600; letter-spacing: 0.04em; }
+  .img-badge { font-size: 10px; background: #1a243a; color: #3b82f6; border-radius: 4px; padding: 2px 7px; font-weight: 600; letter-spacing: 0.04em; }
+
+  .output-section { background: #161618; border: 0.5px solid #222; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .output-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #555; margin-bottom: 12px; }
+  #reportOutput { font-size: 13px; line-height: 1.8; color: #c8c6bf; white-space: pre-wrap; word-break: break-word; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  button { padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: opacity 0.15s; }
+  button:hover { opacity: 0.85; }
+  .btn-primary { background: #f0b429; color: #0f0f10; }
+  .btn-secondary { background: #222; color: #e8e6df; }
+  .btn-copy { background: #1a2e1a; color: #2ecc71; }
+  .status { font-size: 12px; color: #2ecc71; margin-top: 8px; min-height: 16px; }
+
+  .date-row { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .date-row label { font-size: 12px; color: #555; }
+  .date-row input[type=date] { background: #161618; border: 0.5px solid #333; border-radius: 8px; color: #e8e6df; font-size: 13px; padding: 7px 12px; outline: none; font-family: inherit; }
+
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #3b82f6; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .upload-dual { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: 1fr 1fr; }
+    .topbar { padding: 0 1rem; }
+    .topbar-sep, .topbar-section { display: none; }
+    .wrapper { padding: 20px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div style="background:#fff;border-radius:8px;padding:3px 6px;display:flex;align-items:center;">
+      <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+    </div>
+  </div>
+  <div class="topbar-sep"></div>
+  <span class="topbar-section">Transportes · Operações</span>
+  <div class="topbar-right">
+    <a href="index.html" class="topbar-nav-link">Rotina</a>
+    <a href="madrugadao.html" class="topbar-nav-link">TIMÁSSO TRANSPORTES</a>
+    <a href="dit-report.html" class="topbar-nav-link active">DIT Report</a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">DIT Report — SSP20</div>
+      <div class="header-sub">Relatório operacional de indicadores DIT</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+<!-- Dual Upload -->
+<div class="upload-dual">
+  <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()">
+    <div class="upload-icon">📊</div>
+    <div class="upload-type csv-type">Arquivo CSV</div>
+    <div class="upload-label" id="labelCSV"><strong>Importar CSV do D-1</strong><br>Preenche quantidades e % automaticamente</div>
+    <input type="file" class="file-input" id="fileCSV" accept=".csv">
+  </div>
+  <div class="upload-zone" id="zoneIMG" onclick="document.getElementById('fileIMG').click()">
+    <div class="upload-icon">🖼️</div>
+    <div class="upload-type img-type">Print / Imagem</div>
+    <div class="upload-label" id="labelIMG"><strong>Importar Print do Dashboard</strong><br>Lê KPIs e contexto da imagem</div>
+    <div class="ocr-status" id="ocrStatus"></div>
+    <input type="file" class="file-input" id="fileIMG" accept="image/*,.png,.jpg,.jpeg">
+  </div>
+</div>
+
+<div class="date-row">
+  <label>Data do report:</label>
+  <input type="date" id="reportDate">
+</div>
+
+<div class="kpi-row">
+  <div class="kpi"><label>DIT Total</label><input type="text" id="kpiTotal" placeholder="—"></div>
+  <div class="kpi"><label>Em Rota</label><input type="text" id="kpiRota" placeholder="—"></div>
+  <div class="kpi"><label>D-1 (Ofensores)</label><input type="text" id="kpiD1" placeholder="auto"></div>
+</div>
+
+<div class="sections">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><div class="dot" style="background:#e24b4a"></div> Insucessos</div>
+      <div class="card-stats"><span class="qty" id="qtdIns">—</span><span class="pct" id="pctIns">—</span><span class="auto-badge" id="badgeIns" style="display:none">CSV</span><span class="img-badge" id="ibadgeIns" style="display:none">IMG</span></div>
+    </div>
+    <div class="card-body"><textarea id="txtIns" placeholder="Transportadoras, causas, contexto operacional..." rows="4"></textarea></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><div class="dot" style="background:#ba7517"></div> Descontainerizados</div>
+      <div class="card-stats"><span class="qty" id="qtdDesc">—</span><span class="pct" id="pctDesc">—</span><span class="auto-badge" id="badgeDesc" style="display:none">CSV</span><span class="img-badge" id="ibadgeDesc" style="display:none">IMG</span></div>
+    </div>
+    <div class="card-body"><textarea id="txtDesc" placeholder="Motivos, transportadoras, ciclo do infrator..." rows="4"></textarea></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><div class="dot" style="background:#534ab7"></div> Não Carregado</div>
+      <div class="card-stats"><span class="qty" id="qtdNC">—</span><span class="pct" id="pctNC">—</span><span class="auto-badge" id="badgeNC" style="display:none">CSV</span><span class="img-badge" id="ibadgeNC" style="display:none">IMG</span></div>
+    </div>
+    <div class="card-body"><textarea id="txtNC" placeholder="Sub-status, transportadoras..." rows="4"></textarea></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><div class="dot" style="background:#2ecc71"></div> Carregado e Não Finalizado</div>
+      <div class="card-stats"><span class="qty" id="qtdCNF">—</span><span class="pct" id="pctCNF">—</span><span class="auto-badge" id="badgeCNF" style="display:none">CSV</span><span class="img-badge" id="ibadgeCNF" style="display:none">IMG</span></div>
+    </div>
+    <div class="card-body"><textarea id="txtCNF" placeholder="Transportadoras, motivos..." rows="4"></textarea></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><div class="dot" style="background:#3b82f6"></div> Faltante Aduana</div>
+      <div class="card-stats"><span class="qty" id="qtdFA">—</span><span class="pct" id="pctFA">—</span><span class="auto-badge" id="badgeFA" style="display:none">CSV</span><span class="img-badge" id="ibadgeFA" style="display:none">IMG</span></div>
+    </div>
+    <div class="card-body"><textarea id="txtFA" placeholder="Contexto aduana..." rows="4"></textarea></div>
+  </div>
+</div>
+
+<div class="btn-row" style="margin-bottom:24px;">
+  <button class="btn-primary" onclick="generateReport()">⚡ Gerar Report</button>
+  <button class="btn-secondary" onclick="clearAll()">🗑 Limpar</button>
+</div>
+
+<div class="output-section" id="outputSection" style="display:none">
+  <div class="output-label">Report gerado</div>
+  <pre id="reportOutput"></pre>
+  <div class="btn-row" style="margin-top:16px;">
+    <button class="btn-copy" onclick="copyReport()">📋 Copiar</button>
+  </div>
+  <div class="status" id="copyStatus"></div>
+</div>
+
+</div><!-- /wrapper -->
+
+<script>
+document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
+
+// ── CSV ──
+document.getElementById('fileCSV').addEventListener('change', e => handleCSV(e.target.files[0]));
+document.getElementById('fileIMG').addEventListener('change', e => handleImage(e.target.files[0]));
+
+['zoneCSV','zoneIMG'].forEach(id => {
+  const z = document.getElementById(id);
+  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag'); });
+  z.addEventListener('dragleave', () => z.classList.remove('drag'));
+  z.addEventListener('drop', e => {
+    e.preventDefault(); z.classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (id === 'zoneCSV') handleCSV(f); else handleImage(f);
+  });
+});
+
+function handleCSV(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => parseCSV(e.target.result, file.name);
+  reader.readAsText(file, 'latin1');
+}
+
+function parseCSV(text, filename) {
+  const lines = text.split('\n').map(l => l.split(';'));
+  const header = lines[0].map(h => h.trim().toLowerCase());
+  const rows = lines.slice(1).filter(l => l.length > 1);
+
+  const fmt = n => n.toLocaleString('pt-BR');
+  const p = (v, t) => t ? ((v/t)*100).toFixed(1)+'%' : '—';
+
+  let total=0, ins=0, desc=0, nc=0, cnf=0, fa=0;
+  const insTransp={}, descTransp={}, desconMotivo={}, subStatusNC={};
+
+  const col = name => header.findIndex(h => h.includes(name));
+  const statusCol = col('status');
+  const subStatusCol = col('sub');
+  const transpCol = col('transp');
+  const motivoCol = col('motivo');
+
+  rows.forEach(r => {
+    const get = i => (i >= 0 && r[i] ? r[i].trim() : '');
+    const st = get(statusCol).toLowerCase();
+    const sub = get(subStatusCol).toLowerCase();
+    const transp = get(transpCol);
+    const motivo = get(motivoCol);
+    total++;
+    if (st.includes('insucesso') || st.includes('ins')) { ins++; if(transp) insTransp[transp]=(insTransp[transp]||0)+1; }
+    else if (st.includes('descon')) { desc++; if(transp) descTransp[transp]=(descTransp[transp]||0)+1; if(motivo) desconMotivo[motivo]=(desconMotivo[motivo]||0)+1; }
+    else if (st.includes('não carregado') || st.includes('nao carregado')) { nc++; if(sub) subStatusNC[sub]=(subStatusNC[sub]||0)+1; }
+    else if (st.includes('carregado') && (st.includes('não finalizado')||st.includes('nao finalizado'))) { cnf++; }
+    else if (st.includes('faltante') || st.includes('aduana')) { fa++; }
+  });
+
+  document.getElementById('kpiD1').value = total;
+  const setCard = (key, qty) => {
+    document.getElementById('qtd'+key).textContent = fmt(qty);
+    document.getElementById('pct'+key).textContent = p(qty, total);
+    document.getElementById('badge'+key).style.display = 'inline';
+  };
+  setCard('Ins', ins); setCard('Desc', desc); setCard('NC', nc); setCard('CNF', cnf); setCard('FA', fa);
+
+  const topIns = Object.entries(insTransp).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  if (topIns.length) document.getElementById('txtIns').value = 'Top transportadoras:\n' + topIns.map(([t,q]) => `${t}: ${fmt(q)} (${p(q,ins)})`).join('\n');
+
+  const topDesc = Object.entries(descTransp).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const topMotivo = Object.entries(desconMotivo).sort((a,b)=>b[1]-a[1]);
+  if (topDesc.length || topMotivo.length) {
+    document.getElementById('txtDesc').value =
+      (topMotivo.length ? 'Motivos:\n' + topMotivo.map(([m,q]) => `${m}: ${fmt(q)} (${p(q,desc)})`).join('\n') + '\n\n' : '') +
+      (topDesc.length ? 'Top transportadoras:\n' + topDesc.map(([t,q]) => `${t}: ${fmt(q)} (${p(q,desc)})`).join('\n') : '');
+  }
+
+  const topSub = Object.entries(subStatusNC).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  if (topSub.length) document.getElementById('txtNC').value = 'Sub-status:\n' + topSub.map(([s,q]) => `${s}: ${fmt(q)} (${p(q,nc)})`).join('\n');
+
+  document.getElementById('zoneCSV').classList.add('loaded-csv');
+  document.getElementById('labelCSV').innerHTML = `<strong>✓ ${filename}</strong><br>${fmt(total)} registros carregados`;
+}
+
+function handleImage(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => analyzeImage(e.target.result.split(',')[1], file.type || 'image/png', file.name);
+  reader.readAsDataURL(file);
+}
+
+async function analyzeImage(base64, mime, filename) {
+  const statusEl = document.getElementById('ocrStatus');
+  statusEl.innerHTML = '<span class="spinner"></span> Lendo dashboard...';
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 1000,
+        messages: [{ role: 'user', content: [
+          { type: 'image', source: { type: 'base64', media_type: mime, data: base64 } },
+          { type: 'text', text: `Analise esse print de dashboard operacional de logística SSP20 e extraia APENAS os seguintes dados em JSON puro (sem markdown):\n{"dit_total":null,"em_rota":null,"d1":null,"ins_qty":null,"ins_pct":null,"desc_qty":null,"desc_pct":null,"nc_qty":null,"nc_pct":null,"cnf_qty":null,"cnf_pct":null,"fa_qty":null,"fa_pct":null,"contexto":null}` }
+        ]}]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.map(c=>c.text||'').join('') || '';
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+
+    if (parsed.dit_total) document.getElementById('kpiTotal').value = parsed.dit_total;
+    if (parsed.em_rota)   document.getElementById('kpiRota').value  = parsed.em_rota;
+    if (parsed.d1)        document.getElementById('kpiD1').value    = parsed.d1;
+
+    const fillCard = (key, qty, pct) => {
+      if (qty && document.getElementById('qtd'+key).textContent === '—') {
+        document.getElementById('qtd'+key).textContent = qty;
+        document.getElementById('pct'+key).textContent = pct || '—';
+        document.getElementById('ibadge'+key).style.display = 'inline';
+      }
+    };
+    fillCard('Ins',  parsed.ins_qty,  parsed.ins_pct);
+    fillCard('Desc', parsed.desc_qty, parsed.desc_pct);
+    fillCard('NC',   parsed.nc_qty,   parsed.nc_pct);
+    fillCard('CNF',  parsed.cnf_qty,  parsed.cnf_pct);
+    fillCard('FA',   parsed.fa_qty,   parsed.fa_pct);
+
+    document.getElementById('zoneIMG').classList.add('loaded-img');
+    document.getElementById('labelIMG').innerHTML = `<strong>✓ ${filename}</strong><br>KPIs extraídos do dashboard`;
+    statusEl.textContent = '✓ Leitura concluída';
+    setTimeout(() => statusEl.textContent = '', 3000);
+  } catch(err) {
+    statusEl.textContent = '⚠ Erro na leitura — preencha manualmente';
+    console.error(err);
+  }
+}
+
+function p(v, t) { return t ? ((v/t)*100).toFixed(1)+'%' : '—'; }
+
+function generateReport() {
+  const dateVal = document.getElementById('reportDate').value;
+  const dateObj = dateVal ? new Date(dateVal+'T12:00:00') : new Date();
+  const dateStr = dateObj.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+  const total = document.getElementById('kpiTotal').value || '—';
+  const rota  = document.getElementById('kpiRota').value  || '—';
+  const d1    = document.getElementById('kpiD1').value    || '—';
+  const block = (title, qtdId, pctId, txtId) => {
+    const q   = document.getElementById(qtdId).textContent;
+    const pct = document.getElementById(pctId).textContent;
+    const t   = document.getElementById(txtId).value.trim();
+    return `▪️ ${title} — ${q} IDs (${pct})\n${t ? t.split('\n').map(l=>l?'   '+l:'').join('\n') : '   —'}`;
+  };
+  const report =
+`DIT – SSP20 ${dateStr}
+Total: ${total} | Em rota: ${rota} | D-1: ${d1}
+
+❌ Offenders D-1:
+${block('Insucessos','qtdIns','pctIns','txtIns')}
+
+${block('Descontainerizados','qtdDesc','pctDesc','txtDesc')}
+
+${block('Não carregado','qtdNC','pctNC','txtNC')}
+
+${block('Carregado e não finalizado','qtdCNF','pctCNF','txtCNF')}
+
+${block('Faltante aduana','qtdFA','pctFA','txtFA')}`;
+
+  document.getElementById('reportOutput').textContent = report;
+  document.getElementById('outputSection').style.display = 'block';
+  document.getElementById('outputSection').scrollIntoView({ behavior:'smooth' });
+}
+
+function copyReport() {
+  navigator.clipboard.writeText(document.getElementById('reportOutput').textContent).then(() => {
+    document.getElementById('copyStatus').textContent = '✓ Copiado';
+    setTimeout(() => document.getElementById('copyStatus').textContent = '', 2500);
+  });
+}
+
+function clearAll() {
+  ['kpiTotal','kpiRota','kpiD1'].forEach(id => document.getElementById(id).value = '');
+  ['qtdIns','pctIns','qtdDesc','pctDesc','qtdNC','pctNC','qtdCNF','pctCNF','qtdFA','pctFA'].forEach(id => document.getElementById(id).textContent = '—');
+  ['txtIns','txtDesc','txtNC','txtCNF','txtFA'].forEach(id => document.getElementById(id).value = '');
+  ['badgeIns','badgeDesc','badgeNC','badgeCNF','badgeFA','ibadgeIns','ibadgeDesc','ibadgeNC','ibadgeCNF','ibadgeFA'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('outputSection').style.display = 'none';
+  document.getElementById('ocrStatus').textContent = '';
+  ['zoneCSV','zoneIMG'].forEach(id => { document.getElementById(id).classList.remove('loaded-csv','loaded-img'); });
+  document.getElementById('labelCSV').innerHTML = '<strong>Importar CSV do D-1</strong><br>Preenche quantidades e % automaticamente';
+  document.getElementById('labelIMG').innerHTML = '<strong>Importar Print do Dashboard</strong><br>Lê KPIs e contexto da imagem';
+  document.getElementById('fileCSV').value = '';
+  document.getElementById('fileIMG').value = '';
+}
+</script>
+</body>
+</html>
