@@ -272,6 +272,64 @@
     .topbar-sep, .topbar-section { display: none; }
     .wrapper { padding: 1rem 1rem 4rem; }
   }
+
+  /* ── DIT LAYOUT ── */
+  .dit-grid { display: grid; grid-template-columns: 360px 1fr; gap: 1.5rem; align-items: start; }
+
+  .upload-zone { border: 1.5px dashed var(--border); border-radius: var(--radius-lg); padding: 18px; text-align: center; cursor: pointer; transition: border-color .2s; background: var(--surface); }
+  .upload-zone:hover { border-color: var(--yellow); }
+  .upload-zone.loaded-csv { border-color: var(--green); border-style: solid; }
+  .upload-icon { font-size: 22px; margin-bottom: 6px; }
+  .upload-type { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+  .upload-type.csv-type { color: var(--green); }
+  .upload-label { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .upload-label strong { color: var(--text); }
+  .file-input { display: none; }
+
+  .manual-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .manual-field { display: flex; flex-direction: column; gap: 4px; }
+  .manual-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+  .manual-input { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 10px; font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--text); outline: none; width: 100%; transition: border-color .15s; }
+  .manual-input:focus { border-color: var(--blue); }
+  input[type=date].manual-input { font-size: 13px; font-weight: 500; }
+
+  .offenders-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .offenders-header { display: grid; grid-template-columns: 1fr 70px 70px; padding: 8px 14px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+  .offender-row { display: grid; grid-template-columns: 1fr 70px 70px auto; padding: 10px 14px; border-bottom: 1px solid var(--border); gap: 8px; align-items: center; }
+  .offender-row:last-child { border-bottom: none; }
+  .offender-name { font-size: 12px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .offender-row .qty { font-size: 14px; font-weight: 700; color: var(--text); }
+  .offender-row .pct { font-size: 12px; font-weight: 600; color: #F59E0B; }
+
+  .narrative-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 8px; }
+  .narrative-label { padding: 8px 14px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .narrative-card textarea { width: 100%; min-height: 70px; padding: 10px 14px; background: transparent; border: none; outline: none; font-family: var(--font); font-size: 13px; color: var(--muted); line-height: 1.6; resize: vertical; }
+  .narrative-card textarea::placeholder { color: var(--border); }
+
+  .auto-badge { font-size: 10px; background: #E8F8EF; color: #006634; border-radius: 4px; padding: 2px 7px; font-weight: 700; }
+  .img-badge  { font-size: 10px; background: #EBF2FE; color: #1559B5; border-radius: 4px; padding: 2px 7px; font-weight: 700; }
+
+  .output-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+  .output-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  #reportOutput { font-size: 13px; line-height: 1.8; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  button { padding: 9px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: opacity .15s; }
+  button:hover { opacity: .85; }
+  .btn-primary  { background: #1A1A2E; color: var(--yellow); }
+  [data-theme="dark"] .btn-primary { background: var(--yellow); color: #1A1A2E; }
+  .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .btn-copy { background: #E8F8EF; color: #006634; }
+  [data-theme="dark"] .btn-copy { background: #00200F; color: #4DCC89; }
+  .status { font-size: 12px; color: var(--green); margin-top: 8px; }
+
+  @media (max-width: 768px) {
+    .dit-grid { grid-template-columns: 1fr; }
+    .topbar { padding: 0 1rem; }
+    .topbar-sep, .topbar-section { display: none; }
+    .wrapper { padding: 1rem 1rem 4rem; }
+  }
+
 </style>
 </head>
 <body>
@@ -305,162 +363,130 @@
 
 <div class="wrapper">
 
-<div class="section-label">Importar dados</div>
-<!-- Dual Upload -->
-<div class="upload-dual">
-  <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()">
-    <div class="upload-icon">📊</div>
-    <div class="upload-type csv-type">Arquivo CSV</div>
-    <div class="upload-label" id="labelCSV"><strong>Importar CSV do D-1</strong><br>Preenche quantidades e % automaticamente</div>
-    <input type="file" class="file-input" id="fileCSV" accept=".csv">
-  </div>
-  <div class="upload-zone" id="zoneIMG" onclick="document.getElementById('fileIMG').click()">
-    <div class="upload-icon">🖼️</div>
-    <div class="upload-type img-type">Print / Imagem</div>
-    <div class="upload-label" id="labelIMG"><strong>Importar Print do Dashboard</strong><br>Lê KPIs e contexto da imagem</div>
-    <div class="ocr-status" id="ocrStatus"></div>
-    <input type="file" class="file-input" id="fileIMG" accept="image/*,.png,.jpg,.jpeg">
-  </div>
-</div>
+  <div class="dit-grid">
 
-<div class="date-row">
-  <label>Data do report:</label>
-  <input type="date" id="reportDate">
-</div>
+    <!-- LEFT: CSV + Manual KPIs -->
+    <div class="dit-left">
 
-<div class="section-label">KPIs do ciclo</div>
-<div class="kpi-row">
-  <div class="kpi"><label>DIT Total</label><input type="text" id="kpiTotal" placeholder="—"></div>
-  <div class="kpi"><label>Em Rota</label><input type="text" id="kpiRota" placeholder="—"></div>
-  <div class="kpi"><label>D-1 (Ofensores)</label><input type="text" id="kpiD1" placeholder="auto"></div>
-</div>
-
-<div class="section-label">Offenders D-1</div>
-<div class="sections">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title"><div class="dot" style="background:#e24b4a"></div> Insucessos</div>
-      <div class="card-stats"><span class="qty" id="qtdIns">—</span><span class="pct" id="pctIns">—</span><span class="auto-badge" id="badgeIns" style="display:none">CSV</span><span class="img-badge" id="ibadgeIns" style="display:none">IMG</span></div>
-    </div>
-    <div class="card-body"><textarea id="txtIns" placeholder="Transportadoras, causas, contexto operacional..." rows="4"></textarea></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title"><div class="dot" style="background:#ba7517"></div> Descontainerizados</div>
-      <div class="card-stats"><span class="qty" id="qtdDesc">—</span><span class="pct" id="pctDesc">—</span><span class="auto-badge" id="badgeDesc" style="display:none">CSV</span><span class="img-badge" id="ibadgeDesc" style="display:none">IMG</span></div>
-    </div>
-    <div class="card-body"><textarea id="txtDesc" placeholder="Motivos, transportadoras, ciclo do infrator..." rows="4"></textarea></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title"><div class="dot" style="background:#534ab7"></div> Não Carregado</div>
-      <div class="card-stats"><span class="qty" id="qtdNC">—</span><span class="pct" id="pctNC">—</span><span class="auto-badge" id="badgeNC" style="display:none">CSV</span><span class="img-badge" id="ibadgeNC" style="display:none">IMG</span></div>
-    </div>
-    <div class="card-body"><textarea id="txtNC" placeholder="Sub-status, transportadoras..." rows="4"></textarea></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title"><div class="dot" style="background:#2ecc71"></div> Carregado e Não Finalizado</div>
-      <div class="card-stats"><span class="qty" id="qtdCNF">—</span><span class="pct" id="pctCNF">—</span><span class="auto-badge" id="badgeCNF" style="display:none">CSV</span><span class="img-badge" id="ibadgeCNF" style="display:none">IMG</span></div>
-    </div>
-    <div class="card-body"><textarea id="txtCNF" placeholder="Transportadoras, motivos..." rows="4"></textarea></div>
-  </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title"><div class="dot" style="background:#3b82f6"></div> Faltante Aduana</div>
-      <div class="card-stats"><span class="qty" id="qtdFA">—</span><span class="pct" id="pctFA">—</span><span class="auto-badge" id="badgeFA" style="display:none">CSV</span><span class="img-badge" id="ibadgeFA" style="display:none">IMG</span></div>
-    </div>
-    <div class="card-body"><textarea id="txtFA" placeholder="Contexto aduana..." rows="4"></textarea></div>
-  </div>
-</div>
-
-<div class="btn-row" style="margin-bottom:24px;">
-  <button class="btn-primary" onclick="generateReport()">⚡ Gerar Report</button>
-  <button class="btn-secondary" onclick="clearAll()">🗑 Limpar</button>
-</div>
-
-<div class="output-section" id="outputSection" style="display:none">
-  <div class="output-label">Report gerado</div>
-  <pre id="reportOutput"></pre>
-  <div class="btn-row" style="margin-top:16px;">
-    <button class="btn-copy" onclick="copyReport()">📋 Copiar</button>
-  </div>
-  <div class="status" id="copyStatus"></div>
-</div>
-
-</div><!-- /wrapper -->
-
-<!-- IMAGE MODAL -->
-<div class="img-modal-overlay" id="img-modal">
-  <div class="img-modal">
-    <div class="img-modal-header">
-      <span class="img-modal-title">📊 Preencha os KPIs do Dashboard</span>
-      <button class="img-modal-close" onclick="closeImgModal()">✕</button>
-    </div>
-    <div class="img-modal-body">
-      <div class="img-preview-pane">
-        <img id="img-preview" src="" alt="Dashboard"/>
+      <!-- CSV Upload -->
+      <div class="section-label">Importar CSV D-1</div>
+      <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()">
+        <div class="upload-icon">📊</div>
+        <div class="upload-type csv-type">Arquivo CSV</div>
+        <div class="upload-label" id="labelCSV"><strong>Clique ou arraste o CSV do D-1</strong><br>Preenche quantidades automaticamente</div>
+        <input type="file" class="file-input" id="fileCSV" accept=".csv">
       </div>
-      <div class="img-form-pane">
-        <div class="img-section-sep">KPIs Gerais</div>
 
-        <div>
-          <div class="img-form-label">DIT Total</div>
-          <input class="img-input" id="imgDitTotal" type="text" placeholder="ex: 1.234"/>
+      <!-- Data -->
+      <div class="section-label" style="margin-top:1.5rem;">Data e KPIs gerais</div>
+      <div class="manual-grid-2">
+        <div class="manual-field">
+          <label class="manual-label">Data do report</label>
+          <input type="date" id="reportDate" class="manual-input"/>
         </div>
-        <div>
-          <div class="img-form-label">Em Rota</div>
-          <input class="img-input" id="imgEmRota" type="text" placeholder="ex: 980"/>
+        <div class="manual-field">
+          <label class="manual-label">DIT Total</label>
+          <input type="text" id="kpiTotal" class="manual-input" placeholder="—"/>
         </div>
-        <div>
-          <div class="img-form-label">D-1 (Ofensores)</div>
-          <input class="img-input" id="imgD1" type="text" placeholder="ex: 254"/>
+        <div class="manual-field">
+          <label class="manual-label">Em Rota</label>
+          <input type="text" id="kpiRota" class="manual-input" placeholder="auto via CSV"/>
         </div>
-
-        <div class="img-section-sep">Offenders</div>
-
-        <div>
-          <div class="img-form-label">Insucessos — Qtd / %</div>
-          <div class="img-form-row">
-            <input class="img-input" id="imgInsQty" type="text" placeholder="Qtd"/>
-            <input class="img-input pct" id="imgInsPct" type="text" placeholder="%"/>
-          </div>
-        </div>
-        <div>
-          <div class="img-form-label">Descontainerizados — Qtd / %</div>
-          <div class="img-form-row">
-            <input class="img-input" id="imgDescQty" type="text" placeholder="Qtd"/>
-            <input class="img-input pct" id="imgDescPct" type="text" placeholder="%"/>
-          </div>
-        </div>
-        <div>
-          <div class="img-form-label">Não Carregado — Qtd / %</div>
-          <div class="img-form-row">
-            <input class="img-input" id="imgNCQty" type="text" placeholder="Qtd"/>
-            <input class="img-input pct" id="imgNCPct" type="text" placeholder="%"/>
-          </div>
-        </div>
-        <div>
-          <div class="img-form-label">Carregado Não Finalizado — Qtd / %</div>
-          <div class="img-form-row">
-            <input class="img-input" id="imgCNFQty" type="text" placeholder="Qtd"/>
-            <input class="img-input pct" id="imgCNFPct" type="text" placeholder="%"/>
-          </div>
-        </div>
-        <div>
-          <div class="img-form-label">Faltante Aduana — Qtd / %</div>
-          <div class="img-form-row">
-            <input class="img-input" id="imgFAQty" type="text" placeholder="Qtd"/>
-            <input class="img-input pct" id="imgFAPct" type="text" placeholder="%"/>
-          </div>
+        <div class="manual-field">
+          <label class="manual-label">D-1 Ofensores</label>
+          <input type="text" id="kpiD1" class="manual-input" placeholder="auto via CSV"/>
         </div>
       </div>
+
+      <!-- Offenders table -->
+      <div class="section-label" style="margin-top:1.5rem;">Offenders D-1</div>
+      <div class="offenders-table">
+        <div class="offenders-header">
+          <span>Categoria</span>
+          <span>Qtd</span>
+          <span>%</span>
+        </div>
+        <div class="offender-row">
+          <span class="offender-name"><span class="dot" style="background:#e24b4a"></span> Insucessos</span>
+          <span class="qty" id="qtdIns">—</span>
+          <span class="pct" id="pctIns">—</span>
+          <span id="badgeIns" class="auto-badge" style="display:none">CSV</span>
+          <span id="ibadgeIns" class="img-badge" style="display:none">IMG</span>
+        </div>
+        <div class="offender-row">
+          <span class="offender-name"><span class="dot" style="background:#ba7517"></span> Descontainerizados</span>
+          <span class="qty" id="qtdDesc">—</span>
+          <span class="pct" id="pctDesc">—</span>
+          <span id="badgeDesc" class="auto-badge" style="display:none">CSV</span>
+          <span id="ibadgeDesc" class="img-badge" style="display:none">IMG</span>
+        </div>
+        <div class="offender-row">
+          <span class="offender-name"><span class="dot" style="background:#534ab7"></span> Não Carregado</span>
+          <span class="qty" id="qtdNC">—</span>
+          <span class="pct" id="pctNC">—</span>
+          <span id="badgeNC" class="auto-badge" style="display:none">CSV</span>
+          <span id="ibadgeNC" class="img-badge" style="display:none">IMG</span>
+        </div>
+        <div class="offender-row">
+          <span class="offender-name"><span class="dot" style="background:#2ecc71"></span> Cg. Não Finalizado</span>
+          <span class="qty" id="qtdCNF">—</span>
+          <span class="pct" id="pctCNF">—</span>
+          <span id="badgeCNF" class="auto-badge" style="display:none">CSV</span>
+          <span id="ibadgeCNF" class="img-badge" style="display:none">IMG</span>
+        </div>
+        <div class="offender-row">
+          <span class="offender-name"><span class="dot" style="background:#3b82f6"></span> Faltante Aduana</span>
+          <span class="qty" id="qtdFA">—</span>
+          <span class="pct" id="pctFA">—</span>
+          <span id="badgeFA" class="auto-badge" style="display:none">CSV</span>
+          <span id="ibadgeFA" class="img-badge" style="display:none">IMG</span>
+        </div>
+      </div>
+
     </div>
-    <div class="img-modal-footer">
-      <button class="btn-secondary" onclick="closeImgModal()">Cancelar</button>
-      <button class="btn-primary" onclick="applyManualKPIs()">✓ Aplicar KPIs</button>
+
+    <!-- RIGHT: Contexto narrativo -->
+    <div class="dit-right">
+      <div class="section-label">Contexto operacional</div>
+
+      <div class="narrative-card">
+        <div class="narrative-label"><span class="dot" style="background:#e24b4a"></span> Insucessos</div>
+        <textarea id="txtIns" placeholder="Transportadoras, causas, contexto..."></textarea>
+      </div>
+      <div class="narrative-card">
+        <div class="narrative-label"><span class="dot" style="background:#ba7517"></span> Descontainerizados</div>
+        <textarea id="txtDesc" placeholder="Motivos, transportadoras, ciclo do infrator..."></textarea>
+      </div>
+      <div class="narrative-card">
+        <div class="narrative-label"><span class="dot" style="background:#534ab7"></span> Não Carregado</div>
+        <textarea id="txtNC" placeholder="Sub-status, transportadoras..."></textarea>
+      </div>
+      <div class="narrative-card">
+        <div class="narrative-label"><span class="dot" style="background:#2ecc71"></span> Carregado Não Finalizado</div>
+        <textarea id="txtCNF" placeholder="Transportadoras, motivos..."></textarea>
+      </div>
+      <div class="narrative-card">
+        <div class="narrative-label"><span class="dot" style="background:#3b82f6"></span> Faltante Aduana</div>
+        <textarea id="txtFA" placeholder="Contexto aduana..."></textarea>
+      </div>
+
+      <div class="btn-row" style="margin-top:1rem;">
+        <button class="btn-primary" onclick="generateReport()">⚡ Gerar Report</button>
+        <button class="btn-secondary" onclick="clearAll()">🗑 Limpar</button>
+      </div>
     </div>
   </div>
+
+  <!-- OUTPUT -->
+  <div class="output-section" id="outputSection" style="display:none;margin-top:1.5rem;">
+    <div class="output-label">Report gerado</div>
+    <pre id="reportOutput"></pre>
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn-copy" onclick="copyReport()">📋 Copiar</button>
+    </div>
+    <div class="status" id="copyStatus"></div>
+  </div>
+
 </div>
 
 <script>
