@@ -1065,52 +1065,27 @@
       .shift-btn { font-size: 10px; }
     }
   
-    /* ── BOTTOM NAV (mobile only) ── */
-    .bottom-nav {
-      display: none;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: #1A1A2E;
-      border-top: 1px solid rgba(255,255,255,.1);
-      z-index: 200;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .bottom-nav-inner { display: flex; }
-    .bn-item {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 9px 4px 7px; gap: 3px;
-      text-decoration: none; color: rgba(255,255,255,.4);
-      font-size: 9px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .05em; font-family: var(--font);
-      border: none; background: none; cursor: pointer;
-      transition: color .15s;
-    }
-    .bn-item.active { color: var(--yellow); }
-    .bn-item svg { width: 20px; height: 20px; stroke-width: 1.8; fill: none; stroke: currentColor; }
-    @media (max-width: 768px) {
-      .bottom-nav { display: block; }
-      .wrapper { padding-bottom: 5.5rem !important; }
-      .feedback-btn { bottom: 72px !important; right: 16px !important; }
-    }
-
+    /* ── BOTTOM NAV ── */
+    .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:#1A1A2E; border-top:1px solid rgba(255,255,255,.1); z-index:200; }
+    .bottom-nav-inner { display:flex; }
+    .bn-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:9px 4px 7px; gap:3px; text-decoration:none; color:rgba(255,255,255,.4); font-size:9px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; font-family:var(--font); border:none; background:none; cursor:pointer; transition:color .15s; }
+    .bn-item.active { color:var(--yellow); }
+    .bn-item svg { width:20px; height:20px; stroke-width:1.8; fill:none; stroke:currentColor; }
 
     /* ── COUNTDOWN ── */
-    .countdown-banner {
-      background: #1A1A2E;
-      border-radius: var(--radius);
-      padding: 10px 16px;
-      margin-bottom: 1rem;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+    .countdown-banner { background:#1A1A2E; border-radius:var(--radius); padding:10px 16px; margin-bottom:1rem; display:none; align-items:center; justify-content:space-between; gap:12px; }
+    .countdown-banner.visible { display:flex; }
+    .countdown-label { font-size:10px; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.1em; }
+    .countdown-task  { font-size:13px; font-weight:600; color:var(--yellow); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .countdown-timer { font-family:monospace; font-size:18px; font-weight:700; color:var(--yellow); letter-spacing:.05em; white-space:nowrap; }
+    .countdown-timer.urgent { color:#FF3D57; animation:blink-r 1s ease-in-out infinite; }
+    @keyframes blink-r { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    @media (max-width:768px) {
+      .bottom-nav { display:block; }
+      .wrapper { padding-bottom:5.5rem !important; }
+      .feedback-btn { bottom:72px !important; }
     }
-    .countdown-banner.visible { display: flex; }
-    .countdown-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .1em; }
-    .countdown-task  { font-size: 13px; font-weight: 600; color: var(--yellow); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .countdown-timer { font-family: monospace; font-size: 18px; font-weight: 700; color: var(--yellow); letter-spacing:.05em; white-space:nowrap; }
-    .countdown-timer.urgent { color: #FF3D57; animation: blink-red 1s ease-in-out infinite; }
-    @keyframes blink-red { 0%,100%{opacity:1} 50%{opacity:.4} }
 
   </style>
 </head>
@@ -1214,12 +1189,8 @@
     </button>
   </div>
 
-  <!-- COUNTDOWN -->
   <div class="countdown-banner" id="countdown-banner">
-    <div style="min-width:0">
-      <div class="countdown-label">Próximo prazo</div>
-      <div class="countdown-task" id="countdown-task">—</div>
-    </div>
+    <div style="min-width:0"><div class="countdown-label">Próximo prazo</div><div class="countdown-task" id="countdown-task">—</div></div>
     <div class="countdown-timer" id="countdown-timer">00:00</div>
   </div>
 
@@ -1713,81 +1684,6 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/rotina-transportes/sw.js').catch(() => {});
 }
 
-// ── COUNTDOWN ────────────────────────────────────────────────────────────
-function updateCountdown() {
-  const all = Object.values(TASKS).flat();
-  const now = new Date();
-  const nowMins = now.getHours()*60 + now.getMinutes();
-
-  const pending = all
-    .filter(t => !state[t.id])
-    .map(t => {
-      const [h,m] = t.deadline.split(':').map(Number);
-      let dl = h*60+m;
-      // Overnight wrap: tasks before 12h belong to next-day context
-      if (dl < 12*60) dl += 24*60;
-      const base = nowMins < 12*60 ? nowMins + 24*60 : nowMins;
-      return { ...t, diff: dl - base };
-    })
-    .filter(t => t.diff > 0)
-    .sort((a,b) => a.diff - b.diff);
-
-  const banner = document.getElementById('countdown-banner');
-  if (!banner) return;
-  if (!pending.length) { banner.classList.remove('visible'); return; }
-
-  const next = pending[0];
-  const h = Math.floor(next.diff / 60);
-  const m = next.diff % 60;
-  const s = 60 - now.getSeconds();
-  const timerEl = document.getElementById('countdown-timer');
-
-  document.getElementById('countdown-task').textContent = next.name;
-  timerEl.textContent = h > 0
-    ? h + 'h ' + String(m).padStart(2,'0') + 'm'
-    : String(m).padStart(2,'0') + 'm ' + String(s).padStart(2,'0') + 's';
-  timerEl.className = 'countdown-timer' + (next.diff <= 15 ? ' urgent' : '');
-  banner.classList.add('visible');
-}
-updateCountdown();
-setInterval(updateCountdown, 1000);
-
-
-// ── NOTIFICAÇÕES PUSH ────────────────────────────────────────────────────
-(async function() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'default') {
-    await Notification.requestPermission();
-  }
-})();
-
-function checkNotifications() {
-  if (Notification.permission !== 'granted') return;
-  const all = Object.values(TASKS).flat();
-  const now = new Date();
-  const nowMins = now.getHours()*60 + now.getMinutes();
-
-  all.filter(t => !state[t.id]).forEach(t => {
-    const [h,m] = t.deadline.split(':').map(Number);
-    let dl = h*60+m;
-    if (dl < 12*60) dl += 24*60;
-    const base = nowMins < 12*60 ? nowMins + 24*60 : nowMins;
-    const diff = dl - base;
-
-    [30, 10].forEach(limit => {
-      const key = 'notif_' + t.id + '_' + limit + '_' + new Date().toISOString().slice(0,10);
-      if (diff <= limit && diff > limit-1 && !sessionStorage.getItem(key)) {
-        sessionStorage.setItem(key, '1');
-        new Notification('⏱ ' + (diff <= 10 ? '10 min' : '30 min') + ' para o prazo', {
-          body: t.name, icon: '/rotina-transportes/favicon.png', tag: t.id
-        });
-      }
-    });
-  });
-}
-setInterval(checkNotifications, 60000);
-
-
 // Shift selector
 const shiftBtns   = document.querySelectorAll('.shift-btn');
 const mainContent = document.querySelector('.wrapper:not(.wip-overlay)');
@@ -1829,31 +1725,63 @@ if (timesBtn && timesMenu) {
     timesMenu.classList.remove('open');
   });
 }
+// ── COUNTDOWN ────────────────────────────────────────────────────────────
+function updateCountdown() {
+  const all = Object.values(TASKS).flat();
+  const now = new Date();
+  const nowMins = now.getHours()*60 + now.getMinutes();
+  const pending = all.filter(t => !state[t.id]).map(t => {
+    const [h,m] = t.deadline.split(':').map(Number);
+    let dl = h*60+m; if (dl<12*60) dl+=24*60;
+    const base = nowMins<12*60 ? nowMins+24*60 : nowMins;
+    return {...t, diff: dl-base};
+  }).filter(t=>t.diff>0).sort((a,b)=>a.diff-b.diff);
+  const banner = document.getElementById('countdown-banner');
+  if (!banner) return;
+  if (!pending.length) { banner.classList.remove('visible'); return; }
+  const next = pending[0];
+  const h=Math.floor(next.diff/60), m=next.diff%60, s=60-now.getSeconds();
+  const timerEl = document.getElementById('countdown-timer');
+  document.getElementById('countdown-task').textContent = next.name;
+  timerEl.textContent = h>0 ? h+'h '+String(m).padStart(2,'0')+'m' : String(m).padStart(2,'0')+'m '+String(s).padStart(2,'0')+'s';
+  timerEl.className = 'countdown-timer'+(next.diff<=15?' urgent':'');
+  banner.classList.add('visible');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── NOTIFICAÇÕES ─────────────────────────────────────────────────────────
+(async()=>{ if('Notification' in window && Notification.permission==='default') await Notification.requestPermission(); })();
+function checkNotifs() {
+  if (Notification.permission!=='granted') return;
+  const all = Object.values(TASKS).flat();
+  const now = new Date();
+  const nowMins = now.getHours()*60+now.getMinutes();
+  all.filter(t=>!state[t.id]).forEach(t=>{
+    const [h,m]=t.deadline.split(':').map(Number);
+    let dl=h*60+m; if(dl<12*60) dl+=24*60;
+    const base=nowMins<12*60?nowMins+24*60:nowMins;
+    const diff=dl-base;
+    [30,10].forEach(lim=>{
+      const key='notif_'+t.id+'_'+lim+'_'+new Date().toISOString().slice(0,10);
+      if(diff<=lim&&diff>lim-1&&!sessionStorage.getItem(key)){
+        sessionStorage.setItem(key,'1');
+        new Notification('⏱ '+(diff<=10?'10 min':'30 min')+' para o prazo',{body:t.name,icon:'/rotina-transportes/favicon.png',tag:t.id});
+      }
+    });
+  });
+}
+setInterval(checkNotifs, 60000);
+
 </script>
 
-<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
-    <a href="index.html" class="bn-item active">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Rotina
-    </a>
-    <a href="madrugadao.html" class="bn-item">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      Time
-    </a>
-    <a href="dit-report.html" class="bn-item">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      DIT
-    </a>
-    <a href="diario.html" class="bn-item">
-      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      Diário
-    </a>
-    <button class="bn-item" onclick="document.getElementById('feedback-open').click()">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Feedback
-    </button>
+    <a href="index.html" class="bn-item active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Rotina</a>
+    <a href="madrugadao.html" class="bn-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Time</a>
+    <a href="dit-report.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>DIT</a>
+    <a href="diario.html" class="bn-item"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Diário</a>
+    <button class="bn-item" onclick="document.getElementById('feedback-open').click()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Feedback</button>
   </div>
 </nav>
 </body>
