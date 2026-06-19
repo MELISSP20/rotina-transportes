@@ -502,60 +502,93 @@ function handleCSV(file) {
 }
 
 function parseCSV(text, filename) {
-  const lines = text.split('\n').map(l => l.split(';'));
-  const header = lines[0].map(h => h.trim().toLowerCase());
-  const rows = lines.slice(1).filter(l => l.length > 1);
+  // Parse CSV with comma separator (not semicolon)
+  const lines = text.split('\n');
+  const header = parseCSVLine(lines[0]);
+  const rows = lines.slice(1).filter(l => l.trim()).map(parseCSVLine);
+
+  const col = name => header.findIndex(h => h.trim().toLowerCase() === name.toLowerCase());
+
+  const subCol     = col('SHP_LG_SUB_STATUS');
+  const desconCol  = col('MOTIVO_DESCON');
+  const faltaCol   = col('FALTANTE_ADUANA');
+  const ofensorCol = col('Ofensor');
+  const emRotaCol  = col('Em Rota');
 
   const fmt = n => n.toLocaleString('pt-BR');
-  const p = (v, t) => t ? ((v/t)*100).toFixed(1)+'%' : '—';
+  const p   = (v, t) => t ? ((v/t)*100).toFixed(1)+'%' : '—';
 
-  let total=0, ins=0, desc=0, nc=0, cnf=0, fa=0;
-  const insTransp={}, descTransp={}, desconMotivo={}, subStatusNC={};
-
-  const col = name => header.findIndex(h => h.includes(name));
-  const statusCol = col('status');
-  const subStatusCol = col('sub');
-  const transpCol = col('transp');
-  const motivoCol = col('motivo');
+  let total=rows.length, ins=0, desc=0, nc=0, fa=0, emRota=0;
+  const insTransp={}, descTransp={}, desconMotivo={}, ncSub={};
 
   rows.forEach(r => {
     const get = i => (i >= 0 && r[i] ? r[i].trim() : '');
-    const st = get(statusCol).toLowerCase();
-    const sub = get(subStatusCol).toLowerCase();
-    const transp = get(transpCol);
-    const motivo = get(motivoCol);
-    total++;
-    if (st.includes('insucesso') || st.includes('ins')) { ins++; if(transp) insTransp[transp]=(insTransp[transp]||0)+1; }
-    else if (st.includes('descon')) { desc++; if(transp) descTransp[transp]=(descTransp[transp]||0)+1; if(motivo) desconMotivo[motivo]=(desconMotivo[motivo]||0)+1; }
-    else if (st.includes('não carregado') || st.includes('nao carregado')) { nc++; if(sub) subStatusNC[sub]=(subStatusNC[sub]||0)+1; }
-    else if (st.includes('carregado') && (st.includes('não finalizado')||st.includes('nao finalizado'))) { cnf++; }
-    else if (st.includes('faltante') || st.includes('aduana')) { fa++; }
+    const sub    = get(subCol).toLowerCase();
+    const descon = get(desconCol);
+    const falta  = get(faltaCol);
+    const ofens  = get(ofensorCol);
+    const er     = get(emRotaCol);
+
+    if (er === '1') emRota++;
+
+    if (falta) {
+      fa++;
+    } else if (descon) {
+      desc++;
+      if (ofens) descTransp[ofens] = (descTransp[ofens]||0)+1;
+      desconMotivo[descon] = (desconMotivo[descon]||0)+1;
+    } else if (['missing','unvisited_address','at_the_door','problem_solving','missrouted','next_destination','soon_deliver','damaged'].includes(sub)) {
+      ins++;
+      if (ofens) insTransp[ofens] = (insTransp[ofens]||0)+1;
+    } else if (['sorting','in_container',''].includes(sub)) {
+      nc++;
+      if (sub) ncSub[sub] = (ncSub[sub]||0)+1;
+    }
   });
 
-  document.getElementById('kpiD1').value = total;
+  // Set KPIs
+  document.getElementById('kpiD1').value    = total;
+  document.getElementById('kpiRota').value  = emRota;
+
   const setCard = (key, qty) => {
     document.getElementById('qtd'+key).textContent = fmt(qty);
     document.getElementById('pct'+key).textContent = p(qty, total);
     document.getElementById('badge'+key).style.display = 'inline';
   };
-  setCard('Ins', ins); setCard('Desc', desc); setCard('NC', nc); setCard('CNF', cnf); setCard('FA', fa);
+  setCard('Ins', ins); setCard('Desc', desc); setCard('NC', nc); setCard('FA', fa);
 
-  const topIns = Object.entries(insTransp).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  if (topIns.length) document.getElementById('txtIns').value = 'Top transportadoras:\n' + topIns.map(([t,q]) => `${t}: ${fmt(q)} (${p(q,ins)})`).join('\n');
+  // Fill text areas
+  const topIns = Object.entries(insTransp).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  if (topIns.length) document.getElementById('txtIns').value =
+    'Top transportadoras:\n' + topIns.map(([t,q])=>`${t}: ${fmt(q)} (${p(q,ins)})`).join('\n');
 
-  const topDesc = Object.entries(descTransp).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  const topMotivo = Object.entries(desconMotivo).sort((a,b)=>b[1]-a[1]);
-  if (topDesc.length || topMotivo.length) {
+  const topDesc = Object.entries(descTransp).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topMotivo = Object.entries(desconMotivo).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  if (topDesc.length || topMotivo.length)
     document.getElementById('txtDesc').value =
-      (topMotivo.length ? 'Motivos:\n' + topMotivo.map(([m,q]) => `${m}: ${fmt(q)} (${p(q,desc)})`).join('\n') + '\n\n' : '') +
-      (topDesc.length ? 'Top transportadoras:\n' + topDesc.map(([t,q]) => `${t}: ${fmt(q)} (${p(q,desc)})`).join('\n') : '');
-  }
+      (topMotivo.length ? 'Motivos:\n'+topMotivo.map(([m,q])=>`${m}: ${fmt(q)} (${p(q,desc)})`).join('\n')+'\n\n' : '') +
+      (topDesc.length ? 'Top transportadoras:\n'+topDesc.map(([t,q])=>`${t}: ${fmt(q)} (${p(q,desc)})`).join('\n') : '');
 
-  const topSub = Object.entries(subStatusNC).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  if (topSub.length) document.getElementById('txtNC').value = 'Sub-status:\n' + topSub.map(([s,q]) => `${s}: ${fmt(q)} (${p(q,nc)})`).join('\n');
+  const topNC = Object.entries(ncSub).sort((a,b)=>b[1]-a[1]);
+  if (topNC.length) document.getElementById('txtNC').value =
+    'Sub-status:\n' + topNC.map(([s,q])=>`${s}: ${fmt(q)} (${p(q,nc)})`).join('\n');
 
   document.getElementById('zoneCSV').classList.add('loaded-csv');
-  document.getElementById('labelCSV').innerHTML = `<strong>✓ ${filename}</strong><br>${fmt(total)} registros carregados`;
+  document.getElementById('labelCSV').innerHTML = `<strong>✓ ${filename}</strong><br>${fmt(total)} registros · ${fmt(emRota)} em rota`;
+}
+
+// Robust CSV line parser (handles quoted fields with commas)
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur);
+  return result;
 }
 
 function handleImage(file) {
