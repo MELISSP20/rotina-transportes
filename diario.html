@@ -227,7 +227,27 @@
     }
     .stats-bar strong { color: var(--text); font-size: 18px; font-weight: 700; display: block; }
 
-    @media (max-width: 600px) {
+  
+  /* SEARCH */
+  .search-bar {
+    display: flex; gap: 8px; margin-bottom: 1.5rem; align-items: center;
+  }
+  .search-input {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 9px 14px;
+    font-family: var(--font); font-size: 13px; color: var(--text);
+    outline: none; transition: border-color .15s;
+  }
+  .search-input:focus { border-color: var(--blue); }
+  .filter-select {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 9px 12px;
+    font-family: var(--font); font-size: 12px; color: var(--text);
+    outline: none; cursor: pointer;
+  }
+  .no-results { text-align: center; padding: 2rem; color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 600px) {
       .topbar { padding: 0 1rem; }
       .topbar-sep, .topbar-section { display: none; }
       .wrapper { padding: 1rem 1rem 4rem; }
@@ -266,6 +286,16 @@
 </div>
 
 <div class="wrapper">
+  <div class="search-bar">
+    <input class="search-input" id="search-input" placeholder="🔍 Buscar nos registros..." oninput="filterEntries()"/>
+    <select class="filter-select" id="filter-period" onchange="filterEntries()">
+      <option value="all">Todos os períodos</option>
+      <option value="7">Últimos 7 dias</option>
+      <option value="30">Últimos 30 dias</option>
+      <option value="90">Últimos 90 dias</option>
+    </select>
+  </div>
+
   <div id="stats-bar" class="stats-bar" style="display:none">
     <div><strong id="total-registros">0</strong>Registros</div>
     <div><strong id="primeiro-registro">—</strong>Primeiro ciclo</div>
@@ -308,6 +338,38 @@ function formatDate(dateStr) {
   const [y,m,d] = dateStr.split('-').map(Number);
   const dt = new Date(y, m-1, d);
   return `${DAYS[dt.getDay()]}, ${d} de ${MONTHS[m-1]} de ${y}`;
+}
+
+let allEntries = {};
+
+function filterEntries() {
+  const q      = (document.getElementById('search-input').value || '').toLowerCase();
+  const period = parseInt(document.getElementById('filter-period').value) || 0;
+  const now    = new Date();
+
+  const filtered = Object.fromEntries(
+    Object.entries(allEntries).filter(([date, text]) => {
+      if (q && !text.toLowerCase().includes(q) && !date.includes(q)) return false;
+      if (period) {
+        const dt = new Date(date + 'T12:00:00');
+        const diff = (now - dt) / (1000*60*60*24);
+        if (diff > period) return false;
+      }
+      return true;
+    })
+  );
+
+  const tl = document.getElementById('timeline');
+  const empty = document.getElementById('empty');
+
+  if (Object.keys(filtered).length === 0) {
+    tl.style.display = 'none';
+    empty.style.display = 'block';
+    empty.innerHTML = '<div class="empty-icon">🔍</div><div class="empty-title">Nenhum resultado</div><div class="empty-sub">Tente outros termos ou período.</div>';
+  } else {
+    empty.style.display = 'none';
+    renderTimeline(filtered);
+  }
 }
 
 async function loadDiario() {
@@ -417,6 +479,7 @@ async function deleteEntry(date) {
   if (!confirm(`Excluir o registro de ${date.split('-').reverse().join('/')}?`)) return;
   const data = await loadDiario();
   delete data[date];
+  allEntries = data;
   await saveDiario(data);
   const entry = document.querySelector(`[data-date="${date}"]`);
   if (entry) {
@@ -428,7 +491,10 @@ async function deleteEntry(date) {
 }
 
 // Init
-loadDiario().then(renderTimeline);
+loadDiario().then(data => {
+  allEntries = data;
+  renderTimeline(data);
+});
 </script>
 </body>
 </html>

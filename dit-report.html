@@ -459,6 +459,17 @@ ${block('Faltante aduana','qtdFA','pctFA','txtFA')}`;
   document.getElementById('reportOutput').textContent = report;
   document.getElementById('outputSection').style.display = 'block';
   document.getElementById('outputSection').scrollIntoView({ behavior:'smooth' });
+
+  // Save to Firebase
+  const dateKey = document.getElementById('reportDate').value || new Date().toISOString().slice(0,10);
+  fetch('https://rotina-lastmile-default-rtdb.firebaseio.com/dit-reports.json')
+    .then(r => r.json()).then(existing => {
+      const data = existing || {};
+      data[dateKey] = { report, ts: Date.now() };
+      return fetch('https://rotina-lastmile-default-rtdb.firebaseio.com/dit-reports.json', {
+        method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
+      });
+    }).catch(() => {});
 }
 
 function copyReport() {

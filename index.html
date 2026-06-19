@@ -853,6 +853,79 @@
       color: var(--muted);
     }
 
+
+    /* ── BOTTOM NAV (mobile) ── */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #1A1A2E;
+      border-top: 1px solid rgba(255,255,255,.08);
+      z-index: 200;
+      padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    .bottom-nav-inner { display: flex; }
+    .bn-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 10px 4px 8px; gap: 3px;
+      text-decoration: none; color: rgba(255,255,255,.45);
+      font-size: 9px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .06em; font-family: var(--font);
+      border: none; background: none; cursor: pointer;
+      transition: color .15s;
+    }
+    .bn-item.active { color: var(--yellow); }
+    .bn-item svg { width: 20px; height: 20px; stroke-width: 1.8; fill: none; stroke: currentColor; }
+
+    @media (max-width: 768px) {
+      .bottom-nav { display: block; }
+      .wrapper { padding-bottom: 6rem !important; }
+      .feedback-btn { bottom: 72px !important; }
+    }
+
+    /* ── RESPONSÁVEL ── */
+    .task-table-head { display: grid; grid-template-columns: 32px 1fr 100px 80px 80px 50px; }
+    .task-row { display: grid; grid-template-columns: 32px 1fr 100px 80px 80px 50px; }
+
+    .resp-input {
+      font-family: var(--font); font-size: 11px; font-weight: 600;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 5px; padding: 3px 7px; color: var(--text);
+      outline: none; width: 100%; transition: border-color .15s;
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .resp-input:focus { border-color: var(--blue); }
+    .resp-input::placeholder { color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+    /* ── COUNTDOWN ── */
+    .countdown-banner {
+      background: #1A1A2E;
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .countdown-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .1em; }
+    .countdown-task { font-size: 13px; font-weight: 600; color: var(--yellow); flex: 1; }
+    .countdown-timer {
+      font-family: monospace; font-size: 18px; font-weight: 700;
+      color: var(--yellow); letter-spacing: .05em; white-space: nowrap;
+    }
+    .countdown-timer.urgent { color: var(--red); animation: pulse-red 1s ease-in-out infinite; }
+    @keyframes pulse-red { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+    /* ── TURNO STATUS ── */
+    .turno-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; padding: 3px 10px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .turno-badge.ativo { background: rgba(0,166,80,.15); color: var(--green); border: 1px solid rgba(0,166,80,.3); }
+    .turno-badge.fora  { background: rgba(107,115,148,.12); color: var(--muted); border: 1px solid var(--border); }
+
     /* ── FEEDBACK BUTTON ── */
     .feedback-btn {
       position: fixed;
@@ -1045,7 +1118,7 @@
 
       .task-table-head { display: none; }
       .task-row { grid-template-columns: 32px 1fr; padding: 11px 12px; gap: 8px; }
-      .task-row > div:nth-child(3), .task-row > div:nth-child(4), .task-row > div:nth-child(5) { display: none; }
+      .task-row > div:nth-child(3), .task-row > div:nth-child(4), .task-row > div:nth-child(5), .task-row > div:nth-child(6) { display: none; }
       .task-info-meta { display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
       .task-name-link { font-size: 13px; }
       .task-desc-text { font-size: 11px; }
@@ -1099,6 +1172,7 @@
       <div>
         <div class="header-title">Assignments — Transportes SSP20</div>
         <div class="header-date" id="hero-date">Carregando data...</div>
+      <span class="turno-badge" id="turno-badge">—</span>
       </div>
     </div>
     <div class="shift-selector">
@@ -1166,6 +1240,15 @@
     </button>
   </div>
 
+  <!-- COUNTDOWN -->
+  <div class="countdown-banner" id="countdown-banner" style="display:none">
+    <div>
+      <div class="countdown-label">Próximo prazo</div>
+      <div class="countdown-task" id="countdown-task">—</div>
+    </div>
+    <div class="countdown-timer" id="countdown-timer">00:00</div>
+  </div>
+
   <!-- TAREFA PRIMORDIAL -->
   <div class="primordial-card" id="primordial-card">
     <div class="task-check-wrap" style="padding-top:2px">
@@ -1188,7 +1271,7 @@
   </div>
   <div class="task-table">
     <div class="task-table-head">
-      <div></div><div class="th">Tarefa</div><div class="th">Limite</div><div class="th">Prioridade</div><div class="th"></div>
+      <div></div><div class="th">Tarefa</div><div class="th">Limite</div><div class="th">Responsável</div><div class="th">Prioridade</div><div class="th"></div>
     </div>
     <div id="list-tarefas"></div>
   </div>
@@ -1286,6 +1369,32 @@
     <button class="form-send-btn" id="feedback-send">Enviar por e-mail ↗</button>
   </div>
 </div>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="index.html" class="bn-item active">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Rotina
+    </a>
+    <a href="madrugadao.html" class="bn-item">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Time
+    </a>
+    <a href="dit-report.html" class="bn-item">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      DIT
+    </a>
+    <a href="diario.html" class="bn-item">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Diário
+    </a>
+    <button class="bn-item" onclick="document.getElementById('feedback-open').click()">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Feedback
+    </button>
+  </div>
+</nav>
 
 <script>
 const TASKS = {
@@ -1434,6 +1543,7 @@ function buildRow(t) {
   const sev  = dlSeverity(t.deadline);
   const row  = document.createElement('div');
   row.className = 'task-row' + (done ? ' done' : '');
+  const savedResp = state['resp_'+t.id] || '';
   row.innerHTML = `
     <div class="task-check-wrap"><input type="checkbox" class="task-check" data-id="${t.id}" ${done?'checked':''}></div>
     <div>
@@ -1445,6 +1555,7 @@ function buildRow(t) {
       </div>
     </div>
     <div><span class="dl-pill ${sev}">⏱ ${t.deadline}</span></div>
+    <div><input class="resp-input" data-resp="${t.id}" value="${savedResp}" placeholder="Resp." maxlength="12"/></div>
     <div><span class="prio ${t.priority}">${t.priority}</span></div>
     <div></div>
   `;
@@ -1459,6 +1570,17 @@ function buildRow(t) {
     if (e.target.tagName !== 'A' && e.target.tagName !== 'INPUT') { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
   });
   row.querySelector('.task-name-link').addEventListener('click', e => e.stopPropagation());
+  // Save responsible
+  const respInput = row.querySelector('.resp-input');
+  let respTimer;
+  respInput.addEventListener('input', () => {
+    clearTimeout(respTimer);
+    respTimer = setTimeout(() => {
+      state['resp_'+t.id] = respInput.value.trim();
+      save('resp_'+t.id);
+    }, 800);
+  });
+  respInput.addEventListener('click', e => e.stopPropagation());
   return row;
 }
 
@@ -1655,6 +1777,107 @@ primCard.addEventListener('click', (e) => {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/rotina-transportes/sw.js').catch(() => {});
 }
+
+
+// ── TURNO STATUS ──────────────────────────────────────────────────────────
+function updateTurnoBadge() {
+  const now = new Date();
+  const h = now.getHours();
+  const badge = document.getElementById('turno-badge');
+  if (!badge) return;
+  // Turno madrugada: 22h - 07h
+  const ativo = h >= 22 || h < 7;
+  badge.textContent = ativo ? '🌙 Turno ativo' : '😴 Fora do turno';
+  badge.className = 'turno-badge ' + (ativo ? 'ativo' : 'fora');
+}
+
+// ── COUNTDOWN ─────────────────────────────────────────────────────────────
+function updateCountdown() {
+  const all = Object.values(TASKS).flat();
+  const now  = new Date();
+  const nowMins = now.getHours()*60 + now.getMinutes();
+
+  // Find next pending task by deadline
+  const pending = all
+    .filter(t => !state[t.id])
+    .map(t => {
+      const [h,m] = t.deadline.split(':').map(Number);
+      let mins = h*60+m;
+      // Handle overnight tasks (after midnight, count from previous day context)
+      if (mins < 12*60) mins += 24*60; // treat early AM as next day
+      const nowAdj = nowMins < 12*60 ? nowMins + 24*60 : nowMins;
+      return { ...t, diffMins: mins - nowAdj };
+    })
+    .filter(t => t.diffMins > 0)
+    .sort((a,b) => a.diffMins - b.diffMins);
+
+  const banner = document.getElementById('countdown-banner');
+  if (!banner) return;
+
+  if (pending.length === 0) { banner.style.display = 'none'; return; }
+
+  const next = pending[0];
+  const h = Math.floor(next.diffMins / 60);
+  const m = next.diffMins % 60;
+  const s = 60 - now.getSeconds();
+
+  const timer = document.getElementById('countdown-timer');
+  const taskEl = document.getElementById('countdown-task');
+
+  taskEl.textContent = next.name;
+  timer.textContent = h > 0 ? `${h}h ${String(m).padStart(2,'0')}m` : `${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+  timer.className = 'countdown-timer' + (next.diffMins <= 15 ? ' urgent' : '');
+  banner.style.display = 'flex';
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────
+async function requestNotifications() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+}
+
+function checkNotifications() {
+  if (Notification.permission !== 'granted') return;
+  const all = Object.values(TASKS).flat();
+  const now  = new Date();
+  const nowMins = now.getHours()*60 + now.getMinutes();
+
+  all.filter(t => !state[t.id]).forEach(t => {
+    const [h,m] = t.deadline.split(':').map(Number);
+    let dlMins = h*60+m;
+    if (dlMins < 12*60) dlMins += 24*60;
+    const nowAdj = nowMins < 12*60 ? nowMins + 24*60 : nowMins;
+    const diff = dlMins - nowAdj;
+
+    // Notify at 30 min and 10 min before
+    const notifKey = `notified_${t.id}_${diff <= 10 ? '10' : '30'}`;
+    if ((diff === 30 || diff === 10) && !sessionStorage.getItem(notifKey)) {
+      sessionStorage.setItem(notifKey, '1');
+      new Notification(`⏱ ${diff === 10 ? '10 min' : '30 min'} para o prazo`, {
+        body: t.name,
+        icon: '/rotina-transportes/favicon.png',
+        tag: t.id
+      });
+    }
+  });
+}
+
+// Request notification permission on load
+requestNotifications();
+
+// Update countdown, turno and notifications every minute
+updateTurnoBadge();
+updateCountdown();
+setInterval(() => {
+  updateTurnoBadge();
+  updateCountdown();
+  checkNotifications();
+}, 30000);
+// Also update countdown seconds every second
+setInterval(updateCountdown, 1000);
+
 
 // Shift selector
 const shiftBtns   = document.querySelectorAll('.shift-btn');
