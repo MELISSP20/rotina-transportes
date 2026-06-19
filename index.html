@@ -853,58 +853,6 @@
       color: var(--muted);
     }
 
-
-    /* ── BOTTOM NAV (mobile) ── */
-    .bottom-nav {
-      display: none;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: #1A1A2E;
-      border-top: 1px solid rgba(255,255,255,.08);
-      z-index: 200;
-      padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    }
-    .bottom-nav-inner { display: flex; }
-    .bn-item {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 10px 4px 8px; gap: 3px;
-      text-decoration: none; color: rgba(255,255,255,.45);
-      font-size: 9px; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .06em; font-family: var(--font);
-      border: none; background: none; cursor: pointer;
-      transition: color .15s;
-    }
-    .bn-item.active { color: var(--yellow); }
-    .bn-item svg { width: 20px; height: 20px; stroke-width: 1.8; fill: none; stroke: currentColor; }
-
-    @media (max-width: 768px) {
-      .bottom-nav { display: block; }
-      .wrapper { padding-bottom: 6rem !important; }
-      .feedback-btn { bottom: 72px !important; }
-    }
-
-
-    /* ── COUNTDOWN ── */
-    .countdown-banner {
-      background: #1A1A2E;
-      border-radius: var(--radius);
-      padding: 10px 16px;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .countdown-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .1em; }
-    .countdown-task { font-size: 13px; font-weight: 600; color: var(--yellow); flex: 1; }
-    .countdown-timer {
-      font-family: monospace; font-size: 18px; font-weight: 700;
-      color: var(--yellow); letter-spacing: .05em; white-space: nowrap;
-    }
-    .countdown-timer.urgent { color: var(--red); animation: pulse-red 1s ease-in-out infinite; }
-    @keyframes pulse-red { 0%,100%{opacity:1} 50%{opacity:.5} }
-
-
     /* ── FEEDBACK BUTTON ── */
     .feedback-btn {
       position: fixed;
@@ -1097,7 +1045,7 @@
 
       .task-table-head { display: none; }
       .task-row { grid-template-columns: 32px 1fr; padding: 11px 12px; gap: 8px; }
-      .task-row > div:nth-child(3), .task-row > div:nth-child(4), .task-row > div:nth-child(5), .task-row > div:nth-child(6) { display: none; }
+      .task-row > div:nth-child(3), .task-row > div:nth-child(4), .task-row > div:nth-child(5) { display: none; }
       .task-info-meta { display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
       .task-name-link { font-size: 13px; }
       .task-desc-text { font-size: 11px; }
@@ -1216,15 +1164,6 @@
     ">
       ↺ Desmarcar tudo
     </button>
-  </div>
-
-  <!-- COUNTDOWN -->
-  <div class="countdown-banner" id="countdown-banner" style="display:none">
-    <div>
-      <div class="countdown-label">Próximo prazo</div>
-      <div class="countdown-task" id="countdown-task">—</div>
-    </div>
-    <div class="countdown-timer" id="countdown-timer">00:00</div>
   </div>
 
   <!-- TAREFA PRIMORDIAL -->
@@ -1347,32 +1286,6 @@
     <button class="form-send-btn" id="feedback-send">Enviar por e-mail ↗</button>
   </div>
 </div>
-
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottom-nav">
-  <div class="bottom-nav-inner">
-    <a href="index.html" class="bn-item active">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Rotina
-    </a>
-    <a href="madrugadao.html" class="bn-item">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      Time
-    </a>
-    <a href="dit-report.html" class="bn-item">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      DIT
-    </a>
-    <a href="diario.html" class="bn-item">
-      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      Diário
-    </a>
-    <button class="bn-item" onclick="document.getElementById('feedback-open').click()">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Feedback
-    </button>
-  </div>
-</nav>
 
 <script>
 const TASKS = {
@@ -1546,6 +1459,63 @@ function buildRow(t) {
     if (e.target.tagName !== 'A' && e.target.tagName !== 'INPUT') { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
   });
   row.querySelector('.task-name-link').addEventListener('click', e => e.stopPropagation());
+  return row;
+}
+
+function renderAll() {
+  for (const [id, tasks] of Object.entries(TASKS)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.innerHTML = '';
+    tasks.forEach(t => el.appendChild(buildRow(t)));
+  }
+  updateStats();
+}
+
+function updateStats() {
+  const all = Object.values(TASKS).flat();
+  const total = all.length + 1; // +1 primordial
+  const doneTasks = all.filter(t => state[t.id]).length;
+  const donePrim = state['primordial'] ? 1 : 0;
+  const done = doneTasks + donePrim;
+  const pending = total - done;
+  const urgent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length + (state['primordial'] ? 0 : 1);
+  const pct = total ? Math.round((done/total)*100) : 0;
+
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-done').textContent    = done;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('stat-urgent').textContent  = urgent;
+  document.getElementById('progress-pct').textContent = pct;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('stat-done-foot').textContent  = done;
+  document.getElementById('stat-total-foot').textContent = total;
+}
+
+const DAYS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function tick() {
+  const n = new Date();
+  document.getElementById('live-clock').textContent =
+    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+  document.getElementById('hero-date').textContent =
+    DAYS[n.getDay()] + ', ' + n.getDate() + ' de ' + MONTHS[n.getMonth()] + ' de ' + n.getFullYear();
+}
+
+// Dark mode
+const html = document.documentElement;
+const btn = document.getElementById('theme-btn');
+const savedTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', savedTheme);
+btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+btn.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', next);
+});
 
 tick();
 setInterval(tick, 1000);
@@ -1685,16 +1655,6 @@ primCard.addEventListener('click', (e) => {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/rotina-transportes/sw.js').catch(() => {});
 }
-
-
-updateCountdown();
-setInterval(() => {
-  updateCountdown();
-  checkNotifications();
-}, 30000);
-// Also update countdown seconds every second
-setInterval(updateCountdown, 1000);
-
 
 // Shift selector
 const shiftBtns   = document.querySelectorAll('.shift-btn');
