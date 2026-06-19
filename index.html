@@ -1093,6 +1093,25 @@
       .feedback-btn { bottom: 72px !important; right: 16px !important; }
     }
 
+
+    /* ── COUNTDOWN ── */
+    .countdown-banner {
+      background: #1A1A2E;
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      margin-bottom: 1rem;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .countdown-banner.visible { display: flex; }
+    .countdown-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .1em; }
+    .countdown-task  { font-size: 13px; font-weight: 600; color: var(--yellow); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .countdown-timer { font-family: monospace; font-size: 18px; font-weight: 700; color: var(--yellow); letter-spacing:.05em; white-space:nowrap; }
+    .countdown-timer.urgent { color: #FF3D57; animation: blink-red 1s ease-in-out infinite; }
+    @keyframes blink-red { 0%,100%{opacity:1} 50%{opacity:.4} }
+
   </style>
 </head>
 <body>
@@ -1193,6 +1212,15 @@
     ">
       ↺ Desmarcar tudo
     </button>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown-banner" id="countdown-banner">
+    <div style="min-width:0">
+      <div class="countdown-label">Próximo prazo</div>
+      <div class="countdown-task" id="countdown-task">—</div>
+    </div>
+    <div class="countdown-timer" id="countdown-timer">00:00</div>
   </div>
 
   <!-- TAREFA PRIMORDIAL -->
@@ -1684,6 +1712,46 @@ primCard.addEventListener('click', (e) => {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/rotina-transportes/sw.js').catch(() => {});
 }
+
+// ── COUNTDOWN ────────────────────────────────────────────────────────────
+function updateCountdown() {
+  const all = Object.values(TASKS).flat();
+  const now = new Date();
+  const nowMins = now.getHours()*60 + now.getMinutes();
+
+  const pending = all
+    .filter(t => !state[t.id])
+    .map(t => {
+      const [h,m] = t.deadline.split(':').map(Number);
+      let dl = h*60+m;
+      // Overnight wrap: tasks before 12h belong to next-day context
+      if (dl < 12*60) dl += 24*60;
+      const base = nowMins < 12*60 ? nowMins + 24*60 : nowMins;
+      return { ...t, diff: dl - base };
+    })
+    .filter(t => t.diff > 0)
+    .sort((a,b) => a.diff - b.diff);
+
+  const banner = document.getElementById('countdown-banner');
+  if (!banner) return;
+  if (!pending.length) { banner.classList.remove('visible'); return; }
+
+  const next = pending[0];
+  const h = Math.floor(next.diff / 60);
+  const m = next.diff % 60;
+  const s = 60 - now.getSeconds();
+  const timerEl = document.getElementById('countdown-timer');
+
+  document.getElementById('countdown-task').textContent = next.name;
+  timerEl.textContent = h > 0
+    ? h + 'h ' + String(m).padStart(2,'0') + 'm'
+    : String(m).padStart(2,'0') + 'm ' + String(s).padStart(2,'0') + 's';
+  timerEl.className = 'countdown-timer' + (next.diff <= 15 ? ' urgent' : '');
+  banner.classList.add('visible');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
 
 // Shift selector
 const shiftBtns   = document.querySelectorAll('.shift-btn');
