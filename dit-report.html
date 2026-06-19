@@ -322,24 +322,24 @@ function parseCSVLine(line) {
   for (let i = 0; i < line.length; i++) {
     const c = line[i];
     if (c === '"') { inQ = !inQ; }
-    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
-    else { cur += c; }
+    else if (c === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
+    else if (c !== '\r') { cur += c; }
   }
-  result.push(cur);
+  result.push(cur.trim());
   return result;
 }
 
 function parseCSV(text, filename) {
-  const lines = text.split('\n');
+  const lines = text.replace(/\r/g, '').split('\n');
   const header = parseCSVLine(lines[0]);
-  const rows = lines.slice(1).filter(l => l.trim()).map(parseCSVLine);
 
-  const col = name => header.findIndex(h => h.trim() === name);
-  const subCol    = col('SHP_LG_SUB_STATUS');
-  const desconCol = col('MOTIVO_DESCON');
-  const faltaCol  = col('FALTANTE_ADUANA');
-  const ofensCol  = col('Ofensor');
-  const emRotaCol = col('Em Rota');
+  // Convert each row to a key-value object
+  const rows = lines.slice(1).filter(l => l.trim()).map(line => {
+    const vals = parseCSVLine(line);
+    const obj = {};
+    header.forEach((h, i) => obj[h.trim()] = (vals[i] || '').trim());
+    return obj;
+  });
 
   const fmt = n => n.toLocaleString('pt-BR');
   const p   = (v, t) => t ? ((v/t)*100).toFixed(1)+'%' : '—';
@@ -348,12 +348,11 @@ function parseCSV(text, filename) {
   const insT={}, descT={}, descM={}, ncS={};
 
   rows.forEach(r => {
-    const g = i => (i>=0 && r[i] ? r[i].trim() : '');
-    const sub    = g(subCol).toLowerCase();
-    const descon = g(desconCol);
-    const falta  = g(faltaCol);
-    const ofens  = g(ofensCol);
-    const er     = g(emRotaCol);
+    const sub    = (r['SHP_LG_SUB_STATUS'] || '').toLowerCase();
+    const descon =  r['MOTIVO_DESCON']     || '';
+    const falta  =  r['FALTANTE_ADUANA']   || '';
+    const ofens  =  r['Ofensor']           || '';
+    const er     =  r['Em Rota']           || '';
 
     if (er === '1') emRota++;
 
