@@ -1368,17 +1368,30 @@ async function poll() {
     if (data && typeof data === 'object') {
       const h = stateHash(data);
       if (h !== lastHash) {
-        console.log('[SYNC] estado mudou, atualizando...');
         lastHash = h;
         state = data;
         try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-        renderAll();
+        // Only update checkboxes — don't re-render DOM
+        syncCheckboxes();
         refreshPrimordial();
         updateStats();
       }
       setSyncStatus(true);
     }
-  } catch(e) { console.error('[SYNC] erro poll:', e); setSyncStatus(false); }
+  } catch(e) { setSyncStatus(false); }
+}
+
+function syncCheckboxes() {
+  // Update existing checkboxes without rebuilding DOM
+  document.querySelectorAll('.task-check[data-id]').forEach(cb => {
+    const id = cb.dataset.id;
+    const checked = !!state[id];
+    if (cb.checked !== checked) {
+      cb.checked = checked;
+      const row = cb.closest('.task-row');
+      if (row) row.classList.toggle('done', checked);
+    }
+  });
 }
 
 async function initState() {
@@ -1422,7 +1435,7 @@ function buildRow(t) {
   const row  = document.createElement('div');
   row.className = 'task-row' + (done ? ' done' : '');
   row.innerHTML = `
-    <div class="task-check-wrap"><input type="checkbox" class="task-check" ${done?'checked':''}></div>
+    <div class="task-check-wrap"><input type="checkbox" class="task-check" data-id="${t.id}" ${done?'checked':''}></div>
     <div>
       <a class="task-name-link" href="${t.link}">${t.name}<span class="link-arrow">↗</span></a>
       <div class="task-desc-text">${t.desc}</div>
