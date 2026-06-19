@@ -155,6 +155,113 @@
   }
   .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
+  /* ── IMAGE MODAL ── */
+  .img-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 500;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  .img-modal-overlay.open { display: flex; }
+
+  .img-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    overflow: hidden;
+  }
+
+  .img-modal-header {
+    background: #1A1A2E;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .img-modal-title { font-size: 13px; font-weight: 700; color: var(--yellow); }
+
+  .img-modal-close {
+    background: none; border: none; color: rgba(255,255,255,.6);
+    font-size: 18px; cursor: pointer; padding: 2px 6px;
+  }
+
+  .img-modal-body {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    min-height: 400px;
+  }
+
+  .img-preview-pane {
+    border-right: 1px solid var(--border);
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background: var(--bg);
+    overflow: auto;
+  }
+
+  #img-preview { max-width: 100%; border-radius: 6px; }
+
+  .img-form-pane {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 600px;
+  }
+
+  .img-form-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--muted); margin-bottom: 2px;
+  }
+
+  .img-form-row { display: grid; grid-template-columns: 1fr 80px; gap: 6px; }
+
+  .img-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+  }
+  .img-input:focus { border-color: var(--blue); }
+  .img-input.pct { font-size: 12px; font-weight: 500; }
+
+  .img-section-sep {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--muted);
+    padding-top: 6px; border-top: 1px solid var(--border);
+  }
+
+  .img-modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  @media (max-width: 700px) {
+    .img-modal-body { grid-template-columns: 1fr; }
+    .img-preview-pane { border-right: none; border-bottom: 1px solid var(--border); max-height: 220px; }
+  }
+
   .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--blue); border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; margin-right: 6px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -283,6 +390,79 @@
 
 </div><!-- /wrapper -->
 
+<!-- IMAGE MODAL -->
+<div class="img-modal-overlay" id="img-modal">
+  <div class="img-modal">
+    <div class="img-modal-header">
+      <span class="img-modal-title">📊 Preencha os KPIs do Dashboard</span>
+      <button class="img-modal-close" onclick="closeImgModal()">✕</button>
+    </div>
+    <div class="img-modal-body">
+      <div class="img-preview-pane">
+        <img id="img-preview" src="" alt="Dashboard"/>
+      </div>
+      <div class="img-form-pane">
+        <div class="img-section-sep">KPIs Gerais</div>
+
+        <div>
+          <div class="img-form-label">DIT Total</div>
+          <input class="img-input" id="imgDitTotal" type="text" placeholder="ex: 1.234"/>
+        </div>
+        <div>
+          <div class="img-form-label">Em Rota</div>
+          <input class="img-input" id="imgEmRota" type="text" placeholder="ex: 980"/>
+        </div>
+        <div>
+          <div class="img-form-label">D-1 (Ofensores)</div>
+          <input class="img-input" id="imgD1" type="text" placeholder="ex: 254"/>
+        </div>
+
+        <div class="img-section-sep">Offenders</div>
+
+        <div>
+          <div class="img-form-label">Insucessos — Qtd / %</div>
+          <div class="img-form-row">
+            <input class="img-input" id="imgInsQty" type="text" placeholder="Qtd"/>
+            <input class="img-input pct" id="imgInsPct" type="text" placeholder="%"/>
+          </div>
+        </div>
+        <div>
+          <div class="img-form-label">Descontainerizados — Qtd / %</div>
+          <div class="img-form-row">
+            <input class="img-input" id="imgDescQty" type="text" placeholder="Qtd"/>
+            <input class="img-input pct" id="imgDescPct" type="text" placeholder="%"/>
+          </div>
+        </div>
+        <div>
+          <div class="img-form-label">Não Carregado — Qtd / %</div>
+          <div class="img-form-row">
+            <input class="img-input" id="imgNCQty" type="text" placeholder="Qtd"/>
+            <input class="img-input pct" id="imgNCPct" type="text" placeholder="%"/>
+          </div>
+        </div>
+        <div>
+          <div class="img-form-label">Carregado Não Finalizado — Qtd / %</div>
+          <div class="img-form-row">
+            <input class="img-input" id="imgCNFQty" type="text" placeholder="Qtd"/>
+            <input class="img-input pct" id="imgCNFPct" type="text" placeholder="%"/>
+          </div>
+        </div>
+        <div>
+          <div class="img-form-label">Faltante Aduana — Qtd / %</div>
+          <div class="img-form-row">
+            <input class="img-input" id="imgFAQty" type="text" placeholder="Qtd"/>
+            <input class="img-input pct" id="imgFAPct" type="text" placeholder="%"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="img-modal-footer">
+      <button class="btn-secondary" onclick="closeImgModal()">Cancelar</button>
+      <button class="btn-primary" onclick="applyManualKPIs()">✓ Aplicar KPIs</button>
+    </div>
+  </div>
+</div>
+
 <script>
 document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 
@@ -381,54 +561,54 @@ function parseCSV(text, filename) {
 function handleImage(file) {
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => analyzeImage(e.target.result.split(',')[1], file.type || 'image/png', file.name);
+  reader.onload = e => showImagePreview(e.target.result, file.name);
   reader.readAsDataURL(file);
 }
 
-async function analyzeImage(base64, mime, filename) {
-  const statusEl = document.getElementById('ocrStatus');
-  statusEl.innerHTML = '<span class="spinner"></span> Lendo dashboard...';
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6', max_tokens: 1000,
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: mime, data: base64 } },
-          { type: 'text', text: `Analise esse print de dashboard operacional de logística SSP20 e extraia APENAS os seguintes dados em JSON puro (sem markdown):\n{"dit_total":null,"em_rota":null,"d1":null,"ins_qty":null,"ins_pct":null,"desc_qty":null,"desc_pct":null,"nc_qty":null,"nc_pct":null,"cnf_qty":null,"cnf_pct":null,"fa_qty":null,"fa_pct":null,"contexto":null}` }
-        ]}]
-      })
-    });
-    const data = await response.json();
-    const text = data.content?.map(c=>c.text||'').join('') || '';
-    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+function showImagePreview(dataUrl, filename) {
+  const zoneIMG = document.getElementById('zoneIMG');
+  zoneIMG.classList.add('loaded-img');
+  document.getElementById('labelIMG').innerHTML = `<strong>✓ ${filename}</strong><br>Preencha os KPIs ao lado`;
+  document.getElementById('ocrStatus').textContent = '';
 
-    if (parsed.dit_total) document.getElementById('kpiTotal').value = parsed.dit_total;
-    if (parsed.em_rota)   document.getElementById('kpiRota').value  = parsed.em_rota;
-    if (parsed.d1)        document.getElementById('kpiD1').value    = parsed.d1;
+  // Show image modal with side-by-side form
+  const modal = document.getElementById('img-modal');
+  document.getElementById('img-preview').src = dataUrl;
+  modal.classList.add('open');
+}
 
-    const fillCard = (key, qty, pct) => {
-      if (qty && document.getElementById('qtd'+key).textContent === '—') {
-        document.getElementById('qtd'+key).textContent = qty;
-        document.getElementById('pct'+key).textContent = pct || '—';
-        document.getElementById('ibadge'+key).style.display = 'inline';
-      }
-    };
-    fillCard('Ins',  parsed.ins_qty,  parsed.ins_pct);
-    fillCard('Desc', parsed.desc_qty, parsed.desc_pct);
-    fillCard('NC',   parsed.nc_qty,   parsed.nc_pct);
-    fillCard('CNF',  parsed.cnf_qty,  parsed.cnf_pct);
-    fillCard('FA',   parsed.fa_qty,   parsed.fa_pct);
+function closeImgModal() {
+  document.getElementById('img-modal').classList.remove('open');
+}
 
-    document.getElementById('zoneIMG').classList.add('loaded-img');
-    document.getElementById('labelIMG').innerHTML = `<strong>✓ ${filename}</strong><br>KPIs extraídos do dashboard`;
-    statusEl.textContent = '✓ Leitura concluída';
-    setTimeout(() => statusEl.textContent = '', 3000);
-  } catch(err) {
-    statusEl.textContent = '⚠ Erro na leitura — preencha manualmente';
-    console.error(err);
-  }
+function applyManualKPIs() {
+  const fields = [
+    ['imgDitTotal', 'kpiTotal'],
+    ['imgEmRota',   'kpiRota'],
+    ['imgD1',       'kpiD1'],
+  ];
+  fields.forEach(([src, dst]) => {
+    const v = document.getElementById(src).value.trim();
+    if (v) document.getElementById(dst).value = v;
+  });
+
+  const cards = [
+    ['imgIns',  'qtdIns',  'pctIns',  'badgeIns',  'ibadgeIns'],
+    ['imgDesc', 'qtdDesc', 'pctDesc', 'badgeDesc', 'ibadgeDesc'],
+    ['imgNC',   'qtdNC',   'pctNC',   'badgeNC',   'ibadgeNC'],
+    ['imgCNF',  'qtdCNF',  'pctCNF',  'badgeCNF',  'ibadgeCNF'],
+    ['imgFA',   'qtdFA',   'pctFA',   'badgeFA',   'ibadgeFA'],
+  ];
+  cards.forEach(([pfx, qtdId, pctId, badgeId, ibadgeId]) => {
+    const qty = document.getElementById(pfx+'Qty').value.trim();
+    const pct = document.getElementById(pfx+'Pct').value.trim();
+    if (qty) {
+      document.getElementById(qtdId).textContent = qty;
+      document.getElementById(pctId).textContent = pct || '—';
+      document.getElementById(ibadgeId).style.display = 'inline';
+    }
+  });
+  closeImgModal();
 }
 
 function p(v, t) { return t ? ((v/t)*100).toFixed(1)+'%' : '—'; }
