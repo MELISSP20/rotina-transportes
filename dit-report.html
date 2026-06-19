@@ -345,28 +345,37 @@ function parseCSV(text, filename) {
   const p   = (v, t) => t ? ((v/t)*100).toFixed(1)+'%' : '—';
 
   let total=rows.length, ins=0, desc=0, nc=0, cnf=0, fa=0, emRota=0;
-  const insT={}, descT={}, descM={}, ncS={};
+  const insT={}, descT={}, descM={}, ncS={}, cnfT={};
 
   rows.forEach(r => {
-    const sub    = (r['SHP_LG_SUB_STATUS'] || '').toLowerCase();
-    const descon =  r['MOTIVO_DESCON']     || '';
-    const falta  =  r['FALTANTE_ADUANA']   || '';
-    const ofens  =  r['Ofensor']           || '';
-    const er     =  r['Em Rota']           || '';
+    const descon  = r['MOTIVO_DESCON']           || '';
+    const falta   = r['FALTANTE_ADUANA']         || '';
+    const ofens   = r['Ofensor']                 || '';
+    const on_rt   = r['ON_ROUTE']                || '';
+    const chk     = r['CHECKPOINT_FIRST_VISIT']  || '';
+    const sub     = (r['SHP_LG_SUB_STATUS']      || '').toLowerCase();
+    const er      = r['Em Rota']                 || '';
 
     if (er === '1') emRota++;
 
-    if (falta) { fa++; }
-    else if (descon) {
+    if (falta) {
+      fa++;
+    } else if (descon) {
       desc++;
       if (ofens) descT[ofens] = (descT[ofens]||0)+1;
       descM[descon] = (descM[descon]||0)+1;
-    } else if (['missing','unvisited_address','at_the_door','problem_solving','missrouted','next_destination','soon_deliver','damaged'].includes(sub)) {
+    } else if (chk === 'RETURNED WITH NO ATTEMPTED') {
+      cnf++;
+      if (ofens) cnfT[ofens] = (cnfT[ofens]||0)+1;
+    } else if (on_rt && chk && chk !== 'RETURNED WITH NO ATTEMPTED') {
       ins++;
       if (ofens) insT[ofens] = (insT[ofens]||0)+1;
-    } else if (['sorting','in_container',''].includes(sub)) {
+    } else if (['sorting','in_container',''].includes(sub) && !on_rt) {
       nc++;
       if (sub) ncS[sub] = (ncS[sub]||0)+1;
+    } else if (on_rt && !chk) {
+      ins++;
+      if (ofens) insT[ofens] = (insT[ofens]||0)+1;
     }
   });
 
@@ -402,6 +411,11 @@ function parseCSV(text, filename) {
   const topNC = Object.entries(ncS).sort((a,b)=>b[1]-a[1]);
   if (topNC.length) document.getElementById('txtNC').value =
     topNC.map(([s,q]) => `${s}: ${fmt(q)} (${p(q,nc)})`).join(', ') + '.';
+
+  const topCNF = Object.entries(cnfT).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  if (topCNF.length) document.getElementById('txtCNF').value =
+    'Pacotes que saíram em rota mas retornaram sem tentativa de entrega. Top: ' +
+    topCNF.map(([t,q]) => `${t}: ${fmt(q)} IDs (${p(q,cnf)})`).join(', ') + '.';
 
   zCSV.classList.add('loaded-csv');
   document.getElementById('labelCSV').innerHTML = `<strong>✓ ${filename}</strong><br>${fmt(total)} registros · ${fmt(emRota)} em rota`;
