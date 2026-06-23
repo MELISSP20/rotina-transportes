@@ -105,6 +105,15 @@
     .period-reset { font-family: var(--font); font-size: 11px; font-weight: 700; padding: 9px 14px; background: transparent; color: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.15); border-radius: 8px; cursor: pointer; transition: all .15s; letter-spacing: .02em; }
     .period-reset:hover { background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.25); }
     .period-warn { font-size: 11px; font-weight: 600; color: #F59E0B; margin-top: 8px; }
+    /* Quick selectors */
+    .period-quick { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .period-q-btn { font-family: var(--font); font-size: 11px; font-weight: 700; padding: 7px 13px; background: rgba(255,255,255,.04); color: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.1); border-radius: 7px; cursor: pointer; transition: all .12s; letter-spacing: .01em; }
+    .period-q-btn:hover { background: rgba(255,230,0,.08); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .period-q-btn.active { background: var(--yellow); color: var(--navy); border-color: var(--yellow); box-shadow: 0 1px 6px rgba(255,230,0,.2); }
+    /* Today marker */
+    .period-today-marker { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 12px; background: rgba(255,230,0,.06); border: 1px solid rgba(255,230,0,.2); border-radius: 8px; align-self: stretch; justify-content: center; }
+    .period-today-lbl { font-size: 8.5px; font-weight: 700; letter-spacing: .18em; color: rgba(255,230,0,.55); text-transform: uppercase; }
+    .period-today-val { font-size: 13px; font-weight: 700; color: var(--yellow); font-variant-numeric: tabular-nums; letter-spacing: -.2px; }
     .period-banner { background: linear-gradient(135deg, rgba(255,230,0,.12), rgba(255,230,0,.04)); border: 1px solid rgba(255,230,0,.25); border-radius: 10px; padding: 11px 16px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85); letter-spacing: .02em; margin-bottom: 1.25rem; font-variant-numeric: tabular-nums; }
     .period-banner b { color: var(--yellow); font-weight: 800; }
     .gen-info { font-size:11px; color:rgba(255,255,255,.35); }
@@ -279,6 +288,13 @@
         <span class="period-eyebrow">PERÍODO DE ANÁLISE</span>
         <span class="period-info" id="period-info">—</span>
       </div>
+      <div class="period-quick">
+        <button class="period-q-btn active" data-q="today" onclick="setPeriod('today')">Hoje</button>
+        <button class="period-q-btn" data-q="yesterday" onclick="setPeriod('yesterday')">Ontem</button>
+        <button class="period-q-btn" data-q="7d" onclick="setPeriod('7d')">7 dias</button>
+        <button class="period-q-btn" data-q="30d" onclick="setPeriod('30d')">30 dias</button>
+        <button class="period-q-btn" data-q="file" onclick="setPeriod('file')">Tudo do arquivo</button>
+      </div>
       <div class="period-inputs">
         <div class="period-input-wrap">
           <label>DE</label>
@@ -289,7 +305,10 @@
           <label>ATÉ</label>
           <input type="date" id="date-to" onchange="onPeriodChange()"/>
         </div>
-        <button class="period-reset" onclick="resetPeriod()">↻ Período completo</button>
+        <div class="period-today-marker">
+          <span class="period-today-lbl">HOJE</span>
+          <span class="period-today-val" id="period-today-val">—</span>
+        </div>
       </div>
       <div class="period-warn" id="period-warn" style="display:none;"></div>
     </div>
@@ -418,52 +437,82 @@ function updatePeriodSelector() {
   const info = document.getElementById('period-info');
   const fromInp = document.getElementById('date-from');
   const toInp = document.getElementById('date-to');
-  const warn = document.getElementById('period-warn');
+  const todayVal = document.getElementById('period-today-val');
 
-  if (!psRange && !bqRange) {
+  if (!psData && !bqData) {
     sel.style.display = 'none';
     return;
   }
 
   sel.style.display = 'block';
 
-  // Determinar intersecção dos ranges (período em comum)
-  let min, max;
-  if (psRange && bqRange) {
-    min = psRange.min > bqRange.min ? psRange.min : bqRange.min;
-    max = psRange.max < bqRange.max ? psRange.max : bqRange.max;
-  } else if (psRange) {
-    min = psRange.min; max = psRange.max;
-  } else {
-    min = bqRange.min; max = bqRange.max;
-  }
+  // Hoje como referência
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const todayEnd = new Date(today); todayEnd.setHours(23,59,59,999);
+  todayVal.textContent = fmtBR(today) + '/' + today.getFullYear();
 
-  // Aviso se ranges não se sobrepõem
-  if (psRange && bqRange && min > max) {
-    warn.style.display = 'block';
-    warn.innerHTML = `⚠ Os arquivos têm períodos sem sobreposição (PS: ${fmtBR(psRange.min)}→${fmtBR(psRange.max)} · BQ: ${fmtBR(bqRange.min)}→${fmtBR(bqRange.max)})`;
-    // Usa o range mais amplo
-    min = psRange.min < bqRange.min ? psRange.min : bqRange.min;
-    max = psRange.max > bqRange.max ? psRange.max : bqRange.max;
-  } else {
-    warn.style.display = 'none';
-  }
+  // Sem min (datas passadas livres). Max = hoje
+  fromInp.removeAttribute('min');
+  toInp.removeAttribute('min');
+  fromInp.max = toISO(today);
+  toInp.max = toISO(today);
 
-  // Set bounds e valor padrão
-  fromInp.min = toISO(min);
-  fromInp.max = toISO(max);
-  toInp.min = toISO(min);
-  toInp.max = toISO(max);
-  fromInp.value = toISO(min);
-  toInp.value = toISO(max);
-  filterFrom = new Date(min);
-  filterTo = new Date(max);
-
-  // Info texto
+  // Info dos arquivos
   const parts = [];
   if (psRange) parts.push(`PS: <b>${fmtBR(psRange.min)} → ${fmtBR(psRange.max)}</b>`);
   if (bqRange) parts.push(`BQ: <b>${fmtBR(bqRange.min)} → ${fmtBR(bqRange.max)}</b>`);
-  info.innerHTML = parts.join(' · ');
+  info.innerHTML = parts.length ? parts.join(' · ') : '—';
+
+  // Default: hoje
+  setPeriod('today');
+}
+
+function setPeriod(kind) {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const todayEnd = new Date(today); todayEnd.setHours(23,59,59,999);
+
+  let from, to;
+
+  if (kind === 'today') {
+    from = today;
+    to = todayEnd;
+  } else if (kind === 'yesterday') {
+    from = new Date(today); from.setDate(from.getDate()-1);
+    to = new Date(from); to.setHours(23,59,59,999);
+  } else if (kind === '7d') {
+    from = new Date(today); from.setDate(from.getDate()-6);
+    to = todayEnd;
+  } else if (kind === '30d') {
+    from = new Date(today); from.setDate(from.getDate()-29);
+    to = todayEnd;
+  } else if (kind === 'file') {
+    if (psRange && bqRange) {
+      from = psRange.min > bqRange.min ? new Date(psRange.min) : new Date(bqRange.min);
+      to = psRange.max < bqRange.max ? new Date(psRange.max) : new Date(bqRange.max);
+    } else if (psRange) {
+      from = new Date(psRange.min); to = new Date(psRange.max);
+    } else if (bqRange) {
+      from = new Date(bqRange.min); to = new Date(bqRange.max);
+    } else {
+      from = today; to = todayEnd;
+    }
+    from.setHours(0,0,0,0);
+    to.setHours(23,59,59,999);
+  }
+
+  document.getElementById('date-from').value = toISO(from);
+  document.getElementById('date-to').value = toISO(to);
+  filterFrom = from;
+  filterTo = to;
+
+  // Atualiza estado visual dos botões quick
+  document.querySelectorAll('.period-q-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.q === kind);
+  });
+
+  checkPeriodData();
 }
 
 function onPeriodChange() {
@@ -472,16 +521,50 @@ function onPeriodChange() {
   if (!fromInp.value || !toInp.value) return;
   const [fy,fm,fd] = fromInp.value.split('-').map(Number);
   const [ty,tm,td] = toInp.value.split('-').map(Number);
-  filterFrom = new Date(fy, fm-1, fd);
-  filterTo = new Date(ty, tm-1, td, 23, 59, 59);
+  filterFrom = new Date(fy, fm-1, fd, 0,0,0,0);
+  filterTo = new Date(ty, tm-1, td, 23, 59, 59, 999);
   if (filterFrom > filterTo) {
     toInp.value = fromInp.value;
-    filterTo = new Date(fy, fm-1, fd, 23, 59, 59);
+    filterTo = new Date(fy, fm-1, fd, 23, 59, 59, 999);
+  }
+  // Quando muda manualmente, desativa o quick button
+  document.querySelectorAll('.period-q-btn').forEach(b => b.classList.remove('active'));
+  checkPeriodData();
+}
+
+function checkPeriodData() {
+  const warn = document.getElementById('period-warn');
+  if (!warn || !filterFrom || !filterTo) return;
+  let psCount = 0, bqCount = 0;
+  if (psData && psDateCol) {
+    psCount = psData.filter(r => {
+      const d = parsePSDateObj(r[psDateCol]);
+      return d && isInPeriod(d, filterFrom, filterTo);
+    }).length;
+  }
+  if (bqData && bqDateCol) {
+    bqCount = bqData.filter(r => {
+      const d = parseBQDateObj(r[bqDateCol]);
+      return d && isInPeriod(d, filterFrom, filterTo);
+    }).length;
+  }
+  if (psCount === 0 && bqCount === 0) {
+    warn.style.display = 'block';
+    warn.innerHTML = `⚠ Nenhum registro neste período. Verifique o range dos arquivos acima ou ajuste as datas.`;
+    warn.style.color = '#F59E0B';
+  } else if (psCount === 0 || bqCount === 0) {
+    warn.style.display = 'block';
+    warn.innerHTML = `ℹ Período tem dados parciais: <b style="color:#fff">${psCount.toLocaleString('pt-BR')}</b> PS e <b style="color:#fff">${bqCount.toLocaleString('pt-BR')}</b> rotas BQ.`;
+    warn.style.color = 'rgba(255,255,255,.6)';
+  } else {
+    warn.style.display = 'block';
+    warn.innerHTML = `✓ <b style="color:var(--yellow)">${psCount.toLocaleString('pt-BR')}</b> PS · <b style="color:var(--yellow)">${bqCount.toLocaleString('pt-BR')}</b> rotas BQ no período`;
+    warn.style.color = 'rgba(255,255,255,.65)';
   }
 }
 
 function resetPeriod() {
-  updatePeriodSelector();
+  setPeriod('today');
 }
 
 function checkReady() {
