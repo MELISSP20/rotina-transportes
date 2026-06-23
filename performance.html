@@ -200,6 +200,14 @@
       <div class="header-title">Performance <span>OPS</span></div>
       <div class="header-sub">Avaliação de analistas · Timásso Transportes SSP20</div>
     </div>
+    <button onclick="clearAll()" style="
+      background:rgba(227,38,47,.15);color:#FF6B7A;
+      border:1px solid rgba(227,38,47,.25);border-radius:var(--radius);
+      padding:8px 16px;font-family:var(--font);font-size:12px;font-weight:700;
+      cursor:pointer;transition:opacity .15s;white-space:nowrap;
+    " onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
+      🗑 Limpar avaliações
+    </button>
   </div>
 </div>
 
@@ -388,6 +396,13 @@ function renderAll() {
   perfData = loadPerf();
   document.getElementById('analyst-grid').innerHTML = ANALYSTS.map(buildCard).join('');
   updateSummary();
+}
+
+function clearAll() {
+  if (!confirm('Limpar todas as avaliações? Esta ação não pode ser desfeita.')) return;
+  perfData = {};
+  savePerf({});
+  renderAll();
 }
 
 renderAll();
