@@ -46,7 +46,7 @@
     /* HEADER */
     .header {
       background: linear-gradient(135deg, var(--navy) 0%, #252A42 100%);
-      padding: 2.5rem 2rem 2rem;
+      padding: 0 2rem;
       position: relative;
       overflow: hidden;
     }
@@ -55,21 +55,35 @@
       position: absolute; top: -40px; right: -40px;
       width: 220px; height: 220px;
       background: radial-gradient(circle, rgba(255,230,0,.08) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .header-inner { max-width: 1100px; margin: 0 auto; position: relative; }
-    .header-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: rgba(255,230,0,.6); margin-bottom: 8px; }
-    .header-title { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -.6px; margin-bottom: 6px; }
+    .header-inner { max-width: 1280px; margin: 0 auto; min-height: 130px; display: flex; align-items: center; gap: 24px; padding: 18px 0; position: relative; }
+    .brand-block { display: flex; align-items: center; gap: 18px; flex: 0 0 auto; }
+    .ml-logo-img { height: 48px; width: auto; display: block; filter: brightness(1.05); }
+    .brand-vsep { width: 1px; height: 70px; background: rgba(255,255,255,.15); }
+    .header-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: rgba(255,230,0,.6); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+    .header-title { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -.6px; line-height: 1; margin-bottom: 8px; }
     .header-title span { color: var(--yellow); }
-    .header-sub { font-size: 14px; color: rgba(255,255,255,.45); }
-    .header-actions { display: flex; gap: 10px; margin-top: 20px; }
-    .perf-btn {
-      display: inline-flex; align-items: center; gap: 8px;
+    .header-sub { font-size: 13px; color: rgba(255,255,255,.55); font-weight: 500; }
+    .header-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+    .perf-card {
+      display: flex; align-items: center; gap: 14px;
       background: var(--yellow); color: var(--navy);
-      border: none; border-radius: var(--radius); padding: 10px 20px;
-      font-family: var(--font); font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: opacity .15s; text-decoration: none;
+      border: none; border-radius: 12px; padding: 14px 20px 14px 16px;
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: transform .15s, box-shadow .15s; text-decoration: none;
+      box-shadow: 0 4px 20px rgba(255,230,0,.18);
     }
-    .perf-btn:hover { opacity: .88; }
+    .perf-card:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,230,0,.28); }
+    .perf-card-emoji { font-size: 32px; line-height: 1; }
+    .perf-card-text { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+    .perf-card-label { font-size: 9.5px; font-weight: 700; letter-spacing: .2em; color: rgba(26,26,46,.55); text-transform: uppercase; }
+    .perf-card-name { font-size: 15px; font-weight: 800; letter-spacing: -.3px; }
+    .perf-card-hint { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: rgba(26,26,46,.55); font-variant-numeric: tabular-nums; margin-top: 1px; }
+
+    .team-stat { display: flex; flex-direction: column; align-items: flex-end; padding-right: 18px; border-right: 1px solid rgba(255,255,255,.12); }
+    .team-stat-val { font-size: 40px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -1.2px; font-variant-numeric: tabular-nums; }
+    .team-stat-lbl { font-size: 9.5px; font-weight: 700; letter-spacing: .18em; color: rgba(255,230,0,.55); text-transform: uppercase; margin-top: 4px; }
 
     /* WRAPPER */
     .wrapper { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
@@ -272,8 +286,18 @@
       .topbar { padding: 0 1rem; }
       .topbar-sep, .topbar-section { display: none; }
       .wrapper { padding: 1.5rem 1rem 3rem; }
-      .header { padding: 1.5rem 1rem; }
+      .header { padding: 0 1rem; }
+      .header-inner { flex-direction: column !important; align-items: stretch !important; min-height: auto !important; padding: 18px 0 16px !important; gap: 14px; }
+      .brand-block { gap: 12px; }
+      .ml-logo-img { height: 38px; }
+      .brand-vsep { height: 54px; }
       .header-title { font-size: 24px; }
+      .header-actions { width: 100%; justify-content: space-between; gap: 10px; }
+      .team-stat { padding-right: 14px; }
+      .team-stat-val { font-size: 32px; }
+      .perf-card { padding: 11px 14px 11px 12px; }
+      .perf-card-emoji { font-size: 26px; }
+      .perf-card-name { font-size: 13px; }
     }
   </style>
 </head>
@@ -305,11 +329,28 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-inner">
-    <div class="header-eyebrow">Timásso Transportes · SSP20</div>
-    <div class="header-title">Organograma <span>Operacional</span></div>
-    <div class="header-sub">Estrutura de times · Transportes Last Mile</div>
+    <div class="brand-block">
+      <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+      <div class="brand-vsep"></div>
+      <div>
+        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20</div>
+        <div class="header-title">Organograma <span>Operacional</span></div>
+        <div class="header-sub">Estrutura de times · Transportes Last Mile</div>
+      </div>
+    </div>
     <div class="header-actions">
-      <button class="perf-btn" onclick="openPwd()">🏆 Performance OPS</button>
+      <div class="team-stat">
+        <div class="team-stat-val">7</div>
+        <div class="team-stat-lbl">EQUIPE ATIVA</div>
+      </div>
+      <button class="perf-card" onclick="openPwd()">
+        <span class="perf-card-emoji">🏆</span>
+        <span class="perf-card-text">
+          <span class="perf-card-label">ÁREA RESTRITA</span>
+          <span class="perf-card-name">Performance OPS</span>
+          <span class="perf-card-hint">RANKING · DNAs MELI</span>
+        </span>
+      </button>
     </div>
   </div>
 </div>

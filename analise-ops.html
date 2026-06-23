@@ -38,14 +38,29 @@
     .theme-btn { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:5px; color:rgba(255,255,255,.5); font-size:13px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
     /* HEADER */
-    .header { background:linear-gradient(135deg,var(--navy) 0%,#252A42 100%); padding:2rem 2rem 1.5rem; position:relative; overflow:hidden; }
+    .header { background:linear-gradient(135deg,var(--navy) 0%,#252A42 100%); padding:0 2rem 1.5rem; position:relative; overflow:hidden; }
     [data-theme="dark"] .header { background:linear-gradient(135deg,#080C14,#111827); }
     .header::after { content:''; position:absolute; right:-60px; top:-60px; width:280px; height:280px; background:radial-gradient(circle,rgba(255,230,0,.05) 0%,transparent 65%); pointer-events:none; }
-    .header-inner { max-width:1100px; margin:0 auto; position:relative; }
-    .header-eyebrow { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.2em; color:rgba(255,230,0,.6); margin-bottom:8px; }
-    .header-title { font-size:26px; font-weight:800; color:#fff; letter-spacing:-.4px; margin-bottom:4px; }
+    .header-inner { max-width:1240px; margin:0 auto; position:relative; padding-top: 16px; }
+    .header-top { display: flex; align-items: center; gap: 24px; margin-bottom: 1.5rem; }
+    .brand-block { display: flex; align-items: center; gap: 18px; }
+    .ml-logo-img { height: 44px; width: auto; display: block; filter: brightness(1.05); }
+    .brand-vsep { width: 1px; height: 60px; background: rgba(255,255,255,.15); }
+    .header-eyebrow { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.16em; color:rgba(255,230,0,.6); margin-bottom:6px; font-variant-numeric: tabular-nums; }
+    .header-title { font-size:28px; font-weight:800; color:#fff; letter-spacing:-.5px; line-height: 1; margin-bottom:6px; }
     .header-title span { color:var(--yellow); }
-    .header-sub { font-size:12px; color:rgba(255,255,255,.4); margin-bottom:1.5rem; }
+    .header-sub { font-size:12.5px; color:rgba(255,255,255,.55); font-weight: 500; }
+
+    .descon-stat { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; padding-right: 18px; border-right: 1px solid rgba(255,255,255,.12); }
+    .descon-stat-val { font-size: 36px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+    .descon-stat-lbl { font-size: 9.5px; font-weight: 700; letter-spacing: .18em; color: rgba(255,230,0,.55); text-transform: uppercase; margin-top: 4px; }
+
+    .descon-info { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 11px 16px 11px 13px; }
+    .descon-info-emoji { font-size: 30px; line-height: 1; }
+    .descon-info-text { display: flex; flex-direction: column; gap: 1px; }
+    .descon-info-eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: .2em; color: rgba(255,230,0,.6); text-transform: uppercase; }
+    .descon-info-name { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -.2px; line-height: 1.1; }
+    .descon-info-hint { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: rgba(255,255,255,.45); font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; margin-top: 1px; }
 
     /* UPLOAD ZONE */
     .upload-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
@@ -166,7 +181,14 @@
     @media(max-width:768px) {
       .topbar { padding:0 1rem; } .topbar-sep, .topbar-section { display:none; }
       .wrapper { padding:1rem 1rem 3rem; }
-      .header { padding:1.5rem 1rem; }
+      .header { padding:0 1rem 1.5rem; }
+      .header-inner { padding-top: 14px; }
+      .header-top { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 1rem; }
+      .brand-block { gap: 12px; }
+      .ml-logo-img { height: 38px; }
+      .brand-vsep { height: 52px; }
+      .header-title { font-size: 22px; }
+      .descon-info { margin-left: 0; }
       .upload-grid { grid-template-columns:1fr; }
       .g2, .g3 { grid-template-columns:1fr; }
       .kpi-grid { grid-template-columns:repeat(2,1fr); }
@@ -199,9 +221,25 @@
 <!-- HEADER COM UPLOAD -->
 <div class="header">
   <div class="header-inner">
-    <div class="header-eyebrow">SSP20 · Inteligência Operacional</div>
-    <div class="header-title">Análise <span>Descontainerizados</span></div>
-    <div class="header-sub">Importe os arquivos para gerar o report completo automaticamente</div>
+    <div class="header-top">
+      <div class="brand-block">
+        <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+        <div class="brand-vsep"></div>
+        <div>
+          <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> INTELIGÊNCIA OPERACIONAL</div>
+          <div class="header-title">Análise <span>Descontainerizados</span></div>
+          <div class="header-sub">Importe os arquivos para gerar o report completo automaticamente</div>
+        </div>
+      </div>
+      <div class="descon-info">
+        <span class="descon-info-emoji">📊</span>
+        <span class="descon-info-text">
+          <span class="descon-info-eyebrow">FONTES</span>
+          <span class="descon-info-name">PS + BQ Routing</span>
+          <span class="descon-info-hint">CSV · 2 ARQUIVOS</span>
+        </span>
+      </div>
+    </div>
 
     <div class="upload-grid">
       <div class="upload-zone" id="zone-ps" onclick="document.getElementById('file-ps').click()">
