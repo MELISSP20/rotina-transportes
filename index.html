@@ -46,7 +46,7 @@
     .topbar-sep { width: 1px; height: 16px; background: rgba(255,255,255,.1); }
     .topbar-section { font-size: 11px; font-weight: 500; color: rgba(255,255,255,.4); }
     .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-    .online-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; color: rgba(255,255,255,.4); }
+    .online-badge { display: flex; align-items: center; justify-content: center; padding: 0 4px; cursor: help; }
     .online-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
     .topbar-nav-link { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.6); text-decoration: none; padding: 3px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,.1); transition: all .15s; }
     .topbar-nav-link:hover, .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.2); }
@@ -67,20 +67,20 @@
     /* ── HEADER ── */
     .header { background: var(--yellow); padding: 0 2rem; }
     [data-theme="dark"] .header { background: var(--navy); border-bottom: 3px solid var(--yellow); }
-    .header-inner { max-width: 1200px; margin: 0 auto; height: 76px; display: flex; align-items: center; gap: 1.5rem; }
-    .header-title { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -.5px; }
+    .header-inner { max-width: 1200px; margin: 0 auto; height: 62px; display: flex; align-items: center; gap: 1.5rem; }
+    .header-title { font-size: 19px; font-weight: 700; color: var(--navy); letter-spacing: -.4px; line-height: 1.1; }
     [data-theme="dark"] .header-title { color: #fff; }
-    .header-date { font-size: 12px; font-weight: 500; color: rgba(26,26,46,.55); margin-top: 3px; }
+    .header-date { font-size: 11.5px; font-weight: 500; color: rgba(26,26,46,.55); margin-top: 2px; letter-spacing: .01em; }
     [data-theme="dark"] .header-date { color: rgba(255,255,255,.4); }
-    .header-divider { width: 1px; height: 36px; background: rgba(26,26,46,.15); }
+    .header-divider { width: 1px; height: 28px; background: rgba(26,26,46,.15); }
     [data-theme="dark"] .header-divider { background: rgba(255,255,255,.1); }
 
     /* ── SHIFT SELECTOR ── */
     .shift-selector { display: flex; gap: 4px; background: rgba(26,26,46,.08); padding: 3px; border-radius: 9px; margin-left: auto; }
     [data-theme="dark"] .shift-selector { background: rgba(255,255,255,.08); }
-    .shift-btn { font-family: var(--font); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 7px; border: none; background: transparent; color: rgba(26,26,46,.55); cursor: pointer; transition: all .15s; }
+    .shift-btn { font-family: var(--font); font-size: 11.5px; font-weight: 600; padding: 5px 13px; border-radius: 6px; border: none; background: transparent; color: rgba(26,26,46,.5); cursor: pointer; transition: all .15s; letter-spacing: .01em; }
     [data-theme="dark"] .shift-btn { color: rgba(255,255,255,.4); }
-    .shift-btn.active { background: var(--navy); color: var(--yellow); box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+    .shift-btn.active { background: var(--navy); color: var(--yellow); }
     [data-theme="dark"] .shift-btn.active { background: var(--yellow); color: var(--navy); }
 
     /* ── WRAPPER ── */
@@ -303,19 +303,15 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div class="topbar-sep" style="display:none;"></div>
-  <span class="topbar-section">Transportes · Operações</span>
   <div class="topbar-right">
-    <div class="online-badge">
+    <div class="online-badge" title="Sistema online">
       <div class="online-dot"></div>
-      Sistema online
     </div>
     <div class="online-badge" title="Sincronizado">
       <div class="online-dot" id="sync-dot" style="background:#FF3D57;"></div>
-      Sync
     </div>
     <a href="index.html" class="topbar-nav-link active">Rotina</a>
-    <a href="madrugadao.html" class="topbar-nav-link">Organograma Transportes</a>
+    <a href="madrugadao.html" class="topbar-nav-link">Organograma</a>
     <div class="topbar-dropdown">
       <button class="topbar-dropdown-btn" id="reports-btn" onclick="toggleReportsMenu()">Reports <span class="chevron">▾</span></button>
       <div class="topbar-dropdown-menu" id="reports-menu">
@@ -332,19 +328,17 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-inner" style="justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:16px;">
-      <div style="background:#fff;border-radius:10px;padding:4px 8px;display:flex;align-items:center;mix-blend-mode:multiply;">
-        <img src="ml-logo.png" alt="Mercado Livre" style="height:52px;width:auto;display:block;"/>
-      </div>
-      <div>
-        <div class="header-title">Assignments — Transportes SSP20</div>
-        <div class="header-date" id="hero-date">Carregando data...</div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <img src="ml-logo.png" alt="Mercado Livre" style="height:36px;width:auto;display:block;opacity:.95;"/>
+      <div style="border-left:1px solid rgba(26,26,46,.18);padding-left:14px;">
+        <div class="header-title">Assignments</div>
+        <div class="header-date" id="hero-date">Transportes · Carregando data...</div>
       </div>
     </div>
     <div class="shift-selector">
-      <button class="shift-btn active" data-shift="madrugada">🌙 Madrugada</button>
-      <button class="shift-btn" data-shift="am">☀️ AM/PM</button>
-      <button class="shift-btn" data-shift="sd">🌆 SD</button>
+      <button class="shift-btn active" data-shift="madrugada">Madrugada</button>
+      <button class="shift-btn" data-shift="am">AM/PM</button>
+      <button class="shift-btn" data-shift="sd">SD</button>
     </div>
   </div>
 </div>
@@ -491,7 +485,7 @@
 
 <footer>
   <div class="footer-inner">
-    <span class="footer-left">© Mercado Livre · Transportes · Timásso Transportes SSP20</span>
+    <span class="footer-left">© Mercado Livre · Transportes · Timásso</span>
     <span style="font-size:12px;color:var(--muted);">Developed by <strong style="color:var(--text);font-weight:600;">Matheus Logan</strong></span>
     <span class="footer-right">v1.1</span>
   </div>
@@ -756,7 +750,7 @@ function tick() {
   document.getElementById('live-clock').textContent =
     String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
   document.getElementById('hero-date').textContent =
-    DAYS[n.getDay()] + ', ' + n.getDate() + ' de ' + MONTHS[n.getMonth()] + ' de ' + n.getFullYear();
+    'Transportes · ' + DAYS[n.getDay()] + ', ' + n.getDate() + ' ' + MONTHS[n.getMonth()].toLowerCase() + ' ' + n.getFullYear();
 }
 
 // Dark mode
