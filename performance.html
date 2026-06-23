@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/x-icon" href="/rotina-transportes/favicon.ico"/>
+  <title>Performance OPS — Timásso Transportes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --yellow: #FFE600; --navy: #1A1A2E; --font: 'Inter', sans-serif;
+      --bg: #F0F2F5; --surface: #FFFFFF; --text: #1A1A2E;
+      --muted: #6B7394; --border: #E2E5EF;
+      --green: #00A650; --blue: #3483FA; --purple: #7C3AED;
+      --radius: 10px; --radius-lg: 16px;
+    }
+    [data-theme="dark"] { --bg: #0D1117; --surface: #161B27; --text: #E8EAF2; --muted: #6B7394; --border: #252D3D; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; transition: background .2s; }
+
+    /* TOPBAR */
+    .topbar { background: var(--navy); height: 48px; display: flex; align-items: center; padding: 0 2rem; gap: 1rem; position: sticky; top: 0; z-index: 100; }
+    .topbar-logo { display: flex; align-items: center; gap: 10px; }
+    .ml-logo-img { height: 34px; width: auto; }
+    .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,.12); }
+    .topbar-section { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.5); }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .topbar-nav-link { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.65); text-decoration: none; padding: 4px 11px; border-radius: 5px; border: 1px solid rgba(255,255,255,.1); transition: all .15s; }
+    .topbar-nav-link:hover, .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .theme-btn { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 6px; color: rgba(255,255,255,.5); font-size: 13px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* HEADER */
+    .header { background: linear-gradient(135deg, var(--navy) 0%, #252A42 100%); padding: 2.5rem 2rem 2rem; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,230,0,.06) 0%, transparent 70%); }
+    .header-inner { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+    .header-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: rgba(255,230,0,.6); margin-bottom: 8px; }
+    .header-title { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
+    .header-title span { color: var(--yellow); }
+    .header-sub { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 4px; }
+
+    /* WRAPPER */
+    .wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+    /* SECTION LABEL */
+    .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); margin-bottom: 14px; margin-top: 2rem; display: flex; align-items: center; gap: 10px; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ANALYST GRID */
+    .analyst-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .analyst-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .analyst-header {
+      background: linear-gradient(135deg, var(--navy), #252A42);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .analyst-av {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      background: var(--yellow);
+      color: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .analyst-name { font-size: 15px; font-weight: 700; color: #fff; }
+    .analyst-role { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 2px; }
+
+    .analyst-avg {
+      margin-left: auto;
+      text-align: center;
+    }
+    .analyst-avg-val { font-size: 26px; font-weight: 800; color: var(--yellow); line-height: 1; }
+    .analyst-avg-lbl { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.3); }
+
+    .analyst-body { padding: 16px 18px; }
+
+    .criteria-group-label {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--muted);
+      padding: 10px 0 6px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2px;
+    }
+    .criteria-group-label:first-child { padding-top: 0; }
+
+    .criteria-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .criteria-row:last-child { border-bottom: none; }
+
+    .criteria-name { font-size: 12px; font-weight: 500; color: var(--text); flex: 1; }
+
+    .stars { display: flex; gap: 2px; }
+    .star {
+      font-size: 20px; cursor: pointer;
+      color: var(--border); transition: color .1s, transform .1s;
+      line-height: 1; user-select: none;
+    }
+    .star:hover { transform: scale(1.25); }
+    .star.filled { color: var(--yellow); }
+
+    .score-lbl { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 28px; text-align: right; }
+
+    /* SAVE STATUS */
+    .save-strip {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .save-status { font-size: 11px; color: var(--green); min-height: 14px; }
+
+    /* SUMMARY TABLE */
+    .summary-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr repeat(5, 80px) 80px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .summary-row.header-row {
+      background: var(--bg);
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--muted);
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-name { font-weight: 600; color: var(--text); }
+    .summary-score { text-align: center; font-weight: 700; }
+    .summary-avg { text-align: center; font-size: 14px; font-weight: 800; color: var(--text); }
+    .score-bar { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; margin-top: 3px; }
+    .score-bar-fill { height: 100%; border-radius: 2px; background: var(--yellow); transition: width .4s; }
+
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 14px 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-left { font-size: 12px; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .analyst-grid { grid-template-columns: 1fr; }
+      .summary-row { grid-template-columns: 1fr repeat(3, 60px) 60px; }
+      .summary-row > div:nth-child(4), .summary-row > div:nth-child(5) { display: none; }
+      .topbar { padding: 0 1rem; }
+      .topbar-sep, .topbar-section { display: none; }
+      .wrapper { padding: 1.5rem 1rem 3rem; }
+      .header { padding: 1.5rem 1rem; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .header-title { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div style="background:#fff;border-radius:8px;padding:3px 6px;display:flex;align-items:center;">
+      <img src="ml-logo.png" alt="ML" class="ml-logo-img"/>
+    </div>
+  </div>
+  <div class="topbar-sep"></div>
+  <span class="topbar-section">Transportes · Operações</span>
+  <div class="topbar-right">
+    <a href="index.html" class="topbar-nav-link">Rotina</a>
+    <a href="madrugadao.html" class="topbar-nav-link">Organograma</a>
+    <a href="performance.html" class="topbar-nav-link active">Performance OPS</a>
+    <button class="theme-btn" id="theme-btn">🌙</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-eyebrow">Área restrita · Team Leader</div>
+      <div class="header-title">Performance <span>OPS</span></div>
+      <div class="header-sub">Avaliação de analistas · Timásso Transportes SSP20</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <div class="section-label">Visão geral</div>
+  <div class="summary-table" id="summary-table">
+    <div class="summary-row header-row">
+      <div>Analista</div>
+      <div style="text-align:center">Ops</div>
+      <div style="text-align:center">Comun.</div>
+      <div style="text-align:center">Proatv.</div>
+      <div style="text-align:center">DNAs</div>
+      <div style="text-align:center">Média</div>
+    </div>
+  </div>
+
+  <div class="section-label">Avaliação detalhada</div>
+  <div class="analyst-grid" id="analyst-grid">
+    <div style="text-align:center;padding:2rem;color:var(--muted);grid-column:1/-1;">Carregando avaliações...</div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-left">© Mercado Livre · Performance OPS · Área Restrita</span>
+    <span class="footer-left" style="color:var(--text);font-weight:600;">Developed by Matheus Logan</span>
+  </div>
+</footer>
+
+<script>
+// Theme
+const html = document.documentElement;
+const tbtn = document.getElementById('theme-btn');
+const sv = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', sv);
+tbtn.textContent = sv === 'dark' ? '☀️' : '🌙';
+tbtn.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  tbtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', next);
+});
+
+const ANALYSTS = [
+  { id: 'matheus-campos', name: 'Matheus Campos', initials: 'MC', role: 'Madrugada · Analista' },
+  { id: 'everton-adriano', name: 'Everton Adriano', initials: 'EA', role: 'Madrugada · Analista' },
+  { id: 'bruno-costa',     name: 'Bruno Costa',    initials: 'BC', role: 'AM/PM · Analista' },
+  { id: 'bruno-cardoso',   name: 'Bruno Cardoso',  initials: 'BC', role: 'AM/PM · Analista' },
+  { id: 'bruna-larissa',   name: 'Bruna Larissa',  initials: 'BL', role: 'AM/PM · Analista' },
+];
+
+const CRITERIA_OPS = [
+  { id: 'pontualidade', label: 'Pontualidade' },
+  { id: 'qualidade',    label: 'Qualidade das entregas' },
+  { id: 'comunicacao',  label: 'Comunicação' },
+  { id: 'proatividade', label: 'Proatividade' },
+  { id: 'resolucao',    label: 'Resolução de problemas' },
+];
+
+const CRITERIA_DNA = [
+  { id: 'dna_b',          label: 'Estou em B Contínuo' },
+  { id: 'dna_equipe',     label: 'Compito em Equipe para Ganhar' },
+  { id: 'dna_valor',      label: 'Crio Valor para o Usuário' },
+  { id: 'dna_excelencia', label: 'Executo com Excelência' },
+  { id: 'dna_empreende',  label: 'Empreendo Assumindo os Riscos' },
+  { id: 'dna_maximo',     label: 'Dou o Máximo e me Divirto' },
+];
+
+let perfData = {};
+
+function loadPerf() {
+  try { return JSON.parse(localStorage.getItem('perf-ops-data')) || {}; } catch { return {}; }
+}
+
+function savePerf(data) {
+  localStorage.setItem('perf-ops-data', JSON.stringify(data));
+  // async Firebase backup
+  fetch('https://rotina-lastmile-default-rtdb.firebaseio.com/performance.json', {
+    method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
+  }).catch(()=>{});
+}
+
+function avg(scores, keys) {
+  const vals = keys.map(k => scores[k] || 0).filter(v => v > 0);
+  if (!vals.length) return null;
+  return (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+}
+
+function avgAll(scores) {
+  const all = [...CRITERIA_OPS, ...CRITERIA_DNA];
+  return avg(scores, all.map(c=>c.id));
+}
+
+function setStar(analystId, criteriaId, val) {
+  if (!perfData[analystId]) perfData[analystId] = {};
+  perfData[analystId][criteriaId] = val;
+
+  for (let n=1;n<=5;n++) {
+    const s = document.querySelector(`[data-star="${analystId}-${criteriaId}-${n}"]`);
+    if (s) s.className = 'star'+(n<=val?' filled':'');
+  }
+  const lbl = document.getElementById(`lbl-${analystId}-${criteriaId}`);
+  if (lbl) lbl.textContent = val+'/5';
+  const avgEl = document.getElementById(`avg-${analystId}`);
+  if (avgEl) {
+    const a = avgAll(perfData[analystId]);
+    avgEl.textContent = a || '—';
+  }
+
+  savePerf(perfData);
+  updateSummary();
+
+  const status = document.getElementById('status-'+analystId);
+  if (status) { status.textContent = '✓ Salvo'; setTimeout(()=>status.textContent='', 2000); }
+}
+
+function starsHtml(analystId, criteriaId, val) {
+  return [1,2,3,4,5].map(n =>
+    `<span class="star ${n<=val?'filled':''}" onclick="setStar('${analystId}','${criteriaId}',${n})" data-star="${analystId}-${criteriaId}-${n}">★</span>`
+  ).join('');
+}
+
+function buildCard(analyst) {
+  const scores = perfData[analyst.id] || {};
+  const a = avgAll(scores) || '—';
+
+  const section = (label, criteria) =>
+    `<div class="criteria-group-label">${label}</div>` +
+    criteria.map(c => `
+      <div class="criteria-row">
+        <span class="criteria-name">${c.label}</span>
+        <div class="stars">${starsHtml(analyst.id, c.id, scores[c.id]||0)}</div>
+        <span class="score-lbl" id="lbl-${analyst.id}-${c.id}">${scores[c.id]?scores[c.id]+'/5':'—'}</span>
+      </div>`).join('');
+
+  return `
+    <div class="analyst-card">
+      <div class="analyst-header">
+        <div class="analyst-av">${analyst.initials}</div>
+        <div>
+          <div class="analyst-name">${analyst.name}</div>
+          <div class="analyst-role">${analyst.role}</div>
+        </div>
+        <div class="analyst-avg">
+          <div class="analyst-avg-val" id="avg-${analyst.id}">${a}</div>
+          <div class="analyst-avg-lbl">Média</div>
+        </div>
+      </div>
+      <div class="analyst-body">
+        ${section('Critérios Operacionais', CRITERIA_OPS)}
+        ${section('DNAs Mercado Livre', CRITERIA_DNA)}
+      </div>
+      <div class="save-strip">
+        <span class="save-status" id="status-${analyst.id}"></span>
+      </div>
+    </div>`;
+}
+
+function updateSummary() {
+  const table = document.getElementById('summary-table');
+  const header = table.querySelector('.header-row').outerHTML;
+  const rows = ANALYSTS.map(a => {
+    const s = perfData[a.id] || {};
+    const ops  = avg(s, CRITERIA_OPS.map(c=>c.id));
+    const com  = s.comunicacao || null;
+    const pro  = s.proatividade || null;
+    const dna  = avg(s, CRITERIA_DNA.map(c=>c.id));
+    const all  = avgAll(s);
+    const pct  = all ? (parseFloat(all)/5*100).toFixed(0) : 0;
+    const fmt  = v => v ? `<div>${v}</div><div class="score-bar"><div class="score-bar-fill" style="width:${(v/5*100).toFixed(0)}%"></div></div>` : '<div>—</div>';
+    return `<div class="summary-row">
+      <div class="summary-name">${a.name}</div>
+      <div class="summary-score">${fmt(ops)}</div>
+      <div class="summary-score">${fmt(com)}</div>
+      <div class="summary-score">${fmt(pro)}</div>
+      <div class="summary-score">${fmt(dna)}</div>
+      <div class="summary-avg" style="color:${all>4?'var(--green)':all>2.5?'var(--text)':'#E3262F'}">${all||'—'}</div>
+    </div>`;
+  }).join('');
+  table.innerHTML = header + rows;
+}
+
+function renderAll() {
+  perfData = loadPerf();
+  document.getElementById('analyst-grid').innerHTML = ANALYSTS.map(buildCard).join('');
+  updateSummary();
+}
+
+renderAll();
+</script>
+</body>
+</html>
