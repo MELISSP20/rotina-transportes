@@ -70,35 +70,63 @@
     .theme-btn { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 5px; color: rgba(255,255,255,.5); font-size: 13px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     /* ── HEADER ── */
-    .header { background: var(--yellow); padding: 0 2rem; position: relative; }
+    .header { background: var(--yellow); padding: 0 2rem; position: relative; overflow: hidden; }
     [data-theme="dark"] .header { background: var(--navy); border-bottom: 3px solid var(--yellow); }
-    .header-inner { max-width: 1240px; margin: 0 auto; min-height: 78px; display: flex; align-items: center; gap: 2rem; padding: 12px 0; }
+    /* Subtle diagonal accent */
+    .header::before { content: ''; position: absolute; top: 0; right: 0; width: 280px; height: 100%; background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(26,26,46,.035) 50%, rgba(26,26,46,.035) 100%); pointer-events: none; }
+    [data-theme="dark"] .header::before { background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(255,230,0,.04) 50%, rgba(255,230,0,.04) 100%); }
+    .header-inner { max-width: 1280px; margin: 0 auto; min-height: 118px; display: flex; align-items: center; gap: 24px; padding: 16px 0; position: relative; }
 
     /* Brand block */
-    .brand-block { display: flex; align-items: center; gap: 16px; }
-    .ml-logo-img { height: 36px; width: auto; display: block; opacity: .95; }
-    .brand-vsep { width: 1px; height: 44px; background: rgba(26,26,46,.18); }
+    .brand-block { display: flex; align-items: center; gap: 18px; flex: 0 0 auto; }
+    .ml-logo-img { height: 48px; width: auto; display: block; opacity: .95; }
+    .brand-vsep { width: 1px; height: 64px; background: rgba(26,26,46,.18); }
     [data-theme="dark"] .brand-vsep { background: rgba(255,255,255,.15); }
-    .header-title { font-size: 23px; font-weight: 750; color: var(--navy); letter-spacing: -.5px; line-height: 1.05; }
+    .header-title { font-size: 30px; font-weight: 800; color: var(--navy); letter-spacing: -.7px; line-height: 1; }
     [data-theme="dark"] .header-title { color: #fff; }
-    .header-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: .14em; color: rgba(26,26,46,.5); text-transform: uppercase; margin-top: 5px; font-variant-numeric: tabular-nums; }
-    [data-theme="dark"] .header-eyebrow { color: rgba(255,255,255,.4); }
-    .eyebrow-sep { margin: 0 8px; opacity: .5; }
+    .header-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: .16em; color: rgba(26,26,46,.55); text-transform: uppercase; margin-top: 6px; font-variant-numeric: tabular-nums; }
+    [data-theme="dark"] .header-eyebrow { color: rgba(255,255,255,.5); }
+    .header-sub { font-size: 12.5px; font-weight: 600; color: rgba(26,26,46,.7); margin-top: 4px; letter-spacing: .005em; }
+    [data-theme="dark"] .header-sub { color: rgba(255,255,255,.65); }
+    .eyebrow-sep { margin: 0 7px; opacity: .45; }
 
-    /* Shift block */
-    .shift-block { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .shift-eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: .2em; color: rgba(26,26,46,.4); text-transform: uppercase; }
-    [data-theme="dark"] .shift-eyebrow { color: rgba(255,255,255,.35); }
-    .shift-window { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: rgba(26,26,46,.55); font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; margin-top: 3px; }
-    [data-theme="dark"] .shift-window { color: rgba(255,230,0,.55); }
+    /* Turno card - signature element */
+    .turno-card { display: flex; align-items: center; gap: 14px; background: rgba(26,26,46,.07); border: 1px solid rgba(26,26,46,.1); border-radius: 12px; padding: 10px 16px 10px 14px; margin-left: auto; }
+    [data-theme="dark"] .turno-card { background: rgba(255,230,0,.08); border-color: rgba(255,230,0,.2); }
+    .turno-emoji { font-size: 38px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(26,26,46,.1)); }
+    .turno-info { display: flex; flex-direction: column; }
+    .turno-eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: .2em; color: rgba(26,26,46,.5); text-transform: uppercase; }
+    [data-theme="dark"] .turno-eyebrow { color: rgba(255,230,0,.6); }
+    .turno-name { font-size: 19px; font-weight: 750; color: var(--navy); letter-spacing: -.3px; line-height: 1.1; margin-top: 2px; }
+    [data-theme="dark"] .turno-name { color: #fff; }
+    .turno-window { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: rgba(26,26,46,.55); font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; margin-top: 2px; }
+    [data-theme="dark"] .turno-window { color: rgba(255,230,0,.55); }
+
+    /* Date block */
+    .date-block { display: flex; align-items: stretch; gap: 12px; padding-left: 18px; border-left: 1px solid rgba(26,26,46,.18); }
+    [data-theme="dark"] .date-block { border-left-color: rgba(255,255,255,.15); }
+    .date-day { font-size: 44px; font-weight: 800; color: var(--navy); line-height: 1; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
+    [data-theme="dark"] .date-day { color: #fff; }
+    .date-detail { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+    .date-month { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: rgba(26,26,46,.7); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+    [data-theme="dark"] .date-month { color: rgba(255,255,255,.65); }
+    .date-weekday { font-size: 12.5px; font-weight: 600; color: var(--navy); letter-spacing: -.1px; }
+    [data-theme="dark"] .date-weekday { color: #fff; }
+    .date-week { font-size: 9.5px; font-weight: 700; letter-spacing: .18em; color: rgba(26,26,46,.5); text-transform: uppercase; margin-top: 1px; }
+    [data-theme="dark"] .date-week { color: rgba(255,230,0,.55); }
+
+    /* Header footer with shift selector */
+    .header-footer { background: rgba(26,26,46,.05); border-top: 1px solid rgba(26,26,46,.1); padding: 10px 2rem; display: flex; justify-content: center; }
+    [data-theme="dark"] .header-footer { background: rgba(255,230,0,.05); border-top-color: rgba(255,230,0,.15); }
 
     /* ── SHIFT SELECTOR ── */
-    .shift-selector { display: flex; gap: 4px; background: rgba(26,26,46,.08); padding: 3px; border-radius: 9px; }
+    .shift-selector { display: flex; gap: 5px; background: rgba(26,26,46,.08); padding: 4px; border-radius: 10px; }
     [data-theme="dark"] .shift-selector { background: rgba(255,255,255,.08); }
-    .shift-btn { font-family: var(--font); font-size: 11.5px; font-weight: 600; padding: 5px 13px; border-radius: 6px; border: none; background: transparent; color: rgba(26,26,46,.5); cursor: pointer; transition: all .15s; letter-spacing: .01em; }
-    [data-theme="dark"] .shift-btn { color: rgba(255,255,255,.4); }
-    .shift-btn.active { background: var(--navy); color: var(--yellow); }
-    [data-theme="dark"] .shift-btn.active { background: var(--yellow); color: var(--navy); }
+    .shift-btn { font-family: var(--font); font-size: 12.5px; font-weight: 700; padding: 8px 16px; border-radius: 7px; border: none; background: transparent; color: rgba(26,26,46,.55); cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; letter-spacing: -.1px; }
+    [data-theme="dark"] .shift-btn { color: rgba(255,255,255,.45); }
+    .shift-btn.active { background: var(--navy); color: var(--yellow); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+    [data-theme="dark"] .shift-btn.active { background: var(--yellow); color: var(--navy); box-shadow: 0 2px 8px rgba(255,230,0,.2); }
+    .shift-btn .shift-emoji { font-size: 14px; line-height: 1; }
 
     /* ── WRAPPER ── */
     .wrapper { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
@@ -285,17 +313,23 @@
       .clock-topbar { font-size: 11px; }
       .topbar-nav-link { font-size: 10px; padding: 3px 7px; }
       .header { padding: 0 .75rem; }
+      .header::before { display: none; }
       .header-inner { flex-direction: column !important; min-height: auto !important; padding: 14px 0 12px !important; gap: 12px !important; align-items: stretch !important; }
       .brand-block { gap: 12px; }
-      .ml-logo-img { height: 30px; }
-      .brand-vsep { height: 38px; }
-      .header-title { font-size: 18px; }
+      .ml-logo-img { height: 38px; }
+      .brand-vsep { height: 48px; }
+      .header-title { font-size: 22px; }
       .header-eyebrow { font-size: 9.5px; letter-spacing: .12em; }
-      .shift-block { align-items: stretch; width: 100%; gap: 4px; }
-      .shift-eyebrow { font-size: 9px; text-align: left; }
-      .shift-selector { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; padding: 3px; border-radius: 8px; }
-      .shift-btn { padding: 7px 4px; font-size: 11px; text-align: center; border-radius: 6px; }
-      .shift-window { text-align: left; }
+      .header-sub { font-size: 11.5px; }
+      .turno-card { margin-left: 0; width: 100%; }
+      .turno-emoji { font-size: 34px; }
+      .turno-name { font-size: 17px; }
+      .date-block { border-left: none; padding-left: 0; border-top: 1px solid rgba(26,26,46,.12); padding-top: 12px; gap: 14px; }
+      [data-theme="dark"] .date-block { border-top-color: rgba(255,255,255,.1); }
+      .date-day { font-size: 38px; }
+      .header-footer { padding: 10px .75rem; }
+      .shift-selector { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; padding: 4px; border-radius: 8px; }
+      .shift-btn { padding: 8px 4px; font-size: 11px; text-align: center; justify-content: center; border-radius: 6px; }
       .wrapper { padding: .75rem .75rem 5rem; }
       .dashboard-row { grid-template-columns: repeat(2,1fr); gap: 8px; }
       .dashboard-row > .progress-card { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 14px; }
@@ -360,17 +394,35 @@
       <div class="brand-vsep"></div>
       <div>
         <div class="header-title">Assignments</div>
-        <div class="header-eyebrow" id="hero-eyebrow">TRANSPORTES <span class="eyebrow-sep">·</span> SSP·20 <span class="eyebrow-sep">·</span> <span id="hero-date">CARREGANDO</span></div>
+        <div class="header-eyebrow">TRANSPORTES <span class="eyebrow-sep">·</span> <span id="status-ssp-header">SSP·20</span></div>
+        <div class="header-sub" id="hero-sub">Operações da Madrugada · Semana 26</div>
       </div>
     </div>
-    <div class="shift-block">
-      <div class="shift-eyebrow">TURNO ATIVO</div>
-      <div class="shift-selector">
-        <button class="shift-btn active" data-shift="madrugada">Madrugada</button>
-        <button class="shift-btn" data-shift="am">AM/PM</button>
-        <button class="shift-btn" data-shift="sd">SD</button>
+
+    <div class="turno-card">
+      <div class="turno-emoji" id="turno-emoji">🌙</div>
+      <div class="turno-info">
+        <div class="turno-eyebrow">TURNO ATIVO</div>
+        <div class="turno-name" id="turno-name">Madrugada</div>
+        <div class="turno-window" id="turno-window">00:00 → 06:00</div>
       </div>
-      <div class="shift-window" id="shift-window">00:00 → 06:00</div>
+    </div>
+
+    <div class="date-block">
+      <div class="date-day" id="date-day">23</div>
+      <div class="date-detail">
+        <div class="date-month" id="date-month">JUN 2026</div>
+        <div class="date-weekday" id="date-weekday">Terça-feira</div>
+        <div class="date-week" id="date-week">SEMANA 26</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-footer">
+    <div class="shift-selector">
+      <button class="shift-btn active" data-shift="madrugada"><span class="shift-emoji">🌙</span>Madrugada</button>
+      <button class="shift-btn" data-shift="am"><span class="shift-emoji">☀️</span>AM/PM</button>
+      <button class="shift-btn" data-shift="sd"><span class="shift-emoji">🌆</span>SD</button>
     </div>
   </div>
 </div>
@@ -787,11 +839,22 @@ function tick() {
   tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum);
   const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
   const week = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
-  const DAYS_SHORT = ['DOM','SEG','TER','QUA','QUI','SEX','SAB'];
-  const dd = String(n.getDate()).padStart(2,'0');
-  const mm = String(n.getMonth()+1).padStart(2,'0');
-  document.getElementById('hero-date').textContent =
-    DAYS_SHORT[n.getDay()] + ' ' + dd + '.' + mm + '.' + n.getFullYear() + ' · SEMANA ' + week;
+  const MONTHS_SHORT = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+
+  const elDay = document.getElementById('date-day');
+  const elMonth = document.getElementById('date-month');
+  const elWeekday = document.getElementById('date-weekday');
+  const elWeek = document.getElementById('date-week');
+  const elSub = document.getElementById('hero-sub');
+  if (elDay) elDay.textContent = String(n.getDate()).padStart(2,'0');
+  if (elMonth) elMonth.textContent = MONTHS_SHORT[n.getMonth()] + ' ' + n.getFullYear();
+  if (elWeekday) elWeekday.textContent = DAYS[n.getDay()];
+  if (elWeek) elWeek.textContent = 'SEMANA ' + week;
+
+  // header-sub se for o do madrugada (default)
+  if (elSub && elSub.dataset.shift !== 'set') {
+    // Mantém comportamento padrão sem sobrescrever quando trocou turno
+  }
 }
 
 // Dark mode
@@ -954,14 +1017,26 @@ const wipAM       = document.getElementById('wip-am');
 const wipSD       = document.getElementById('wip-sd');
 
 const SHIFT_WINDOWS = { madrugada: '00:00 → 06:00', am: '06:00 → 18:00', sd: '18:00 → 00:00' };
+const SHIFT_EMOJI = { madrugada: '🌙', am: '☀️', sd: '🌆' };
+const SHIFT_NAME = { madrugada: 'Madrugada', am: 'AM/PM', sd: 'SD' };
 
 shiftBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     shiftBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const shift = btn.dataset.shift;
-    const sw = document.getElementById('shift-window');
-    if (sw) sw.textContent = SHIFT_WINDOWS[shift] || '';
+    const tEmoji = document.getElementById('turno-emoji');
+    const tName = document.getElementById('turno-name');
+    const tWindow = document.getElementById('turno-window');
+    const sub = document.getElementById('hero-sub');
+    if (tEmoji) tEmoji.textContent = SHIFT_EMOJI[shift] || '';
+    if (tName) tName.textContent = SHIFT_NAME[shift] || '';
+    if (tWindow) tWindow.textContent = SHIFT_WINDOWS[shift] || '';
+    if (sub) {
+      const w = document.getElementById('date-week')?.textContent || '';
+      sub.textContent = 'Operações ' + (shift === 'madrugada' ? 'da Madrugada' : shift === 'am' ? 'AM/PM' : 'SD') + ' · ' + w;
+      sub.dataset.shift = 'set';
+    }
     if (shift === 'madrugada') {
       mainContent.style.display = '';
       wipAM.classList.remove('visible');
@@ -1051,13 +1126,8 @@ function applySSP() {
   document.getElementById('ssp-name').textContent = 'SSP' + n;
   const statusSsp = document.getElementById('status-ssp');
   if (statusSsp) statusSsp.textContent = 'SSP·' + n;
-  // Atualiza eyebrow do header preservando a data
-  const eyebrow = document.getElementById('hero-eyebrow');
-  if (eyebrow) {
-    const dateEl = document.getElementById('hero-date');
-    const dateTxt = dateEl ? dateEl.textContent : '';
-    eyebrow.innerHTML = 'TRANSPORTES <span class="eyebrow-sep">·</span> SSP·' + n + ' <span class="eyebrow-sep">·</span> <span id="hero-date">' + dateTxt + '</span>';
-  }
+  const headerSsp = document.getElementById('status-ssp-header');
+  if (headerSsp) headerSsp.textContent = 'SSP·' + n;
   document.getElementById('btn-ssp20').className = 'ssp-btn' + (n===20?' active':'');
   document.getElementById('btn-ssp51').className = 'ssp-btn' + (n===51?' active':'');
   document.querySelectorAll('a[href="madrugadao.html"]').forEach(el => {
