@@ -546,8 +546,9 @@ const TASKS = {
   ]
 };
 
-const TODAY = new Date().toISOString().slice(0,10);
-const KEY   = `rotina-transportes-${TODAY}`;
+const TODAY      = new Date().toISOString().slice(0,10);
+const currentSSP = parseInt(localStorage.getItem('ssp') || '20');
+const KEY        = `rotina-ssp${currentSSP}-${TODAY}`;
 
 // ── SYNC via Firebase REST + polling ──────────────────────────────────────
 const FB = 'https://rotina-lastmile-default-rtdb.firebaseio.com/turnos';
