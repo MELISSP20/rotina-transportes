@@ -43,6 +43,11 @@
     /* ── TOPBAR ── */
     .topbar { background: var(--navy); height: 44px; display: flex; align-items: center; padding: 0 2rem; gap: 1rem; position: sticky; top: 0; z-index: 100; }
     [data-theme="dark"] .topbar { background: #080C14; }
+    .topbar-status { display: flex; align-items: center; gap: 9px; }
+    .status-dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(74,222,128,.5); animation: livePulse 2.2s infinite; }
+    @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.5); } 70% { box-shadow: 0 0 0 5px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+    .status-text { font-size: 10.5px; font-weight: 700; letter-spacing: .14em; color: rgba(255,255,255,.55); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+    .status-sep { margin: 0 5px; color: rgba(255,255,255,.25); font-weight: 400; }
     .topbar-sep { width: 1px; height: 16px; background: rgba(255,255,255,.1); }
     .topbar-section { font-size: 11px; font-weight: 500; color: rgba(255,255,255,.4); }
     .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
@@ -65,18 +70,30 @@
     .theme-btn { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 5px; color: rgba(255,255,255,.5); font-size: 13px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     /* ── HEADER ── */
-    .header { background: var(--yellow); padding: 0 2rem; }
+    .header { background: var(--yellow); padding: 0 2rem; position: relative; }
     [data-theme="dark"] .header { background: var(--navy); border-bottom: 3px solid var(--yellow); }
-    .header-inner { max-width: 1200px; margin: 0 auto; height: 62px; display: flex; align-items: center; gap: 1.5rem; }
-    .header-title { font-size: 19px; font-weight: 700; color: var(--navy); letter-spacing: -.4px; line-height: 1.1; }
+    .header-inner { max-width: 1240px; margin: 0 auto; min-height: 78px; display: flex; align-items: center; gap: 2rem; padding: 12px 0; }
+
+    /* Brand block */
+    .brand-block { display: flex; align-items: center; gap: 16px; }
+    .ml-logo-img { height: 36px; width: auto; display: block; opacity: .95; }
+    .brand-vsep { width: 1px; height: 44px; background: rgba(26,26,46,.18); }
+    [data-theme="dark"] .brand-vsep { background: rgba(255,255,255,.15); }
+    .header-title { font-size: 23px; font-weight: 750; color: var(--navy); letter-spacing: -.5px; line-height: 1.05; }
     [data-theme="dark"] .header-title { color: #fff; }
-    .header-date { font-size: 11.5px; font-weight: 500; color: rgba(26,26,46,.55); margin-top: 2px; letter-spacing: .01em; }
-    [data-theme="dark"] .header-date { color: rgba(255,255,255,.4); }
-    .header-divider { width: 1px; height: 28px; background: rgba(26,26,46,.15); }
-    [data-theme="dark"] .header-divider { background: rgba(255,255,255,.1); }
+    .header-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: .14em; color: rgba(26,26,46,.5); text-transform: uppercase; margin-top: 5px; font-variant-numeric: tabular-nums; }
+    [data-theme="dark"] .header-eyebrow { color: rgba(255,255,255,.4); }
+    .eyebrow-sep { margin: 0 8px; opacity: .5; }
+
+    /* Shift block */
+    .shift-block { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .shift-eyebrow { font-size: 9.5px; font-weight: 700; letter-spacing: .2em; color: rgba(26,26,46,.4); text-transform: uppercase; }
+    [data-theme="dark"] .shift-eyebrow { color: rgba(255,255,255,.35); }
+    .shift-window { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: rgba(26,26,46,.55); font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; margin-top: 3px; }
+    [data-theme="dark"] .shift-window { color: rgba(255,230,0,.55); }
 
     /* ── SHIFT SELECTOR ── */
-    .shift-selector { display: flex; gap: 4px; background: rgba(26,26,46,.08); padding: 3px; border-radius: 9px; margin-left: auto; }
+    .shift-selector { display: flex; gap: 4px; background: rgba(26,26,46,.08); padding: 3px; border-radius: 9px; }
     [data-theme="dark"] .shift-selector { background: rgba(255,255,255,.08); }
     .shift-btn { font-family: var(--font); font-size: 11.5px; font-weight: 600; padding: 5px 13px; border-radius: 6px; border: none; background: transparent; color: rgba(26,26,46,.5); cursor: pointer; transition: all .15s; letter-spacing: .01em; }
     [data-theme="dark"] .shift-btn { color: rgba(255,255,255,.4); }
@@ -263,16 +280,22 @@
     /* ── MOBILE ── */
     @media (max-width: 768px) {
       .topbar { padding: 0 .75rem; }
-      .topbar-sep, .topbar-section, .online-badge { display: none; }
+      .topbar-sep, .topbar-section { display: none; }
+      .topbar-status .status-text { display: none; }
       .clock-topbar { font-size: 11px; }
       .topbar-nav-link { font-size: 10px; padding: 3px 7px; }
       .header { padding: 0 .75rem; }
-      .header-inner { flex-direction: column !important; height: auto !important; padding: 12px 0 10px !important; gap: 8px !important; align-items: flex-start !important; }
-      .header-title { font-size: 16px; }
-      .header-date { font-size: 11px; }
-      .header-divider { display: none; }
-      .shift-selector { width: 100%; margin-left: 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; padding: 3px; border-radius: 8px; }
+      .header-inner { flex-direction: column !important; min-height: auto !important; padding: 14px 0 12px !important; gap: 12px !important; align-items: stretch !important; }
+      .brand-block { gap: 12px; }
+      .ml-logo-img { height: 30px; }
+      .brand-vsep { height: 38px; }
+      .header-title { font-size: 18px; }
+      .header-eyebrow { font-size: 9.5px; letter-spacing: .12em; }
+      .shift-block { align-items: stretch; width: 100%; gap: 4px; }
+      .shift-eyebrow { font-size: 9px; text-align: left; }
+      .shift-selector { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; padding: 3px; border-radius: 8px; }
       .shift-btn { padding: 7px 4px; font-size: 11px; text-align: center; border-radius: 6px; }
+      .shift-window { text-align: left; }
       .wrapper { padding: .75rem .75rem 5rem; }
       .dashboard-row { grid-template-columns: repeat(2,1fr); gap: 8px; }
       .dashboard-row > .progress-card { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 14px; }
@@ -303,6 +326,10 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
+  <div class="topbar-status">
+    <span class="status-dot-live"></span>
+    <span class="status-text">TRANSPORTES <span class="status-sep">/</span> <span id="status-ssp">SSP·20</span></span>
+  </div>
   <div class="topbar-right">
     <div class="online-badge" title="Sistema online">
       <div class="online-dot"></div>
@@ -327,18 +354,23 @@
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-inner" style="justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <img src="ml-logo.png" alt="Mercado Livre" style="height:36px;width:auto;display:block;opacity:.95;"/>
-      <div style="border-left:1px solid rgba(26,26,46,.18);padding-left:14px;">
+  <div class="header-inner">
+    <div class="brand-block">
+      <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+      <div class="brand-vsep"></div>
+      <div>
         <div class="header-title">Assignments</div>
-        <div class="header-date" id="hero-date">Transportes · Carregando data...</div>
+        <div class="header-eyebrow" id="hero-eyebrow">TRANSPORTES <span class="eyebrow-sep">·</span> SSP·20 <span class="eyebrow-sep">·</span> <span id="hero-date">CARREGANDO</span></div>
       </div>
     </div>
-    <div class="shift-selector">
-      <button class="shift-btn active" data-shift="madrugada">Madrugada</button>
-      <button class="shift-btn" data-shift="am">AM/PM</button>
-      <button class="shift-btn" data-shift="sd">SD</button>
+    <div class="shift-block">
+      <div class="shift-eyebrow">TURNO ATIVO</div>
+      <div class="shift-selector">
+        <button class="shift-btn active" data-shift="madrugada">Madrugada</button>
+        <button class="shift-btn" data-shift="am">AM/PM</button>
+        <button class="shift-btn" data-shift="sd">SD</button>
+      </div>
+      <div class="shift-window" id="shift-window">00:00 → 06:00</div>
     </div>
   </div>
 </div>
@@ -749,8 +781,17 @@ function tick() {
   const n = new Date();
   document.getElementById('live-clock').textContent =
     String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+  // Semana ISO
+  const tmp = new Date(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()));
+  const dayNum = tmp.getUTCDay() || 7;
+  tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
+  const week = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
+  const DAYS_SHORT = ['DOM','SEG','TER','QUA','QUI','SEX','SAB'];
+  const dd = String(n.getDate()).padStart(2,'0');
+  const mm = String(n.getMonth()+1).padStart(2,'0');
   document.getElementById('hero-date').textContent =
-    'Transportes · ' + DAYS[n.getDay()] + ', ' + n.getDate() + ' ' + MONTHS[n.getMonth()].toLowerCase() + ' ' + n.getFullYear();
+    DAYS_SHORT[n.getDay()] + ' ' + dd + '.' + mm + '.' + n.getFullYear() + ' · SEMANA ' + week;
 }
 
 // Dark mode
@@ -912,11 +953,15 @@ const mainContent = document.querySelector('.wrapper:not(.wip-overlay)');
 const wipAM       = document.getElementById('wip-am');
 const wipSD       = document.getElementById('wip-sd');
 
+const SHIFT_WINDOWS = { madrugada: '00:00 → 06:00', am: '06:00 → 18:00', sd: '18:00 → 00:00' };
+
 shiftBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     shiftBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const shift = btn.dataset.shift;
+    const sw = document.getElementById('shift-window');
+    if (sw) sw.textContent = SHIFT_WINDOWS[shift] || '';
     if (shift === 'madrugada') {
       mainContent.style.display = '';
       wipAM.classList.remove('visible');
@@ -1004,6 +1049,15 @@ function setSSP(n) {
 function applySSP() {
   const n = currentSSP;
   document.getElementById('ssp-name').textContent = 'SSP' + n;
+  const statusSsp = document.getElementById('status-ssp');
+  if (statusSsp) statusSsp.textContent = 'SSP·' + n;
+  // Atualiza eyebrow do header preservando a data
+  const eyebrow = document.getElementById('hero-eyebrow');
+  if (eyebrow) {
+    const dateEl = document.getElementById('hero-date');
+    const dateTxt = dateEl ? dateEl.textContent : '';
+    eyebrow.innerHTML = 'TRANSPORTES <span class="eyebrow-sep">·</span> SSP·' + n + ' <span class="eyebrow-sep">·</span> <span id="hero-date">' + dateTxt + '</span>';
+  }
   document.getElementById('btn-ssp20').className = 'ssp-btn' + (n===20?' active':'');
   document.getElementById('btn-ssp51').className = 'ssp-btn' + (n===51?' active':'');
   document.querySelectorAll('a[href="madrugadao.html"]').forEach(el => {
