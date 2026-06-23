@@ -725,6 +725,60 @@
       .feedback-btn { bottom:72px !important; }
     }
 
+
+    /* ── DIÁRIO DE BORDO ── */
+    .diario-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .diario-form { display: flex; flex-direction: column; gap: 12px; }
+    .diario-row { display: flex; align-items: center; gap: 12px; }
+    .diario-input {
+      font-family: var(--font); font-size: 13px; color: var(--text);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 8px 12px; outline: none;
+      transition: border-color .15s;
+    }
+    .diario-input:focus { border-color: var(--blue); }
+    .diario-label { font-size: 12px; font-weight: 500; color: var(--muted); }
+    .diario-textarea {
+      width: 100%; min-height: 100px; font-family: var(--font);
+      font-size: 13px; color: var(--text); background: var(--bg);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 12px; outline: none; resize: vertical; line-height: 1.6;
+      transition: border-color .15s;
+    }
+    .diario-textarea:focus { border-color: var(--blue); }
+    .diario-textarea::placeholder { color: var(--muted); opacity: .6; }
+    .diario-save-btn {
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      color: var(--yellow); background: var(--navy);
+      border: none; border-radius: var(--radius);
+      padding: 9px 20px; cursor: pointer; transition: opacity .15s;
+      align-self: flex-end;
+    }
+    [data-theme="dark"] .diario-save-btn { background: var(--yellow); color: var(--navy); }
+    .diario-save-btn:hover { opacity: .88; }
+
+    /* ── WIP OVERLAY ── */
+    .wip-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 12px;
+      text-align: center;
+    }
+    .wip-overlay.visible { display: flex; }
+    .wip-icon { font-size: 48px; }
+    .wip-title { font-size: 20px; font-weight: 700; color: var(--text); }
+    .wip-sub { font-size: 14px; color: var(--muted); max-width: 360px; }
+    .wip-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--blue); background: rgba(52,131,250,.1); padding: 4px 12px; border-radius: 20px; }
+
   </style>
 </head>
 <body>
