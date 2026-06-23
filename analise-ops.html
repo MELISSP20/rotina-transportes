@@ -25,6 +25,16 @@
     .topbar-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
     .topbar-nav-link { font-size:11px; font-weight:600; color:rgba(255,255,255,.6); text-decoration:none; padding:3px 10px; border-radius:5px; border:1px solid rgba(255,255,255,.1); transition:all .15s; }
     .topbar-nav-link:hover, .topbar-nav-link.active { background:rgba(255,230,0,.12); color:var(--yellow); border-color:rgba(255,230,0,.2); }
+    .topbar-dropdown { position: relative; }
+    .topbar-dropdown-btn { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.65); background: none; border: 1px solid rgba(255,255,255,.1); border-radius: 5px; padding: 3px 10px; cursor: pointer; font-family: var(--font); transition: all .15s; display: flex; align-items: center; gap: 5px; }
+    .topbar-dropdown-btn:hover, .topbar-dropdown-btn.open { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.2); }
+    .topbar-dropdown-btn .chevron { font-size: 8px; transition: transform .15s; }
+    .topbar-dropdown-btn.open .chevron { transform: rotate(180deg); }
+    .topbar-dropdown-menu { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: #0f1525; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; min-width: 148px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.4); z-index: 999; }
+    .topbar-dropdown-menu.open { display: block; }
+    .topbar-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 9px 13px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.65); text-decoration: none; transition: background .12s, color .12s; white-space: nowrap; }
+    .topbar-dropdown-item:hover { background: rgba(255,230,0,.1); color: var(--yellow); }
+    .topbar-dropdown-item .item-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
     .theme-btn { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); border-radius:5px; color:rgba(255,255,255,.5); font-size:13px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
     /* HEADER */
@@ -175,8 +185,13 @@
   <div class="topbar-right">
     <a href="index.html" class="topbar-nav-link">Rotina</a>
     <a href="madrugadao.html" class="topbar-nav-link">Organograma</a>
-    <a href="dit-report.html" class="topbar-nav-link">DIT Report</a>
-    <a href="analise-ops.html" class="topbar-nav-link active">Análise OPS</a>
+    <div class="topbar-dropdown">
+      <button class="topbar-dropdown-btn open" id="reports-btn" onclick="toggleReportsMenu()" style="color:var(--yellow);border-color:rgba(255,230,0,.2);background:rgba(255,230,0,.12);">Reports <span class="chevron">▾</span></button>
+      <div class="topbar-dropdown-menu" id="reports-menu">
+        <a href="analise-ops.html" class="topbar-dropdown-item" style="color:var(--yellow);"><span class="item-dot" style="background:#60a5fa;"></span>Descont.</a>
+        <a href="dit-report.html" class="topbar-dropdown-item"><span class="item-dot" style="background:#f0b429;"></span>DIT Report</a>
+      </div>
+    </div>
     <button class="theme-btn" id="theme-btn">🌙</button>
   </div>
 </div>
@@ -563,6 +578,18 @@ function copyText() {
     setTimeout(() => btn.textContent = '📋 Copiar texto', 2000);
   });
 }
+function toggleReportsMenu() {
+  const btn = document.getElementById('reports-btn');
+  const menu = document.getElementById('reports-menu');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.topbar-dropdown')) {
+    document.getElementById('reports-btn')?.classList.remove('open');
+    document.getElementById('reports-menu')?.classList.remove('open');
+  }
+});
 </script>
 </body>
 </html>
