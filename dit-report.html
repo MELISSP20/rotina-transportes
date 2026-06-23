@@ -54,7 +54,8 @@
   [data-theme="dark"] .header::before { background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(255,230,0,.04) 50%, rgba(255,230,0,.04) 100%); }
   .header-inner { max-width: 1240px; margin: 0 auto; min-height: 110px; display: flex; align-items: center; gap: 24px; padding: 16px 0; position: relative; }
   .brand-block { display: flex; align-items: center; gap: 18px; flex: 0 0 auto; }
-  .ml-logo-img { height: 44px; width: auto; display: block; opacity: .95; }
+  .ml-logo-wrap { background: #fff; border-radius: 10px; padding: 5px 9px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(26,26,46,.08); }
+  .ml-logo-img { height: 30px; width: auto; display: block; }
   .brand-vsep { width: 1px; height: 60px; background: rgba(26,26,46,.18); }
   [data-theme="dark"] .brand-vsep { background: rgba(255,255,255,.15); }
   .header-eyebrow { font-size: 10.5px; font-weight: 700; letter-spacing: .16em; color: rgba(26,26,46,.55); text-transform: uppercase; margin-bottom: 5px; font-variant-numeric: tabular-nums; }
@@ -149,7 +150,8 @@
     .header::before { display: none; }
     .header-inner { flex-direction: column; align-items: stretch; min-height: auto; padding: 16px 0 14px; gap: 12px; }
     .brand-block { gap: 12px; }
-    .ml-logo-img { height: 36px; }
+    .ml-logo-wrap { padding: 4px 7px; }
+    .ml-logo-img { height: 26px; }
     .brand-vsep { height: 52px; }
     .header-title { font-size: 22px; }
     .dit-info-card { margin-left: 0; width: 100%; }
@@ -187,7 +189,7 @@
 <div class="header">
   <div class="header-inner">
     <div class="brand-block">
-      <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+      <div class="ml-logo-wrap"><img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/></div>
       <div class="brand-vsep"></div>
       <div>
         <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> RELATÓRIO OPERACIONAL</div>

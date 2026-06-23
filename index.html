@@ -79,7 +79,8 @@
 
     /* Brand block */
     .brand-block { display: flex; align-items: center; gap: 18px; flex: 0 0 auto; }
-    .ml-logo-img { height: 48px; width: auto; display: block; opacity: .95; }
+    .ml-logo-wrap { background: #fff; border-radius: 10px; padding: 5px 9px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(26,26,46,.08); }
+    .ml-logo-img { height: 32px; width: auto; display: block; }
     .brand-vsep { width: 1px; height: 64px; background: rgba(26,26,46,.18); }
     [data-theme="dark"] .brand-vsep { background: rgba(255,255,255,.15); }
     .header-title { font-size: 30px; font-weight: 800; color: var(--navy); letter-spacing: -.7px; line-height: 1; }
@@ -316,7 +317,8 @@
       .header::before { display: none; }
       .header-inner { flex-direction: column !important; min-height: auto !important; padding: 14px 0 12px !important; gap: 12px !important; align-items: stretch !important; }
       .brand-block { gap: 12px; }
-      .ml-logo-img { height: 38px; }
+      .ml-logo-wrap { padding: 4px 7px; }
+      .ml-logo-img { height: 26px; }
       .brand-vsep { height: 48px; }
       .header-title { font-size: 22px; }
       .header-eyebrow { font-size: 9.5px; letter-spacing: .12em; }
@@ -390,7 +392,7 @@
 <div class="header">
   <div class="header-inner">
     <div class="brand-block">
-      <img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/>
+      <div class="ml-logo-wrap"><img src="ml-logo.png" alt="Mercado Livre" class="ml-logo-img"/></div>
       <div class="brand-vsep"></div>
       <div>
         <div class="header-title">Assignments</div>
