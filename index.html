@@ -257,8 +257,70 @@
     .primordial-footer { margin-top: 8px; }
 
     /* ── TASK TABLE ── */
-    .task-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
-    .task-table-head { display: grid; grid-template-columns: 32px 1fr 90px 85px 36px; padding: 9px 16px; background: var(--bg); border-bottom: 1px solid var(--border); gap: 8px; }
+    /* ── TASK CARDS ── */
+    .task-timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 2rem; }
+    .task-time-group { display: flex; flex-direction: column; gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .task-time-group:first-child { padding-top: 0; }
+    .task-time-group:last-child { border-bottom: none; }
+    .task-time-header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .task-time-marker { display: flex; align-items: center; gap: 10px; padding: 5px 14px; background: var(--navy); color: var(--yellow); border-radius: 20px; font-size: 12px; font-weight: 800; letter-spacing: .03em; font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; box-shadow: 0 2px 8px rgba(26,26,46,.15); }
+    [data-theme="dark"] .task-time-marker { background: var(--yellow); color: var(--navy); }
+    .task-time-marker.now { background: var(--yellow); color: var(--navy); animation: timePulse 1.8s infinite; }
+    @keyframes timePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,230,0,.5); } 50% { box-shadow: 0 0 0 8px rgba(255,230,0,0); } }
+    .task-time-icon { font-size: 14px; }
+    .task-time-count { font-size: 10.5px; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .task-time-count b { color: var(--text); }
+    .task-time-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border) 0%, transparent 100%); }
+
+    .task-card { position: relative; display: grid; grid-template-columns: 4px 32px 1fr auto; gap: 12px; align-items: center; padding: 13px 16px 13px 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); cursor: pointer; transition: all .2s cubic-bezier(.4,0,.2,1); overflow: hidden; }
+    .task-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--blue); transition: background .2s; }
+    .task-card.prio-critico::before { background: var(--red); }
+    .task-card.prio-urgente::before { background: #F59E0B; }
+    .task-card.prio-media::before { background: var(--blue); }
+    .task-card.prio-baixa::before { background: var(--muted); }
+    .task-card:hover { transform: translateY(-1px); border-color: rgba(26,26,46,.15); box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    [data-theme="dark"] .task-card:hover { border-color: rgba(255,255,255,.15); box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+    .task-card.done { background: rgba(0,166,80,.04); border-color: rgba(0,166,80,.15); }
+    .task-card.done::before { background: var(--green); }
+    [data-theme="dark"] .task-card.done { background: rgba(0,166,80,.08); }
+    .task-card.next-up { border-color: rgba(255,230,0,.5); box-shadow: 0 0 0 1px rgba(255,230,0,.3), 0 4px 18px rgba(255,230,0,.18); }
+    .task-card.next-up::after { content: 'PRÓXIMA'; position: absolute; top: 8px; right: 12px; font-size: 8.5px; font-weight: 800; letter-spacing: .12em; color: var(--navy); background: var(--yellow); padding: 2px 7px; border-radius: 4px; }
+    [data-theme="dark"] .task-card.next-up::after { background: var(--yellow); color: var(--navy); }
+    .task-card .spacer-1 { width: 4px; }
+    .task-check-area { display: flex; align-items: center; justify-content: center; }
+    .task-check-box { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 7px; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; background: var(--bg); flex-shrink: 0; }
+    .task-check-box:hover { border-color: var(--text); transform: scale(1.05); }
+    .task-card.done .task-check-box { background: var(--green); border-color: var(--green); }
+    .task-check-mark { color: #fff; font-size: 14px; font-weight: 900; line-height: 1; display: none; }
+    .task-card.done .task-check-mark { display: block; animation: checkPop .3s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes checkPop { 0% { transform: scale(0) rotate(-45deg); } 100% { transform: scale(1) rotate(0); } }
+
+    .task-body { min-width: 0; }
+    .task-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .task-name-link { font-size: 13.5px; font-weight: 700; color: var(--text); text-decoration: none; line-height: 1.25; letter-spacing: -.1px; }
+    .task-name-link:hover { color: var(--blue); }
+    .task-card.done .task-name-link { text-decoration: line-through; color: var(--muted); }
+    .task-link-arrow { display: inline-block; font-size: 10px; color: var(--blue); margin-left: 4px; opacity: 0; transition: opacity .15s, transform .15s; }
+    .task-card:hover .task-link-arrow { opacity: 1; transform: translate(2px, -2px); }
+    .task-desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.42; }
+
+    .task-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .task-prio-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; padding: 4px 9px; border-radius: 6px; white-space: nowrap; }
+    .task-prio-pill.critico { background: rgba(227,38,47,.1); color: var(--red); }
+    .task-prio-pill.urgente { background: rgba(245,158,11,.12); color: #D97706; }
+    .task-prio-pill.media { background: rgba(52,131,250,.1); color: var(--blue); }
+    .task-prio-pill.baixa { background: rgba(107,115,148,.12); color: var(--muted); }
+    .task-prio-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .task-card.done .task-prio-pill { background: rgba(0,166,80,.1); color: var(--green); }
+
+    @media (max-width: 768px) {
+      .task-card { grid-template-columns: 4px 28px 1fr; padding: 11px 14px 11px 0; }
+      .task-meta { grid-column: 2 / -1; margin-top: 8px; }
+      .task-name-link { font-size: 13px; }
+      .task-desc { font-size: 11.5px; }
+      .task-time-marker { font-size: 11px; padding: 4px 11px; }
+      .task-time-count { font-size: 9.5px; }
+    }
     .th { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
     .task-row { display: grid; grid-template-columns: 32px 1fr 90px 85px 36px; padding: 11px 16px; border-bottom: 1px solid var(--border); gap: 8px; align-items: center; cursor: pointer; transition: background .1s; }
     .task-row:last-child { border-bottom: none; }
@@ -590,12 +652,7 @@
     <span class="section-time">Madrugada</span>
     <div class="section-line"></div>
   </div>
-  <div class="task-table">
-    <div class="task-table-head">
-      <div></div><div class="th">Tarefa</div><div class="th">Limite</div><div class="th">Prioridade</div><div class="th"></div>
-    </div>
-    <div id="list-tarefas"></div>
-  </div>
+  <div class="task-timeline" id="list-tarefas-timeline"></div>
 
   <!-- DIÁRIO DE BORDO -->
   <div class="section-header" style="margin-top:2rem;">
@@ -788,16 +845,28 @@ async function poll() {
 }
 
 function syncCheckboxes() {
-  // Update existing checkboxes without rebuilding DOM
-  document.querySelectorAll('.task-check[data-id]').forEach(cb => {
-    const id = cb.dataset.id;
+  // Update existing task cards without full re-render
+  document.querySelectorAll('.task-check-box[data-id]').forEach(box => {
+    const id = box.dataset.id;
     const checked = !!state[id];
-    if (cb.checked !== checked) {
-      cb.checked = checked;
-      const row = cb.closest('.task-row');
-      if (row) row.classList.toggle('done', checked);
+    const card = box.closest('.task-card');
+    if (!card) return;
+    const currentDone = card.classList.contains('done');
+    if (currentDone !== checked) {
+      card.classList.toggle('done', checked);
     }
   });
+  // Atualizar contadores dos headers de horário
+  document.querySelectorAll('.task-time-group').forEach(group => {
+    const cards = group.querySelectorAll('.task-card');
+    const doneCount = group.querySelectorAll('.task-card.done').length;
+    const total = cards.length;
+    const countEl = group.querySelector('.task-time-count');
+    if (countEl) {
+      countEl.innerHTML = `<b>${total}</b> ${total === 1 ? 'tarefa' : 'tarefas'} · <b>${doneCount}</b> concluída${doneCount === 1 ? '' : 's'}`;
+    }
+  });
+  updateStats();
 }
 
 async function initState() {
@@ -835,47 +904,104 @@ function dlSeverity(dl) {
   return 'normal';
 }
 
-function buildRow(t) {
-  const done = !!state[t.id];
-  const sev  = dlSeverity(t.deadline);
-  const row  = document.createElement('div');
-  row.className = 'task-row' + (done ? ' done' : '');
-  row.innerHTML = `
-    <div class="task-check-wrap"><input type="checkbox" class="task-check" data-id="${t.id}" ${done?'checked':''}></div>
-    <div>
-      <a class="task-name-link" href="${t.link}">${t.name}<span class="link-arrow">↗</span></a>
-      <div class="task-desc-text">${t.desc}</div>
-      <div class="task-info-meta">
-        <span class="dl-pill ${sev}">⏱ ${t.deadline}</span>
-        <span class="prio ${t.priority}">${t.priority}</span>
+function renderAll() {
+  const container = document.getElementById('list-tarefas-timeline');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const tasks = TASKS['list-tarefas'] || [];
+  // Group by deadline
+  const groups = {};
+  tasks.forEach(t => {
+    (groups[t.deadline] = groups[t.deadline] || []).push(t);
+  });
+  const sortedTimes = Object.keys(groups).sort();
+
+  // Determinar "próxima" (primeira pendente do horário mais próximo do agora)
+  const now = new Date();
+  const nowMin = now.getHours()*60 + now.getMinutes();
+  let nextTaskId = null;
+  for (const time of sortedTimes) {
+    const [h,m] = time.split(':').map(Number);
+    const tMin = h*60 + m;
+    for (const t of groups[time]) {
+      if (!state[t.id]) {
+        // Próxima é a primeira pendente em ordem cronológica que esteja no futuro ou recém-passada
+        if (!nextTaskId && tMin >= nowMin - 30) nextTaskId = t.id;
+      }
+    }
+  }
+  // Fallback: se ainda não tem (tudo passou), a primeira pendente
+  if (!nextTaskId) {
+    for (const time of sortedTimes) for (const t of groups[time]) if (!state[t.id]) { nextTaskId = t.id; break; }
+  }
+
+  sortedTimes.forEach(time => {
+    const tasksOfTime = groups[time];
+    const doneCount = tasksOfTime.filter(t => state[t.id]).length;
+    const total = tasksOfTime.length;
+    const [h,m] = time.split(':').map(Number);
+    const tMin = h*60 + m;
+    const isNow = Math.abs(nowMin - tMin) <= 15;
+
+    const group = document.createElement('div');
+    group.className = 'task-time-group';
+    group.innerHTML = `
+      <div class="task-time-header">
+        <div class="task-time-marker ${isNow ? 'now' : ''}">
+          <span class="task-time-icon">⏱</span>${time}
+        </div>
+        <span class="task-time-count"><b>${total}</b> ${total === 1 ? 'tarefa' : 'tarefas'} · <b>${doneCount}</b> concluída${doneCount === 1 ? '' : 's'}</span>
+        <div class="task-time-line"></div>
       </div>
-    </div>
-    <div><span class="dl-pill ${sev}">⏱ ${t.deadline}</span></div>
-    <div><span class="prio ${t.priority}">${t.priority}</span></div>
-    <div></div>
-  `;
-  const cb = row.querySelector('.task-check');
-  cb.addEventListener('change', () => {
-    state[t.id] = cb.checked;
-    save(t.id);
-    row.classList.toggle('done', cb.checked);
-    updateStats();
+    `;
+    tasksOfTime.forEach(t => group.appendChild(buildCard(t, t.id === nextTaskId)));
+    container.appendChild(group);
   });
-  row.addEventListener('click', (e) => {
-    if (e.target.tagName !== 'A' && e.target.tagName !== 'INPUT') { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
-  });
-  row.querySelector('.task-name-link').addEventListener('click', e => e.stopPropagation());
-  return row;
+
+  updateStats();
 }
 
-function renderAll() {
-  for (const [id, tasks] of Object.entries(TASKS)) {
-    const el = document.getElementById(id);
-    if (!el) continue;
-    el.innerHTML = '';
-    tasks.forEach(t => el.appendChild(buildRow(t)));
-  }
-  updateStats();
+function buildCard(t, isNext) {
+  const done = !!state[t.id];
+  const card = document.createElement('div');
+  card.className = 'task-card prio-' + t.priority + (done ? ' done' : '') + (isNext && !done ? ' next-up' : '');
+  const hasLink = t.link && t.link !== '#';
+  const linkArrow = hasLink ? '<span class="task-link-arrow">↗</span>' : '';
+  card.innerHTML = `
+    <div class="spacer-1"></div>
+    <div class="task-check-area">
+      <div class="task-check-box" data-id="${t.id}">
+        <span class="task-check-mark">✓</span>
+      </div>
+    </div>
+    <div class="task-body">
+      <div class="task-title-row">
+        ${hasLink
+          ? `<a class="task-name-link" href="${t.link}" target="${t.link.startsWith('http')?'_blank':'_self'}">${t.name}${linkArrow}</a>`
+          : `<span class="task-name-link">${t.name}</span>`
+        }
+      </div>
+      <div class="task-desc">${t.desc}</div>
+    </div>
+    <div class="task-meta">
+      <span class="task-prio-pill ${t.priority}">${t.priority}</span>
+    </div>
+  `;
+
+  const box = card.querySelector('.task-check-box');
+  const toggle = (e) => {
+    e?.stopPropagation();
+    state[t.id] = !state[t.id];
+    save(t.id);
+    renderAll();
+  };
+  box.addEventListener('click', toggle);
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a') || e.target.closest('.task-check-box')) return;
+    toggle(e);
+  });
+  return card;
 }
 
 function updateStats() {

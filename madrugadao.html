@@ -22,26 +22,72 @@
     body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; transition: background .2s; }
 
     /* TOPBAR */
-    .topbar { background: var(--navy); height: 48px; display: flex; align-items: center; padding: 0 2rem; gap: 1rem; position: sticky; top: 0; z-index: 100; }
-    [data-theme="dark"] .topbar { background: #080C12; }
-    .topbar-logo { display: flex; align-items: center; gap: 10px; }
-    .ml-logo-img { height: 34px; width: auto; display: block; }
-    .topbar-sep { width: 1px; height: 18px; background: rgba(255,255,255,.12); }
-    .topbar-section { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.5); }
-    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-    .topbar-nav-link { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.65); text-decoration: none; padding: 4px 11px; border-radius: 5px; border: 1px solid rgba(255,255,255,.1); transition: all .15s; }
-    .topbar-nav-link:hover, .topbar-nav-link.active { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .topbar { background: linear-gradient(180deg, var(--navy) 0%, #14182A 100%); height: 56px; display: flex; align-items: center; padding: 0 1.5rem; gap: 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,230,0,.08); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+    [data-theme="dark"] .topbar { background: linear-gradient(180deg, #0A0D17 0%, #06080F 100%); }
+
+    /* Left cluster */
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-status { display: flex; align-items: center; gap: 9px; }
+    .status-dot-live { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(74,222,128,.5); animation: livePulse 2.2s infinite; }
+    @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.5); } 70% { box-shadow: 0 0 0 6px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+    .status-text { font-size: 11.5px; font-weight: 700; letter-spacing: .14em; color: rgba(255,255,255,.62); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+    .status-sep { margin: 0 5px; color: rgba(255,255,255,.25); font-weight: 400; }
+    .topbar-vsep { width: 1px; height: 26px; background: rgba(255,255,255,.1); flex-shrink: 0; }
+
+    /* Right cluster */
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .online-cluster { display: flex; align-items: center; gap: 6px; padding-right: 6px; border-right: 1px solid rgba(255,255,255,.08); }
+    .online-badge { display: flex; align-items: center; justify-content: center; padding: 0 3px; cursor: help; }
+    .online-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+    /* Nav cluster */
+    .topbar-nav { display: flex; align-items: center; gap: 4px; padding: 3px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.05); border-radius: 11px; }
+
+    /* Nav buttons - polished */
+    .topbar-nav-link { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; font-family: var(--font); font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6); text-decoration: none; border-radius: 8px; background: transparent; border: 1px solid transparent; transition: all .22s cubic-bezier(.4,0,.2,1); letter-spacing: -.1px; position: relative; }
+    .topbar-nav-link svg { width: 14px; height: 14px; opacity: .55; transition: opacity .2s, transform .2s; flex-shrink: 0; }
+    .topbar-nav-link:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.95); transform: translateY(-1px); }
+    .topbar-nav-link:hover svg { opacity: 1; transform: scale(1.08); }
+    .topbar-nav-link.active { background: var(--yellow); color: var(--navy); box-shadow: 0 2px 12px rgba(255,230,0,.28), inset 0 -2px 0 rgba(0,0,0,.08); }
+    .topbar-nav-link.active svg { opacity: 1; }
+    .topbar-nav-link.active::after { content: ''; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 10px rgba(255,230,0,.7); }
+
+    /* Query Hub - purple gradient style */
+    .query-hub-link { background: linear-gradient(135deg, rgba(167,139,250,.14), rgba(124,58,237,.08)) !important; border: 1px solid rgba(167,139,250,.22) !important; color: #c4b5fd !important; }
+    .query-hub-link svg { color: #c4b5fd; opacity: .9 !important; }
+    .query-hub-link:hover { background: linear-gradient(135deg, rgba(167,139,250,.24), rgba(124,58,237,.16)) !important; border-color: rgba(167,139,250,.45) !important; color: #ddd6fe !important; box-shadow: 0 4px 16px rgba(167,139,250,.25); transform: translateY(-1px); }
+    .qh-arrow { display: inline-block; font-size: 11px; transition: transform .2s; opacity: .8; }
+    .query-hub-link:hover .qh-arrow { transform: translate(2px, -2px); opacity: 1; }
+
+    /* Reports dropdown - same family as nav buttons */
     .topbar-dropdown { position: relative; }
-    .topbar-dropdown-btn { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.65); background: none; border: 1px solid rgba(255,255,255,.1); border-radius: 5px; padding: 4px 11px; cursor: pointer; font-family: var(--font); transition: all .15s; display: flex; align-items: center; gap: 5px; }
-    .topbar-dropdown-btn:hover, .topbar-dropdown-btn.open { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.25); }
-    .topbar-dropdown-btn .chevron { font-size: 8px; transition: transform .15s; }
-    .topbar-dropdown-btn.open .chevron { transform: rotate(180deg); }
-    .topbar-dropdown-menu { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: #0f1525; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; min-width: 148px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.4); z-index: 999; }
-    .topbar-dropdown-menu.open { display: block; }
-    .topbar-dropdown-item { display: flex; align-items: center; gap: 8px; padding: 9px 13px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.65); text-decoration: none; transition: background .12s, color .12s; white-space: nowrap; }
-    .topbar-dropdown-item:hover { background: rgba(255,230,0,.1); color: var(--yellow); }
-    .topbar-dropdown-item .item-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-    .theme-btn { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 6px; color: rgba(255,255,255,.5); font-size: 13px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .topbar-dropdown-btn { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; font-family: var(--font); font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6); background: transparent; border: 1px solid transparent; border-radius: 8px; cursor: pointer; transition: all .22s cubic-bezier(.4,0,.2,1); letter-spacing: -.1px; }
+    .topbar-dropdown-btn svg { width: 14px; height: 14px; opacity: .55; transition: opacity .2s, transform .2s; flex-shrink: 0; }
+    .topbar-dropdown-btn .chevron { font-size: 9px; opacity: .6; transition: transform .2s; margin-left: 1px; }
+    .topbar-dropdown-btn:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.95); transform: translateY(-1px); }
+    .topbar-dropdown-btn:hover svg { opacity: 1; transform: scale(1.08); }
+    .topbar-dropdown-btn.open { background: rgba(255,230,0,.1); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+    .topbar-dropdown-btn.open svg { opacity: 1; }
+    .topbar-dropdown-btn.open .chevron { transform: rotate(180deg); opacity: 1; }
+    .topbar-dropdown-menu { display: none; position: absolute; top: calc(100% + 9px); right: 0; background: linear-gradient(180deg, #131826 0%, #0E1320 100%); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; min-width: 170px; overflow: hidden; box-shadow: 0 14px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,230,0,.05); z-index: 999; }
+    .topbar-dropdown-menu.open { display: block; animation: menuFade .15s ease-out; }
+    @keyframes menuFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .topbar-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 15px; font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,.7); text-decoration: none; transition: background .15s, color .15s; white-space: nowrap; }
+    .topbar-dropdown-item:hover { background: rgba(255,230,0,.08); color: var(--yellow); }
+    .topbar-dropdown-item .item-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(255,255,255,.06); }
+
+    /* Clock block */
+    .clock-block { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.05; gap: 2px; padding: 0 6px; }
+    .clock-date { font-size: 9px; font-weight: 800; letter-spacing: .14em; color: rgba(255,255,255,.45); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+    .clock-topbar { font-size: 15px; font-weight: 800; color: var(--yellow); letter-spacing: .02em; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
+
+    /* Theme btn */
+    .theme-btn { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 7px 9px; font-size: 14px; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; }
+    .theme-btn:hover { background: rgba(255,230,0,.1); border-color: rgba(255,230,0,.25); transform: translateY(-1px); }
+    .topbar-sep { width: 1px; height: 16px; background: rgba(255,255,255,.1); }
+    .topbar-section { font-size: 11px; font-weight: 500; color: rgba(255,255,255,.4); }
+
+
 
     /* HEADER */
     .header {
@@ -307,19 +353,55 @@
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-sep"></div>
-  <span class="topbar-section">Transportes · Operações</span>
-  <div class="topbar-right">
-    <a href="index.html" class="topbar-nav-link">Rotina</a>
-    <a href="madrugadao.html" class="topbar-nav-link active">Organograma</a>
-    <div class="topbar-dropdown">
-      <button class="topbar-dropdown-btn" id="reports-btn" onclick="toggleReportsMenu()">Reports <span class="chevron">▾</span></button>
-      <div class="topbar-dropdown-menu" id="reports-menu">
-        <a href="analise-ops.html" class="topbar-dropdown-item"><span class="item-dot" style="background:#60a5fa;"></span>Descont.</a>
-        <a href="dit-report.html" class="topbar-dropdown-item"><span class="item-dot" style="background:#f0b429;"></span>DIT Report</a>
-      </div>
+  <div class="topbar-left">
+    <div class="topbar-status">
+      <span class="status-dot-live"></span>
+      <span class="status-text">TRANSPORTES <span class="status-sep">/</span> <span id="status-ssp">SSP·20</span></span>
     </div>
-    <button class="theme-btn" id="theme-btn">🌙</button>
+  </div>
+  <div class="topbar-right">
+    <div class="online-cluster">
+      <div class="online-badge" title="Sistema online"><div class="online-dot"></div></div>
+      <div class="online-badge" title="Sincronizado"><div class="online-dot" id="sync-dot" style="background:#FF3D57;"></div></div>
+    </div>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l2 2 4-4"/><path d="M3 7l2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+        <span>Rotina</span>
+      </a>
+      <a href="madrugadao.html" class="topbar-nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3a2 2 0 0 0 2 2h1"/><path d="M12 7v3a2 2 0 0 1-2 2H9"/><path d="M9 14v3"/><path d="M15 14v3"/></svg>
+        <span>Organograma</span>
+      </a>
+      <div class="topbar-dropdown">
+        <button class="topbar-dropdown-btn" id="reports-btn" onclick="toggleReportsMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>
+          <span>Reports</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div class="topbar-dropdown-menu" id="reports-menu">
+          <a href="analise-ops.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#60a5fa;"></span>
+            <span>Descont.</span>
+          </a>
+          <a href="dit-report.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#f0b429;"></span>
+            <span>DIT Report</span>
+          </a>
+        </div>
+      </div>
+      <a href="https://melissp20.github.io/MeliSSP20/" target="_blank" class="topbar-nav-link query-hub-link">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>Query Hub</span>
+        <span class="qh-arrow">↗</span>
+      </a>
+    </nav>
+    <div class="topbar-vsep"></div>
+    <div class="clock-block">
+      <span class="clock-date" id="clock-date">TER 23 JUN</span>
+      <span class="clock-topbar" id="live-clock">00:00:00</span>
+    </div>
+    <button class="theme-btn" id="theme-btn" title="Alternar modo escuro">🌙</button>
   </div>
 </div>
 
