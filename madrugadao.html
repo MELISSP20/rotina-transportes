@@ -464,6 +464,179 @@
       footer { padding: 12px 1rem; }
       .footer-right { display: none; }
     }
+
+    /* ── PERFORMANCE OPS ── */
+    .perf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1A1A2E;
+      color: var(--yellow);
+      border: none;
+      border-radius: var(--radius);
+      padding: 8px 18px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: opacity .15s;
+    }
+    .perf-btn:hover { opacity: .85; }
+    [data-theme="dark"] .perf-btn { background: var(--yellow); color: #1A1A2E; }
+
+    /* ── PASSWORD MODAL ── */
+    .pwd-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 400;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .pwd-overlay.open { display: flex; }
+    .pwd-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    .pwd-icon { font-size: 36px; margin-bottom: 12px; }
+    .pwd-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .pwd-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+    .pwd-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 10px 14px;
+      font-family: var(--font); font-size: 14px; color: var(--text);
+      outline: none; text-align: center; letter-spacing: .1em;
+      margin-bottom: 8px; transition: border-color .15s;
+    }
+    .pwd-input:focus { border-color: var(--blue); }
+    .pwd-error { font-size: 12px; color: #E3262F; margin-bottom: 8px; min-height: 16px; }
+    .pwd-submit {
+      width: 100%; background: #1A1A2E; color: var(--yellow);
+      border: none; border-radius: var(--radius); padding: 11px;
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: opacity .15s;
+    }
+    [data-theme="dark"] .pwd-submit { background: var(--yellow); color: #1A1A2E; }
+    .pwd-submit:hover { opacity: .88; }
+    .pwd-cancel { font-size: 12px; color: var(--muted); margin-top: 10px; cursor: pointer; display: block; }
+    .pwd-cancel:hover { color: var(--text); }
+
+    /* ── PERFORMANCE PANEL ── */
+    .perf-panel {
+      display: none;
+      background: var(--bg);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+    .perf-panel.open { display: block; }
+
+    .perf-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .perf-title { font-size: 18px; font-weight: 700; color: var(--text); }
+    .perf-close { font-size: 13px; color: var(--muted); cursor: pointer; background: none; border: none; font-family: var(--font); }
+    .perf-close:hover { color: var(--text); }
+
+    .analyst-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .analyst-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .analyst-card-header {
+      background: #1A1A2E;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    [data-theme="dark"] .analyst-card-header { background: #0A0C14; }
+
+    .analyst-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: #1A1A2E;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .analyst-info-name { font-size: 14px; font-weight: 700; color: #fff; }
+    .analyst-info-role { font-size: 11px; color: rgba(255,255,255,.5); }
+
+    .analyst-score-badge {
+      margin-left: auto;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+
+    .analyst-body { padding: 16px; }
+
+    .criteria-section-label {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .14em; color: var(--muted);
+      margin: 12px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .criteria-section-label:first-child { margin-top: 0; }
+
+    .criteria-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      gap: 8px;
+    }
+    .criteria-name { font-size: 12px; font-weight: 500; color: var(--text); flex: 1; }
+
+    .star-row { display: flex; gap: 3px; }
+    .star {
+      font-size: 18px; cursor: pointer; color: var(--border);
+      transition: color .1s, transform .1s;
+      line-height: 1;
+    }
+    .star:hover { transform: scale(1.2); }
+    .star.filled { color: var(--yellow); }
+
+    .score-display {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      min-width: 28px; text-align: right;
+    }
+
+    .perf-save-btn {
+      width: 100%; margin-top: 12px;
+      background: #1A1A2E; color: var(--yellow);
+      border: none; border-radius: var(--radius);
+      padding: 9px; font-family: var(--font);
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: opacity .15s;
+    }
+    [data-theme="dark"] .perf-save-btn { background: var(--yellow); color: #1A1A2E; }
+    .perf-save-btn:hover { opacity: .85; }
+    .perf-saved { font-size: 11px; color: var(--green); text-align: center; margin-top: 6px; min-height: 14px; }
+
+    @media (max-width: 600px) {
+      .analyst-grid { grid-template-columns: 1fr; }
+    }
+
   </style>
 </head>
 <body>
@@ -492,6 +665,9 @@
     <div>
       <div class="header-title">Timásso Transportes SSP20</div>
       <div class="header-sub">Organograma · Operações Transportes</div>
+    </div>
+    <button class="perf-btn" onclick="openPwd()">🏆 Performance OPS</button>
+    <div style="display:none"><!-- spacer close -->
     </div>
   </div>
 </div>
@@ -693,6 +869,164 @@
     timesBtn.classList.remove('open');
     timesMenu.classList.remove('open');
   });
+  // ── PERFORMANCE OPS ──────────────────────────────────────────────────────
+  const ANALYSTS = [
+    { id: 'matheus-campos', name: 'Matheus Campos', initials: 'MC', role: 'Madrugada · Analista' },
+    { id: 'everton-adriano', name: 'Everton Adriano', initials: 'EA', role: 'Madrugada · Analista' },
+    { id: 'bruno-costa',     name: 'Bruno Costa',    initials: 'BC', role: 'AM/PM · Analista' },
+    { id: 'bruno-cardoso',   name: 'Bruno Cardoso',  initials: 'BC2', role: 'AM/PM · Analista' },
+    { id: 'bruna-larissa',   name: 'Bruna Larissa',  initials: 'BL', role: 'AM/PM · Analista' },
+  ];
+
+  const CRITERIA_OPS = [
+    { id: 'pontualidade', label: 'Pontualidade' },
+    { id: 'qualidade',    label: 'Qualidade das entregas' },
+    { id: 'comunicacao',  label: 'Comunicação' },
+    { id: 'proatividade', label: 'Proatividade' },
+    { id: 'resolucao',    label: 'Resolução de problemas' },
+  ];
+
+  const CRITERIA_DNA = [
+    { id: 'dna_b',          label: 'Estou em B Contínuo' },
+    { id: 'dna_equipe',     label: 'Compito em Equipe para Ganhar' },
+    { id: 'dna_valor',      label: 'Crio Valor para o Usuário' },
+    { id: 'dna_excelencia', label: 'Executo com Excelência' },
+    { id: 'dna_empreende',  label: 'Empreendo Assumindo os Riscos' },
+    { id: 'dna_maximo',     label: 'Dou o Máximo e me Divirto' },
+  ];
+
+  const FB_PERF = 'https://rotina-lastmile-default-rtdb.firebaseio.com/performance';
+
+  async function loadPerf() {
+    try {
+      const res = await fetch(FB_PERF + '.json');
+      const d = await res.json();
+      return d && typeof d === 'object' ? d : {};
+    } catch { return {}; }
+  }
+
+  async function savePerf(data) {
+    try {
+      await fetch(FB_PERF + '.json', {
+        method: 'PUT', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+      });
+    } catch {}
+  }
+
+  function avgScore(scores) {
+    const vals = Object.values(scores).filter(v => v > 0);
+    if (!vals.length) return '—';
+    return (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+  }
+
+  function renderStars(analystId, criteriaId, currentVal) {
+    return '<div class="star-row">' + [1,2,3,4,5].map(n =>
+      `<span class="star ${n<=currentVal?'filled':''}" onclick="setStar('${analystId}','${criteriaId}',${n})" data-star="${analystId}-${criteriaId}-${n}">★</span>`
+    ).join('') + '</div>';
+  }
+
+  let perfData = {};
+
+  function setStar(analystId, criteriaId, val) {
+    if (!perfData[analystId]) perfData[analystId] = {};
+    perfData[analystId][criteriaId] = val;
+    for (let n=1;n<=5;n++) {
+      const s = document.querySelector(`[data-star="${analystId}-${criteriaId}-${n}"]`);
+      if (s) s.className = 'star'+(n<=val?' filled':'');
+    }
+    const scoreEl = document.getElementById('score-'+analystId+'-'+criteriaId);
+    if (scoreEl) scoreEl.textContent = val+'/5';
+    const totalEl = document.getElementById('total-'+analystId);
+    if (totalEl) totalEl.textContent = avgScore(perfData[analystId]);
+    savePerf(perfData);
+  }
+
+  function buildSection(analystId, label, criteria, scores) {
+    return `<div class="criteria-section-label">${label}</div>` +
+      criteria.map(c => `
+        <div class="criteria-row">
+          <span class="criteria-name">${c.label}</span>
+          ${renderStars(analystId, c.id, scores[c.id]||0)}
+          <span class="score-display" id="score-${analystId}-${c.id}">${scores[c.id]?scores[c.id]+'/5':'—'}</span>
+        </div>`).join('');
+  }
+
+  function buildAnalystCard(analyst, scores) {
+    return `
+      <div class="analyst-card">
+        <div class="analyst-card-header">
+          <div class="analyst-avatar">${analyst.initials}</div>
+          <div>
+            <div class="analyst-info-name">${analyst.name}</div>
+            <div class="analyst-info-role">${analyst.role}</div>
+          </div>
+          <div class="analyst-score-badge" id="total-${analyst.id}">${avgScore(scores)}</div>
+        </div>
+        <div class="analyst-body">
+          ${buildSection(analyst.id,'Critérios Operacionais',CRITERIA_OPS,scores)}
+          ${buildSection(analyst.id,'DNAs Mercado Livre',CRITERIA_DNA,scores)}
+        </div>
+      </div>`;
+  }
+
+  async function renderPerf() {
+    const grid = document.getElementById('analyst-grid');
+    if (!grid) return;
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)">Carregando...</div>';
+    perfData = await loadPerf();
+    grid.innerHTML = ANALYSTS.map(a => buildAnalystCard(a, perfData[a.id]||{})).join('');
+  }
+
+  function openPwd() {
+    document.getElementById('pwd-overlay').classList.add('open');
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-error').textContent = '';
+    setTimeout(()=>document.getElementById('pwd-input').focus(),100);
+  }
+  function closePwd() { document.getElementById('pwd-overlay').classList.remove('open'); }
+
+  function checkPwd() {
+    if (document.getElementById('pwd-input').value === 'M1@#2028*m') {
+      closePwd();
+      document.getElementById('perf-panel').classList.add('open');
+      renderPerf();
+      document.getElementById('perf-panel').scrollIntoView({behavior:'smooth'});
+    } else {
+      document.getElementById('pwd-error').textContent = '❌ Senha incorreta';
+      document.getElementById('pwd-input').value = '';
+      document.getElementById('pwd-input').focus();
+    }
+  }
+
+  function closePerf() { document.getElementById('perf-panel').classList.remove('open'); }
+
+  document.getElementById('pwd-input').addEventListener('keydown', e => { if(e.key==='Enter') checkPwd(); });
+  document.getElementById('pwd-overlay').addEventListener('click', e => { if(e.target===document.getElementById('pwd-overlay')) closePwd(); });
+
 </script>
+
+<!-- PASSWORD MODAL -->
+<div class="pwd-overlay" id="pwd-overlay">
+  <div class="pwd-box">
+    <div class="pwd-icon">🔐</div>
+    <div class="pwd-title">Área Restrita</div>
+    <div class="pwd-sub">Performance OPS — acesso exclusivo ao líder</div>
+    <input class="pwd-input" type="password" id="pwd-input" placeholder="••••••••" maxlength="20"/>
+    <div class="pwd-error" id="pwd-error"></div>
+    <button class="pwd-submit" onclick="checkPwd()">Entrar</button>
+    <span class="pwd-cancel" onclick="closePwd()">Cancelar</span>
+  </div>
+</div>
+
+<!-- PERFORMANCE PANEL -->
+<div class="perf-panel" id="perf-panel">
+  <div class="perf-header">
+    <div class="perf-title">🏆 Performance OPS — Avaliação de Analistas</div>
+    <button class="perf-close" onclick="closePerf()">✕ Fechar</button>
+  </div>
+  <div class="analyst-grid" id="analyst-grid"></div>
+</div>
+
 </body>
 </html>
