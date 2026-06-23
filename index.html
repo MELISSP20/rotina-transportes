@@ -853,6 +853,31 @@
       color: var(--muted);
     }
 
+
+    /* ── SSP SELECTOR ── */
+    .ssp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .ssp-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .ssp-toggle { display: flex; gap: 6px; }
+    .ssp-btn {
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      padding: 6px 18px; border-radius: 6px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--bg); color: var(--muted);
+      transition: all .15s;
+    }
+    .ssp-btn.active { background: #1A1A2E; color: var(--yellow); border-color: #1A1A2E; }
+    [data-theme="dark"] .ssp-btn.active { background: var(--yellow); color: #1A1A2E; border-color: var(--yellow); }
+    .ssp-name { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -.5px; }
+
     /* ── FEEDBACK BUTTON ── */
     .feedback-btn {
       position: fixed;
@@ -1135,6 +1160,18 @@
 <!-- BODY -->
 <div class="wrapper">
 
+  <!-- SSP SELECTOR -->
+  <div class="ssp-card">
+    <div>
+      <div class="ssp-label">Unidade ativa</div>
+      <div class="ssp-name" id="ssp-name">SSP20</div>
+    </div>
+    <div class="ssp-toggle">
+      <button class="ssp-btn active" id="btn-ssp20" onclick="setSSP(20)">SSP20</button>
+      <button class="ssp-btn" id="btn-ssp51" onclick="setSSP(51)">SSP51</button>
+    </div>
+  </div>
+
   <div class="dashboard-row">
     <div class="stats-unified">
       <div class="stat-item">
@@ -1296,6 +1333,7 @@
         <option>Distribuição de percursos MLP</option>
         <option>Ajuste Layout pós distribuição</option>
         <option>Envio da geral para os MLPs SVC</option>
+        <option>Envio da Geral nos grupos Sinergia GCHAT e Assuntos operacionais</option>
         <option>Disponibilizar Link para atribuição de placas</option>
         <option>Envio da geral para XPT</option>
         <option>Ajuste de scheduling</option>
@@ -1326,6 +1364,7 @@ const TASKS = {
     { id:"t06", name:"Distribuição de percursos MLP", desc:"Distribuição de rotas Expedição, considerando scheduling disponível do dia", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
     { id:"t07", name:"Ajuste de layout pós distribuição", desc:"Refinamento pós distribuição, adequando movimentações realizadas de acordo com cada particularidade MLP/Veículo", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
     { id:"t08", name:"Envio da Geral para os MLPs SVC", desc:"Formalização dos percursos atribuídos. Se ultrapassar 05:30, notificar transportadores.", deadline:"06:00", priority:"critico", urgent:false, link:"#" },
+    { id:"t17", name:"Envio da Geral nos grupos \"Sinergia GCHAT\" e \"Assuntos operacionais\"", desc:"Formalização e comunicação da Geral para os grupos de suporte operacional", deadline:"06:00", priority:"critico", urgent:false, link:"#" },
     { id:"t11", name:"Disponibilizar link para atribuição de placas", desc:"Enviar link Sheets com dados atualizados da Expedição, para que os MLPs atribuam as placas a serem carregadas", deadline:"06:00", priority:"urgente", urgent:true, link:"#" },
     { id:"t09", name:"Envio da Geral para XPT", desc:"Envio da programação de rotas/dia XPT", deadline:"06:30", priority:"media", urgent:false, link:"#" },
     { id:"t16", name:"Report Gerencial — Grupo Indicadores", desc:"Envio das informações consolidadas da volumetria do ciclo", deadline:"07:00", priority:"critico", urgent:false, link:"tutorial-report-gerencial.html" },
@@ -1772,6 +1811,38 @@ function checkNotifs() {
   });
 }
 setInterval(checkNotifs, 60000);
+
+// ── SSP SELECTOR ─────────────────────────────────────────────────────────
+let currentSSP = parseInt(localStorage.getItem('ssp') || '20');
+
+function setSSP(n) {
+  currentSSP = n;
+  localStorage.setItem('ssp', n);
+  applySSP();
+}
+
+function applySSP() {
+  const n = currentSSP;
+  document.getElementById('ssp-name').textContent = 'SSP' + n;
+  document.getElementById('btn-ssp20').className = 'ssp-btn' + (n===20?' active':'');
+  document.getElementById('btn-ssp51').className = 'ssp-btn' + (n===51?' active':'');
+
+  // Update all SSP20/SSP51 references in header
+  document.querySelectorAll('.header-title').forEach(el => {
+    el.textContent = el.textContent.replace(/SSP\d+/, 'SSP'+n);
+  });
+
+  // Hide/show organograma nav link based on SSP
+  const orgLinks = document.querySelectorAll('a[href="madrugadao.html"]');
+  orgLinks.forEach(el => {
+    el.style.display = n === 51 ? 'none' : '';
+  });
+  // Bottom nav time item
+  const bnTime = document.querySelector('.bn-item[href="madrugadao.html"]');
+  if (bnTime) bnTime.style.display = n === 51 ? 'none' : '';
+}
+
+applySSP();
 
 </script>
 
