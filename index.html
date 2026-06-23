@@ -1064,13 +1064,13 @@ function buildCard(t, stepNum, isNext, nowMin) {
   const done = !!state[t.id];
   const [h,m] = t.deadline.split(':').map(Number);
   const dMin = h*60 + m;
-  const diff = dMin - nowMin; // minutos até o prazo
-  // status do prazo
-  let statusCls, statusText;
-  if (done) { statusCls = 'done'; statusText = 'CONCLUÍDO'; }
-  else if (diff < 0) { statusCls = 'late'; statusText = `+${Math.abs(diff)} min atrasado`; }
-  else if (diff <= 30) { statusCls = 'warn'; statusText = diff === 0 ? 'AGORA' : `Em ${diff} min`; }
-  else { statusCls = 'ok'; statusText = `Em ${diff >= 60 ? Math.floor(diff/60)+'h'+(diff%60?' '+(diff%60)+'min':'') : diff+' min'}`; }
+  const diff = dMin - nowMin;
+  // status do prazo (sem texto, só cor)
+  let statusCls;
+  if (done) statusCls = 'done';
+  else if (diff < 0) statusCls = 'late';
+  else if (diff <= 30) statusCls = 'warn';
+  else statusCls = 'ok';
 
   const card = document.createElement('div');
   card.className = 'task-card prio-' + t.priority + (done ? ' done' : '') + (isNext && !done ? ' next-up' : '');
@@ -1098,7 +1098,6 @@ function buildCard(t, stepNum, isNext, nowMin) {
       <div class="task-deadline ${statusCls}">
         <span class="task-deadline-label">PRAZO ATÉ</span>
         <span class="task-deadline-time">${t.deadline}</span>
-        <span class="task-deadline-status">${statusText}</span>
       </div>
     </div>
   `;

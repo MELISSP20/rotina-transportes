@@ -87,13 +87,24 @@
 
 
     /* HEADER */
-    .header { background: linear-gradient(135deg, var(--navy) 0%, #252A42 100%); padding: 2.5rem 2rem 2rem; position: relative; overflow: hidden; }
-    .header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,230,0,.06) 0%, transparent 70%); }
-    .header-inner { max-width: 1200px; margin: 0 auto; position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
-    .header-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: rgba(255,230,0,.6); margin-bottom: 8px; }
-    .header-title { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
+    .header { background: linear-gradient(135deg, var(--navy) 0%, #252A42 100%); padding: 0 2rem; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; top: -50px; right: -40px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(255,230,0,.08) 0%, transparent 65%); pointer-events: none; }
+    .header-inner { max-width: 1240px; margin: 0 auto; min-height: 124px; display: flex; align-items: center; gap: 24px; padding: 18px 0; position: relative; }
+    .brand-block { display: flex; align-items: center; gap: 18px; flex: 0 0 auto; }
+    .header-eyebrow { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; color: rgba(255,230,0,.6); margin-bottom: 6px; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 8px; }
+    .header-eyebrow::before { content: '🔒'; font-size: 10px; }
+    .header-title { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -.7px; line-height: 1; margin-bottom: 6px; }
     .header-title span { color: var(--yellow); }
-    .header-sub { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 4px; }
+    .header-sub { font-size: 12.5px; color: rgba(255,255,255,.5); font-weight: 500; }
+    .header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .clear-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(227,38,47,.12); color: #FF6B7A;
+      border: 1px solid rgba(227,38,47,.22); border-radius: 9px;
+      padding: 9px 16px; font-family: var(--font); font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .clear-btn:hover { background: rgba(227,38,47,.18); border-color: rgba(227,38,47,.35); transform: translateY(-1px); }
 
     /* WRAPPER */
     .wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
@@ -291,32 +302,47 @@
 
     /* ── QUARTER SELECTOR ── */
     .quarter-bar {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 12px;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 10px 16px;
+      border-radius: var(--radius-lg); padding: 12px 18px;
       margin-bottom: 1.5rem; flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,.04);
     }
-    .quarter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
-    .quarter-btns { display: flex; gap: 6px; }
+    .quarter-label { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .quarter-label::before { content: '📊'; font-size: 13px; }
+    .quarter-btns { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 9px; }
     .q-btn {
-      font-family: var(--font); font-size: 12px; font-weight: 700;
-      padding: 5px 14px; border-radius: 6px; cursor: pointer;
-      border: 1px solid var(--border); background: var(--bg); color: var(--muted);
-      transition: all .15s;
+      font-family: var(--font); font-size: 11.5px; font-weight: 700;
+      padding: 7px 16px; border-radius: 7px; cursor: pointer;
+      border: none; background: transparent; color: var(--muted);
+      transition: all .15s; letter-spacing: .02em;
     }
-    .q-btn.active { background: var(--navy); color: var(--yellow); border-color: var(--navy); }
-    [data-theme="dark"] .q-btn.active { background: var(--yellow); color: var(--navy); border-color: var(--yellow); }
+    .q-btn:hover { color: var(--text); background: rgba(255,230,0,.08); }
+    .q-btn.active { background: var(--navy); color: var(--yellow); box-shadow: 0 2px 8px rgba(26,26,46,.15); }
+    [data-theme="dark"] .q-btn.active { background: var(--yellow); color: var(--navy); }
     .q-save-btn {
       margin-left: auto; font-family: var(--font); font-size: 12px; font-weight: 700;
-      padding: 6px 16px; border-radius: 6px; cursor: pointer;
-      background: var(--green); color: #fff; border: none; transition: opacity .15s;
+      padding: 8px 18px; border-radius: 8px; cursor: pointer;
+      background: var(--green); color: #fff; border: none;
+      transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,166,80,.2);
     }
-    .q-save-btn:hover { opacity: .85; }
+    .q-save-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,166,80,.3); }
     .q-year-select {
-      font-family: var(--font); font-size: 12px; font-weight: 600;
+      font-family: var(--font); font-size: 12px; font-weight: 700;
       background: var(--bg); border: 1px solid var(--border);
-      border-radius: 6px; padding: 5px 10px; color: var(--text); outline: none;
+      border-radius: 8px; padding: 7px 12px; color: var(--text); outline: none;
+      cursor: pointer; transition: border-color .15s;
+      font-variant-numeric: tabular-nums;
     }
+    .q-year-select:focus { border-color: var(--yellow); }
+    .q-hist-btn {
+      font-family: var(--font); font-size: 11.5px; font-weight: 700;
+      padding: 7px 14px; border-radius: 8px; cursor: pointer;
+      background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      transition: all .15s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .q-hist-btn:hover { background: rgba(255,230,0,.08); border-color: rgba(255,230,0,.3); color: var(--text); }
 
     /* ── HISTORY MODAL ── */
     .hist-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 400; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
@@ -397,19 +423,16 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-inner">
-    <div>
-      <div class="header-eyebrow">Área restrita · Team Leader</div>
-      <div class="header-title">Performance <span>OPS</span></div>
-      <div class="header-sub">Avaliação de analistas · Timásso Transportes SSP20</div>
+    <div class="brand-block">
+      <div>
+        <div class="header-eyebrow">ÁREA RESTRITA · TEAM LEADER</div>
+        <div class="header-title">Performance <span>OPS</span></div>
+        <div class="header-sub">Avaliação de analistas · Critérios operacionais + DNAs Mercado Livre</div>
+      </div>
     </div>
-    <button onclick="clearAll()" style="
-      background:rgba(227,38,47,.15);color:#FF6B7A;
-      border:1px solid rgba(227,38,47,.25);border-radius:var(--radius);
-      padding:8px 16px;font-family:var(--font);font-size:12px;font-weight:700;
-      cursor:pointer;transition:opacity .15s;white-space:nowrap;
-    " onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
-      🗑 Limpar avaliações
-    </button>
+    <div class="header-actions">
+      <button class="clear-btn" onclick="clearAll()">🗑 Limpar avaliações</button>
+    </div>
   </div>
 </div>
 
@@ -438,7 +461,7 @@
       <button class="q-btn" data-q="Q4" onclick="setQuarter('Q4')">Q4</button>
     </div>
     <button class="q-save-btn" onclick="saveQuarter()">💾 Salvar quarter</button>
-    <button onclick="openHist()" style="font-family:var(--font);font-size:12px;font-weight:700;padding:6px 14px;border-radius:6px;cursor:pointer;background:none;border:1px solid var(--border);color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">📋 Ver histórico</button>
+    <button class="q-hist-btn" onclick="openHist()">📋 Ver histórico</button>
   </div>
 
   <div class="section-label">Visão geral · Leaderboard</div>
