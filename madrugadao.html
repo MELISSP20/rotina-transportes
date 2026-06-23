@@ -897,17 +897,34 @@
 
   const FB_PERF = 'https://rotina-lastmile-default-rtdb.firebaseio.com/performance';
 
+  function loadPerfLocal() {
+    try { return JSON.parse(localStorage.getItem('perf-ops-data')) || {}; } catch { return {}; }
+  }
+
   async function loadPerf() {
+    // Load from localStorage immediately
+    const local = loadPerfLocal();
+    // Try Firebase async (non-blocking)
     try {
-      const res = await fetch(FB_PERF + '.json');
-      const d = await res.json();
-      return d && typeof d === 'object' ? d : {};
-    } catch { return {}; }
+      const res = await Promise.race([
+        fetch(FB_PERF + '.json'),
+        new Promise((_,r) => setTimeout(r, 3000, 'timeout'))
+      ]);
+      if (res && res.ok) {
+        const d = await res.json();
+        if (d && typeof d === 'object') {
+          localStorage.setItem('perf-ops-data', JSON.stringify(d));
+          return d;
+        }
+      }
+    } catch {}
+    return local;
   }
 
   async function savePerf(data) {
+    localStorage.setItem('perf-ops-data', JSON.stringify(data));
     try {
-      await fetch(FB_PERF + '.json', {
+      fetch(FB_PERF + '.json', {
         method: 'PUT', headers: {'Content-Type':'application/json'},
         body: JSON.stringify(data)
       });
