@@ -88,6 +88,25 @@
     .gen-btn { font-family:var(--font); font-size:13px; font-weight:700; padding:10px 24px; border-radius:var(--radius); border:none; background:var(--yellow); color:var(--navy); cursor:pointer; transition:opacity .15s; display:flex; align-items:center; gap:8px; }
     .gen-btn:hover { opacity:.88; }
     .gen-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+    /* Period selector */
+    .period-selector { margin-top: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding: 14px 16px; }
+    .period-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+    .period-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .18em; color: rgba(255,230,0,.7); text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+    .period-eyebrow::before { content: '📅'; font-size: 14px; letter-spacing: 0; }
+    .period-info { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.55); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+    .period-info b { color: #fff; font-weight: 700; }
+    .period-inputs { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+    .period-input-wrap { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 130px; }
+    .period-input-wrap label { font-size: 9.5px; font-weight: 700; letter-spacing: .18em; color: rgba(255,230,0,.55); text-transform: uppercase; }
+    .period-input-wrap input[type="date"] { font-family: var(--font); font-size: 13px; font-weight: 600; padding: 9px 12px; background: rgba(255,255,255,.06); color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; outline: none; transition: border-color .15s; color-scheme: dark; }
+    .period-input-wrap input[type="date"]:focus { border-color: var(--yellow); }
+    .period-arrow { color: rgba(255,255,255,.4); font-size: 16px; margin-bottom: 8px; }
+    .period-reset { font-family: var(--font); font-size: 11px; font-weight: 700; padding: 9px 14px; background: transparent; color: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.15); border-radius: 8px; cursor: pointer; transition: all .15s; letter-spacing: .02em; }
+    .period-reset:hover { background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.25); }
+    .period-warn { font-size: 11px; font-weight: 600; color: #F59E0B; margin-top: 8px; }
+    .period-banner { background: linear-gradient(135deg, rgba(255,230,0,.12), rgba(255,230,0,.04)); border: 1px solid rgba(255,230,0,.25); border-radius: 10px; padding: 11px 16px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85); letter-spacing: .02em; margin-bottom: 1.25rem; font-variant-numeric: tabular-nums; }
+    .period-banner b { color: var(--yellow); font-weight: 800; }
     .gen-info { font-size:11px; color:rgba(255,255,255,.35); }
 
     /* WRAPPER */
@@ -255,6 +274,26 @@
       </div>
     </div>
 
+    <div class="period-selector" id="period-selector" style="display:none;">
+      <div class="period-header">
+        <span class="period-eyebrow">PERÍODO DE ANÁLISE</span>
+        <span class="period-info" id="period-info">—</span>
+      </div>
+      <div class="period-inputs">
+        <div class="period-input-wrap">
+          <label>DE</label>
+          <input type="date" id="date-from" onchange="onPeriodChange()"/>
+        </div>
+        <div class="period-arrow">→</div>
+        <div class="period-input-wrap">
+          <label>ATÉ</label>
+          <input type="date" id="date-to" onchange="onPeriodChange()"/>
+        </div>
+        <button class="period-reset" onclick="resetPeriod()">↻ Período completo</button>
+      </div>
+      <div class="period-warn" id="period-warn" style="display:none;"></div>
+    </div>
+
     <div class="gen-row">
       <button class="gen-btn" id="gen-btn" onclick="generate()" disabled>
         ⚡ Gerar Análise
@@ -295,6 +334,9 @@ tbtn.addEventListener('click', () => {
 
 let psData = null;
 let bqData = null;
+let psDateCol = null, bqDateCol = null;
+let psRange = null, bqRange = null;
+let filterFrom = null, filterTo = null;
 
 // CSV parser
 function parseCSV(text) {
@@ -332,9 +374,13 @@ document.getElementById('file-ps').addEventListener('change', e => {
   if (!f) return;
   readFile(f, text => {
     psData = parseCSV(text);
+    psDateCol = detectDateColumn(psData, parsePSDateObj, ['data de criação','data criacao','created']);
+    psRange = psDateCol ? getDateRange(psData, psDateCol, parsePSDateObj) : null;
     document.getElementById('zone-ps').classList.add('loaded-ps');
-    document.getElementById('label-ps').innerHTML = `<strong>✓ ${f.name}</strong><br>${psData.length.toLocaleString('pt-BR')} registros`;
+    const dateBadge = psRange ? ` <span style="color:rgba(255,230,0,.7);">· ${fmtBR(psRange.min)} → ${fmtBR(psRange.max)}</span>` : '';
+    document.getElementById('label-ps').innerHTML = `<strong>✓ ${f.name}</strong><br>${psData.length.toLocaleString('pt-BR')} registros${dateBadge}`;
     document.getElementById('status-ps').textContent = '✓ Carregado';
+    updatePeriodSelector();
     checkReady();
   });
 });
@@ -344,9 +390,13 @@ document.getElementById('file-bq').addEventListener('change', e => {
   if (!f) return;
   readFile(f, text => {
     bqData = parseCSV(text);
+    bqDateCol = detectDateColumn(bqData, parseBQDateObj, ['route_date','data','date','dt']);
+    bqRange = bqDateCol ? getDateRange(bqData, bqDateCol, parseBQDateObj) : null;
     document.getElementById('zone-bq').classList.add('loaded-bq');
-    document.getElementById('label-bq').innerHTML = `<strong>✓ ${f.name}</strong><br>${bqData.length.toLocaleString('pt-BR')} rotas`;
+    const dateBadge = bqRange ? ` <span style="color:rgba(255,230,0,.7);">· ${fmtBR(bqRange.min)} → ${fmtBR(bqRange.max)}</span>` : '';
+    document.getElementById('label-bq').innerHTML = `<strong>✓ ${f.name}</strong><br>${bqData.length.toLocaleString('pt-BR')} rotas${dateBadge}`;
     document.getElementById('status-bq').textContent = '✓ Carregado';
+    updatePeriodSelector();
     checkReady();
   });
 });
@@ -362,6 +412,77 @@ document.getElementById('file-bq').addEventListener('change', e => {
     else handleBQ(f);
   });
 });
+
+function updatePeriodSelector() {
+  const sel = document.getElementById('period-selector');
+  const info = document.getElementById('period-info');
+  const fromInp = document.getElementById('date-from');
+  const toInp = document.getElementById('date-to');
+  const warn = document.getElementById('period-warn');
+
+  if (!psRange && !bqRange) {
+    sel.style.display = 'none';
+    return;
+  }
+
+  sel.style.display = 'block';
+
+  // Determinar intersecção dos ranges (período em comum)
+  let min, max;
+  if (psRange && bqRange) {
+    min = psRange.min > bqRange.min ? psRange.min : bqRange.min;
+    max = psRange.max < bqRange.max ? psRange.max : bqRange.max;
+  } else if (psRange) {
+    min = psRange.min; max = psRange.max;
+  } else {
+    min = bqRange.min; max = bqRange.max;
+  }
+
+  // Aviso se ranges não se sobrepõem
+  if (psRange && bqRange && min > max) {
+    warn.style.display = 'block';
+    warn.innerHTML = `⚠ Os arquivos têm períodos sem sobreposição (PS: ${fmtBR(psRange.min)}→${fmtBR(psRange.max)} · BQ: ${fmtBR(bqRange.min)}→${fmtBR(bqRange.max)})`;
+    // Usa o range mais amplo
+    min = psRange.min < bqRange.min ? psRange.min : bqRange.min;
+    max = psRange.max > bqRange.max ? psRange.max : bqRange.max;
+  } else {
+    warn.style.display = 'none';
+  }
+
+  // Set bounds e valor padrão
+  fromInp.min = toISO(min);
+  fromInp.max = toISO(max);
+  toInp.min = toISO(min);
+  toInp.max = toISO(max);
+  fromInp.value = toISO(min);
+  toInp.value = toISO(max);
+  filterFrom = new Date(min);
+  filterTo = new Date(max);
+
+  // Info texto
+  const parts = [];
+  if (psRange) parts.push(`PS: <b>${fmtBR(psRange.min)} → ${fmtBR(psRange.max)}</b>`);
+  if (bqRange) parts.push(`BQ: <b>${fmtBR(bqRange.min)} → ${fmtBR(bqRange.max)}</b>`);
+  info.innerHTML = parts.join(' · ');
+}
+
+function onPeriodChange() {
+  const fromInp = document.getElementById('date-from');
+  const toInp = document.getElementById('date-to');
+  if (!fromInp.value || !toInp.value) return;
+  const [fy,fm,fd] = fromInp.value.split('-').map(Number);
+  const [ty,tm,td] = toInp.value.split('-').map(Number);
+  filterFrom = new Date(fy, fm-1, fd);
+  filterTo = new Date(ty, tm-1, td, 23, 59, 59);
+  if (filterFrom > filterTo) {
+    toInp.value = fromInp.value;
+    filterTo = new Date(fy, fm-1, fd, 23, 59, 59);
+  }
+}
+
+function resetPeriod() {
+  updatePeriodSelector();
+}
 
 function checkReady() {
   const btn = document.getElementById('gen-btn');
@@ -386,6 +507,85 @@ function vrank(v) {
   if (v.includes('utilit')) return 5;
   if (v.includes('van')) return 7;
   return 4;
+}
+
+// Date helpers — parse, detect, range, filter
+function parsePSDateObj(s) {
+  if (!s) return null;
+  // PS format: "Quarta-feira | 18/06 23:42" or similar — separator '|'
+  const m = String(s).match(/(\d{1,2})\/(\d{1,2})/);
+  if (!m) return null;
+  const yr = new Date().getFullYear();
+  return new Date(yr, parseInt(m[2])-1, parseInt(m[1]));
+}
+
+function parseBQDateObj(s) {
+  if (!s) return null;
+  const str = String(s).trim();
+  let m;
+  if (m = str.match(/(\d{4})-(\d{1,2})-(\d{1,2})/)) {
+    return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+  }
+  if (m = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/)) {
+    return new Date(parseInt(m[3]), parseInt(m[2])-1, parseInt(m[1]));
+  }
+  if (m = str.match(/(\d{1,2})\/(\d{1,2})/)) {
+    return new Date(new Date().getFullYear(), parseInt(m[2])-1, parseInt(m[1]));
+  }
+  return null;
+}
+
+function detectDateColumn(data, parser, preferKeys) {
+  if (!data || data.length === 0) return null;
+  const keys = Object.keys(data[0]);
+  // Score candidatos
+  const ranked = keys
+    .map(k => {
+      let score = 0;
+      const lk = k.toLowerCase();
+      if (preferKeys && preferKeys.some(p => lk.includes(p.toLowerCase()))) score += 100;
+      if (/data/i.test(k)) score += 12;
+      if (/date/i.test(k)) score += 10;
+      if (/\bdt\b/i.test(k)) score += 8;
+      if (/criacao|criação|created|create/i.test(k)) score += 6;
+      if (/route|rota|delivery|entrega|ship/i.test(k)) score += 4;
+      if (/upload|process|sync|update|atualiz|deleted/i.test(k)) score -= 3;
+      return { k, score };
+    })
+    .filter(x => x.score > 0)
+    .sort((a,b) => b.score - a.score);
+
+  const sample = data.slice(0, Math.min(50, data.length));
+  for (const {k} of ranked) {
+    const validCount = sample.filter(r => parser(r[k])).length;
+    if (validCount > sample.length * 0.5) return k;
+  }
+  return null;
+}
+
+function getDateRange(data, col, parser) {
+  if (!data || !col) return null;
+  let min = null, max = null;
+  data.forEach(r => {
+    const d = parser(r[col]);
+    if (!d) return;
+    if (!min || d < min) min = d;
+    if (!max || d > max) max = d;
+  });
+  return min ? { min, max } : null;
+}
+
+function toISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function fmtBR(d) {
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
+}
+
+function isInPeriod(date, from, to) {
+  if (!date) return false;
+  return date >= from && date <= to;
 }
 
 function psDate(s) {
@@ -417,13 +617,34 @@ function generate() {
 }
 
 function buildReport() {
+  // Aplica filtro de período se configurado
+  let psFiltered = psData;
+  let bqFiltered = bqData;
+  let periodLabel = '';
+
+  if (filterFrom && filterTo && psDateCol) {
+    psFiltered = psData.filter(r => {
+      const d = parsePSDateObj(r[psDateCol]);
+      return d && isInPeriod(d, filterFrom, filterTo);
+    });
+  }
+  if (filterFrom && filterTo && bqDateCol) {
+    bqFiltered = bqData.filter(r => {
+      const d = parseBQDateObj(r[bqDateCol]);
+      return d && isInPeriod(d, filterFrom, filterTo);
+    });
+  }
+  if (filterFrom && filterTo) {
+    periodLabel = `${fmtBR(filterFrom)} → ${fmtBR(filterTo)}`;
+  }
+
   // --- PS Analysis ---
-  const total = psData.length;
+  const total = psFiltered.length;
   const byCausa = {};
   const byDay = {};
   const byPS = {};
 
-  psData.forEach(r => {
+  psFiltered.forEach(r => {
     const causa = r['Motivo da exclusão'] || r['Motivo da exclusão\r'] || '—';
     byCausa[causa] = (byCausa[causa] || 0) + 1;
     const d = psDate(r['Data de criação'] || '');
@@ -443,7 +664,7 @@ function buildReport() {
   let totalDG = 0, totalUG = 0;
   const dgMLP = {}, ugMLP = {};
 
-  bqData.forEach(r => {
+  bqFiltered.forEach(r => {
     const plan = r['MODAL_PLAN'] || '';
     const real = r['MODAL_REAL'] || '';
     const mlp  = r['MLP'] || '—';
@@ -476,7 +697,8 @@ function buildReport() {
   const topPS3      = psSorted[2]?.[0] || '—';
   const topPS3n     = psSorted[2]?.[1] || 0;
 
-  const summaryText = `No período analisado, a SSP20 registrou ${fmt(total)} ocorrências de descontainerização, todas tratadas no Problem Solving com status reparado e aguardando despacho.
+  const periodIntro = periodLabel ? `📅 PERÍODO: ${periodLabel}\n\n` : '';
+  const summaryText = `${periodIntro}No período analisado, a SSP20 registrou ${fmt(total)} ocorrências de descontainerização, todas tratadas no Problem Solving com status reparado e aguardando despacho.
 
 A causa dominante foi "não cabe no veículo", responsável por ${fmt(naoCabe)} casos — ${pct(naoCabe,total)} do total. Isso indica que o volume físico dos pacotes superou a capacidade do veículo executado, evidenciando desalinhamento entre planejamento de carga e frota disponível. Em segundo lugar aparecem os avariados com ${fmt(avariado)} casos (${pct(avariado,total)}) e negócios de destino fechados com ${fmt(fechado)} (${pct(fechado,total)}).
 
@@ -532,7 +754,9 @@ Ponto crítico: a combinação de downgrade de modal com alto volume é a causa 
     </tr>`).join('');
 
   const area = document.getElementById('report-area');
+  const periodBanner = periodLabel ? `<div class="period-banner">📅 PERÍODO ANALISADO: <b>${periodLabel}</b> · ${fmt(total)} registros PS · ${fmt(bqFiltered.length)} rotas BQ</div>` : '';
   area.innerHTML = `
+    ${periodBanner}
     <div class="sec-lbl">Visão geral</div>
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-lbl">Total Descon</div><div class="kpi-val ky">${fmt(total)}</div><div class="kpi-sub">ocorrências PS</div></div>
