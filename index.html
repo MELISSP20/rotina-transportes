@@ -1377,7 +1377,8 @@ const TASKS = {
 };
 
 const TODAY = new Date().toISOString().slice(0,10);
-const KEY   = `rotina-transportes-${TODAY}`;
+const currentSSP = parseInt(localStorage.getItem('ssp') || '20');
+const KEY   = `rotina-ssp${currentSSP}-${TODAY}`;
 
 // ── SYNC via Firebase REST + polling ──────────────────────────────────────
 const FB = 'https://rotina-lastmile-default-rtdb.firebaseio.com/turnos';
@@ -1813,12 +1814,10 @@ function checkNotifs() {
 setInterval(checkNotifs, 60000);
 
 // ── SSP SELECTOR ─────────────────────────────────────────────────────────
-let currentSSP = parseInt(localStorage.getItem('ssp') || '20');
-
 function setSSP(n) {
-  currentSSP = n;
   localStorage.setItem('ssp', n);
-  applySSP();
+  // Reload the page so KEY is rebuilt with correct SSP and Firebase is re-initialized
+  location.reload();
 }
 
 function applySSP() {
@@ -1827,17 +1826,12 @@ function applySSP() {
   document.getElementById('btn-ssp20').className = 'ssp-btn' + (n===20?' active':'');
   document.getElementById('btn-ssp51').className = 'ssp-btn' + (n===51?' active':'');
 
-  // Update all SSP20/SSP51 references in header
   document.querySelectorAll('.header-title').forEach(el => {
     el.textContent = el.textContent.replace(/SSP\d+/, 'SSP'+n);
   });
 
-  // Hide/show organograma nav link based on SSP
   const orgLinks = document.querySelectorAll('a[href="madrugadao.html"]');
-  orgLinks.forEach(el => {
-    el.style.display = n === 51 ? 'none' : '';
-  });
-  // Bottom nav time item
+  orgLinks.forEach(el => { el.style.display = n === 51 ? 'none' : ''; });
   const bnTime = document.querySelector('.bn-item[href="madrugadao.html"]');
   if (bnTime) bnTime.style.display = n === 51 ? 'none' : '';
 }
