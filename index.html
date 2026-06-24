@@ -543,49 +543,61 @@
     .footer-left { font-size: 11px; color: var(--muted); }
     .footer-right { font-size: 11px; font-weight: 600; color: var(--yellow); background: var(--navy); padding: 3px 10px; border-radius: 20px; }
 
-    /* USEFUL LINKS SECTION */
-    .useful-links-section { max-width: 1200px; margin: 3rem auto 0; padding: 0 2rem; }
-    .useful-links-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-    .useful-links-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .16em; color: var(--muted); text-transform: uppercase; }
-    .useful-links-line { flex: 1; height: 1px; background: var(--border); }
-    .useful-links-grid {
-      display: grid;
-      grid-template-columns: 1.6fr 1fr 1fr;
-      gap: 12px;
-    }
-    .useful-link {
-      display: flex; align-items: center; gap: 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+    /* DESVIOS SPOTLIGHT */
+    .desvios-spotlight { max-width: 1200px; margin: 3rem auto 0; padding: 0 2rem; }
+    .desvios-card {
+      display: flex; align-items: center; gap: 22px;
+      background: linear-gradient(135deg, var(--navy) 0%, #252A42 100%);
       border-radius: var(--radius-lg);
-      padding: 14px 16px;
+      padding: 22px 28px;
       text-decoration: none;
       color: inherit;
-      transition: all .2s cubic-bezier(.4,0,.2,1);
+      transition: all .25s cubic-bezier(.4,0,.2,1);
       position: relative;
       overflow: hidden;
     }
-    .useful-link::before {
+    .desvios-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(227,38,47,.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .desvios-card::after {
       content: '';
       position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--blue);
-      transition: width .2s, background .2s;
+      width: 5px;
+      background: linear-gradient(180deg, var(--red), #C81E26);
     }
-    .useful-link.primary::before { background: var(--red); width: 4px; }
-    .useful-link:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.08); border-color: rgba(26,26,46,.18); }
-    [data-theme="dark"] .useful-link:hover { box-shadow: 0 6px 20px rgba(0,0,0,.35); border-color: rgba(255,255,255,.18); }
-    .useful-link:hover::before { width: 6px; }
-    .useful-link.primary { background: linear-gradient(135deg, rgba(227,38,47,.04), rgba(227,38,47,.01) 60%, var(--surface)); border-color: rgba(227,38,47,.18); }
-    .useful-link.primary:hover { border-color: rgba(227,38,47,.4); box-shadow: 0 6px 20px rgba(227,38,47,.12); }
-    .ul-icon { font-size: 24px; flex-shrink: 0; }
-    .ul-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-    .ul-title { font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -.1px; }
-    .ul-sub { font-size: 11px; font-weight: 500; color: var(--muted); }
-    .ul-arrow { font-size: 14px; color: var(--muted); transition: transform .2s, color .2s; flex-shrink: 0; }
-    .useful-link:hover .ul-arrow { transform: translate(2px, -2px); color: var(--text); }
-    .useful-link.primary .ul-arrow { color: var(--red); }
-    .useful-link.primary:hover .ul-arrow { color: var(--red); }
+    .desvios-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.25); }
+    .desvios-icon-wrap {
+      width: 56px; height: 56px; flex-shrink: 0;
+      background: rgba(227,38,47,.18);
+      border: 1px solid rgba(227,38,47,.35);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+    }
+    .desvios-icon { font-size: 28px; }
+    .desvios-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; position: relative; z-index: 1; }
+    .desvios-eyebrow { font-size: 9.5px; font-weight: 800; letter-spacing: .18em; color: rgba(255,180,180,.8); text-transform: uppercase; }
+    .desvios-title { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -.3px; line-height: 1.2; }
+    .desvios-sub { font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,.55); line-height: 1.4; }
+    .desvios-cta {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--red); color: #fff;
+      padding: 11px 20px;
+      border-radius: 10px;
+      font-size: 12.5px; font-weight: 800;
+      letter-spacing: .03em;
+      transition: all .2s;
+      position: relative; z-index: 1;
+      box-shadow: 0 4px 14px rgba(227,38,47,.3);
+    }
+    .desvios-card:hover .desvios-cta { background: #FF3D47; box-shadow: 0 6px 18px rgba(227,38,47,.5); }
+    .desvios-arrow { font-size: 16px; transition: transform .2s; }
+    .desvios-card:hover .desvios-arrow { transform: translateX(4px); }
 
     /* ── BOTTOM NAV ── */
     .bottom-nav { display:none; position:fixed; bottom:0; left:0; right:0; background:var(--navy); border-top:1px solid rgba(255,255,255,.08); z-index:200; }
@@ -646,8 +658,9 @@
       .feedback-btn { bottom: 72px; right: 14px; font-size: 11px; padding: 8px 12px; }
       footer { padding: 10px .75rem; }
       .footer-inner { flex-direction: column; gap: 4px; align-items: center; text-align: center; }
-      .useful-links-section { padding: 0 1rem; margin-top: 2rem; }
-      .useful-links-grid { grid-template-columns: 1fr; }
+      .desvios-spotlight { padding: 0 1rem; margin-top: 2rem; }
+      .desvios-card { flex-direction: column; align-items: flex-start; padding: 18px 20px; gap: 14px; }
+      .desvios-cta { width: 100%; justify-content: center; }
       .footer-right { display: none; }
       .bottom-nav { display: block; }
     }
@@ -724,7 +737,7 @@
     <div class="brand-block">
       <div class="header-title">Assignments <span class="header-title-badge" id="header-status-badge">AO VIVO</span></div>
       <div class="header-eyebrow">TRANSPORTES <span class="eyebrow-sep">·</span> <span id="status-ssp-header">SSP·20</span> <span class="eyebrow-sep">·</span> <span id="hero-week-label">SEMANA 26</span></div>
-      <div class="header-sub" id="hero-sub">Operações da Madrugada · Pronto pro ciclo</div>
+      <div class="header-sub" id="hero-sub">Carregando rotina do turno…</div>
       <div class="next-task-strip" id="next-task-strip">
         <span class="next-task-lbl">PRÓXIMA</span>
         <span class="next-task-name" id="next-task-name">—</span>
@@ -805,20 +818,6 @@
       <div class="stat-value" id="stat-urgent">0</div>
       <div class="stat-sub"><span class="stat-dot red"></span>alta prioridade</div>
     </div>
-    <div class="progress-card">
-      <div class="progress-card-top">
-        <span class="progress-card-label">Progresso do turno</span>
-      </div>
-      <div>
-        <span class="progress-pct" id="progress-pct">0</span><span class="progress-pct-small">%</span>
-      </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
-      </div>
-      <div class="progress-card-foot">
-        <strong id="stat-done-foot">0</strong> de <strong id="stat-total-foot">0</strong> tarefas concluídas
-      </div>
-    </div>
   </div>
 
   <!-- AÇÕES DO TURNO -->
@@ -889,38 +888,22 @@
   <span class="wip-badge-big">Em desenvolvimento</span>
 </div>
 
-  <!-- LINKS ÚTEIS / FERRAMENTAS -->
-  <div class="useful-links-section">
-    <div class="useful-links-head">
-      <span class="useful-links-eyebrow">FERRAMENTAS DE APOIO</span>
-      <div class="useful-links-line"></div>
-    </div>
-    <div class="useful-links-grid">
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfEFmmy7j3b5AgL1KWIKqJVJ-siEIT6zayXIbOy8AiZFkEhug/viewform" target="_blank" class="useful-link primary">
-        <span class="ul-icon">🎯</span>
-        <span class="ul-text">
-          <span class="ul-title">Reporte de desvios ROUT</span>
-          <span class="ul-sub">Forms de routing · pauta para calibração semanal</span>
-        </span>
-        <span class="ul-arrow">↗</span>
-      </a>
-      <a href="diario.html" target="_blank" class="useful-link">
-        <span class="ul-icon">📓</span>
-        <span class="ul-text">
-          <span class="ul-title">Diário de Bordo</span>
-          <span class="ul-sub">Histórico de registros do ciclo</span>
-        </span>
-        <span class="ul-arrow">↗</span>
-      </a>
-      <a href="https://melissp20.github.io/MeliSSP20/" target="_blank" class="useful-link">
-        <span class="ul-icon">⚡</span>
-        <span class="ul-text">
-          <span class="ul-title">Query Hub</span>
-          <span class="ul-sub">Consultas operacionais</span>
-        </span>
-        <span class="ul-arrow">↗</span>
-      </a>
-    </div>
+  <!-- LINK DESVIOS — destaque -->
+  <div class="desvios-spotlight">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfEFmmy7j3b5AgL1KWIKqJVJ-siEIT6zayXIbOy8AiZFkEhug/viewform" target="_blank" class="desvios-card">
+      <div class="desvios-icon-wrap">
+        <span class="desvios-icon">🎯</span>
+      </div>
+      <div class="desvios-text">
+        <span class="desvios-eyebrow">FORMS ROUTING · REPORTE DE DESVIOS</span>
+        <span class="desvios-title">Encontrou um desvio na roteirização?</span>
+        <span class="desvios-sub">Registre aqui para entrar na pauta de calibração semanal · ROUT</span>
+      </div>
+      <span class="desvios-cta">
+        <span>Abrir forms</span>
+        <span class="desvios-arrow">→</span>
+      </span>
+    </a>
   </div>
 
 <footer>
@@ -1283,16 +1266,13 @@ function updateStats() {
   const urgent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length;
   const pct = total ? Math.round((done/total)*100) : 0;
 
+  // Stats no body
   document.getElementById('stat-total').textContent   = total;
   document.getElementById('stat-done').textContent    = done;
   document.getElementById('stat-pending').textContent = pending;
   document.getElementById('stat-urgent').textContent  = urgent;
-  document.getElementById('progress-pct').textContent = pct;
-  document.getElementById('progress-bar').style.width = pct + '%';
-  document.getElementById('stat-done-foot').textContent  = done;
-  document.getElementById('stat-total-foot').textContent = total;
 
-  // Hero progress card
+  // Hero progress card (header)
   const heroPct = document.getElementById('hero-progress-pct');
   if (heroPct) {
     heroPct.textContent = pct;
@@ -1301,7 +1281,7 @@ function updateStats() {
     document.getElementById('hero-progress-total').textContent = total;
   }
 
-  // Próxima tarefa pendente (na ordem custom)
+  // Próxima tarefa (na ordem custom)
   const strip = document.getElementById('next-task-strip');
   if (strip) {
     const ordered = (typeof getOrderedTasks === 'function') ? getOrderedTasks() : all;
@@ -1315,6 +1295,17 @@ function updateStats() {
       document.getElementById('next-task-name').textContent = 'Todas as tarefas concluídas';
       document.getElementById('next-task-time').textContent = '✓';
     }
+  }
+
+  // Hero sub — frase dinâmica baseada em pendentes/críticas
+  const sub = document.getElementById('hero-sub');
+  if (sub) {
+    let msg;
+    if (total === 0) msg = 'Sem tarefas configuradas para este turno';
+    else if (pending === 0) msg = '✓ Turno concluído · Todas as tarefas finalizadas';
+    else if (urgent > 0) msg = `⚠ <b>${urgent}</b> ${urgent === 1 ? 'pendência crítica' : 'pendências críticas'} · ${pending} no total`;
+    else msg = `<b>${pending}</b> ${pending === 1 ? 'tarefa pendente' : 'tarefas pendentes'} · sem urgência crítica`;
+    sub.innerHTML = msg;
   }
 }
 
@@ -1513,15 +1504,9 @@ shiftBtns.forEach(btn => {
     const tEmoji = document.getElementById('turno-emoji');
     const tName = document.getElementById('turno-name');
     const tWindow = document.getElementById('turno-window');
-    const sub = document.getElementById('hero-sub');
     if (tEmoji) tEmoji.textContent = SHIFT_EMOJI[shift] || '';
     if (tName) tName.textContent = SHIFT_NAME[shift] || '';
     if (tWindow) tWindow.textContent = SHIFT_WINDOWS[shift] || '';
-    if (sub) {
-      const w = document.getElementById('date-week')?.textContent || '';
-      sub.textContent = 'Operações ' + (shift === 'madrugada' ? 'da Madrugada' : shift === 'am' ? 'AM/PM' : 'SD') + ' · ' + w;
-      sub.dataset.shift = 'set';
-    }
     if (shift === 'madrugada') {
       mainContent.style.display = '';
       wipAM.classList.remove('visible');
