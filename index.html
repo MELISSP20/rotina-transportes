@@ -781,7 +781,6 @@
         <span class="hero-meta-text">TRANSPORTES <span class="hero-meta-sep">·</span> <span id="status-ssp-header">SSP·20</span> <span class="hero-meta-sep">·</span> <span id="hero-week-label">SEMANA 26</span></span>
       </div>
       <h1 class="hero-title">Assignments<span class="hero-title-dot">.</span></h1>
-      <div class="hero-sub" id="hero-sub">Carregando rotina do turno…</div>
     </div>
 
     <!-- COLUNA 2: Turno + Data (clean, lado a lado) -->
@@ -1302,17 +1301,6 @@ function updateStats() {
   document.getElementById('stat-done').textContent    = done;
   document.getElementById('stat-pending').textContent = pending;
   document.getElementById('stat-urgent').textContent  = urgent;
-
-  // Hero sub — frase dinâmica resumindo o estado
-  const sub = document.getElementById('hero-sub');
-  if (sub) {
-    let msg;
-    if (total === 0) msg = 'Sem tarefas configuradas para este turno';
-    else if (pending === 0) msg = '✓ Turno concluído · todas as tarefas finalizadas';
-    else if (urgent > 0) msg = `<b>${urgent}</b> ${urgent === 1 ? 'pendência crítica' : 'pendências críticas'} no turno · ${pending} no total`;
-    else msg = `<b>${pending}</b> ${pending === 1 ? 'ação pendente' : 'ações pendentes'} no turno · sem urgência crítica`;
-    sub.innerHTML = msg;
-  }
 }
 
 const DAYS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
