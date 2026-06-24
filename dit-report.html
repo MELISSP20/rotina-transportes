@@ -370,6 +370,10 @@
       <label>DATA DO REPORT</label>
       <input type="date" id="reportDate" class="field-input"/>
     </div>
+    <div class="date-field">
+      <label>DIT D-2 (ontem)</label>
+      <input type="number" id="d2Total" class="field-input" placeholder="ex: 4.367" min="0"/>
+    </div>
   </div>
 
   <!-- KPI Strip amarelo (igual ao dashboard) -->
@@ -695,50 +699,163 @@ function render() {
 // === Generate report text ===
 function generateReport() {
   if (!agg) { alert('Importe o CSV primeiro'); return; }
-  const { total, abertura, ofensores, insucessos, descon, cycleIns, cycleDesc, emRota, insTotal, descTotal } = agg;
 
+  // === Datas ===
   const dateStr = (() => {
     const d = document.getElementById('reportDate').value;
-    if (!d) return new Date().toLocaleDateString('pt-BR');
+    if (!d) return new Date().toLocaleDateString('pt-BR').slice(0,5);
     const [y,m,day] = d.split('-');
-    return `${day}/${m}/${y}`;
+    return `${day}/${m}`;
+  })();
+  // D-2 date
+  const d2DateStr = (() => {
+    const d = document.getElementById('reportDate').value;
+    if (!d) return '';
+    const dt = new Date(d);
+    dt.setDate(dt.getDate() - 1);
+    return String(dt.getDate()).padStart(2,'0') + '/' + String(dt.getMonth()+1).padStart(2,'0');
   })();
 
-  const ditTotal = document.getElementById('kpiTotal').textContent.trim();
-  const ditAntigo = document.getElementById('kpiAntigo').textContent.trim();
-  const dit7d = document.getElementById('kpi7d').textContent.trim();
-  const pocLp = document.getElementById('kpiPocLp').textContent.trim();
+  // === KPIs gerais ===
+  const totalKpi = parseInt((document.getElementById('kpiTotal').textContent.trim() || '0').replace(/\D/g,''), 10) || 0;
+  const d1Total = agg.total;
+  const emRotaCount = agg.emRota || 0;
+  const d2Total = parseInt((document.getElementById('d2Total').value || '0').replace(/\D/g,''), 10) || 0;
+
+  // Cabeçalho — variação vs D-2
+  const ssp = (() => {
+    const sspRaw = (typeof currentSSP !== 'undefined') ? currentSSP : 20;
+    return 'SSP' + sspRaw;
+  })();
+  let varStr = '';
+  if (d2Total > 0 && totalKpi > 0) {
+    const diff = ((totalKpi - d2Total) / d2Total) * 100;
+    if (Math.abs(diff) >= 0.5) {
+      varStr = `${diff > 0 ? 'Aumento' : 'Redução'} de ${Math.abs(diff).toFixed(1).replace('.',',')}% em compare a ${d2DateStr}`;
+    } else {
+      varStr = `Estável vs ${d2DateStr} (${diff >= 0 ? '+' : ''}${diff.toFixed(1).replace('.',',')}%)`;
+    }
+  }
+
+  // === Helpers ===
+  const fmt = n => Number(n).toLocaleString('pt-BR');
+  const pct = (v, t) => t > 0 ? (v/t*100).toFixed(1).replace('.',',') + '%' : '—';
+  const getMlp = r => (r['MLP Corrigido'] || r['MLP'] || '').trim() || 'Sem MLP';
+  const topN = (rows, keyFn, n=3) => {
+    const m = {};
+    rows.forEach(r => { const k = keyFn(r); m[k] = (m[k]||0)+1; });
+    return Object.entries(m).sort((a,b) => b[1]-a[1]).slice(0,n);
+  };
+
+  // === Insucessos (nao visitado + outros) ===
+  const insRows = csvData.filter(r => (r['MOTIVO_DELAY_CAUSE']||'').includes('Insucesso'));
+  const insN = insRows.length;
+  const insNaoVis = insRows.filter(r => r['MOTIVO_DELAY_CAUSE'] === 'Insucesso (nao visitado)').length;
+  const insOutros = insRows.filter(r => r['MOTIVO_DELAY_CAUSE'] === 'Insucesso (outros)').length;
+  const insTop3 = topN(insRows, getMlp, 3);
+  const insTop3Sum = insTop3.reduce((s,[,v]) => s+v, 0);
+  const insBlock = insN > 0
+    ? `▪️ Insucessos — ${fmt(insN)} IDs (${pct(insN, d1Total)})\n` +
+      (insTop3.length >= 1
+        ? `${insTop3[0][0]} lidera com ${fmt(insTop3[0][1])} IDs (${pct(insTop3[0][1], insN)})` +
+          (insTop3.length >= 2 ? `, seguida de ${insTop3[1][0]} com ${fmt(insTop3[1][1])} IDs (${pct(insTop3[1][1], insN)})` : '') +
+          (insTop3.length >= 3 ? ` e ${insTop3[2][0]} com ${fmt(insTop3[2][1])} IDs (${pct(insTop3[2][1], insN)})` : '') +
+          `. Juntas ${insTop3.length === 3 ? 'as três' : insTop3.length === 2 ? 'as duas' : ''} concentram ~${(insTop3Sum/insN*100).toFixed(0)}% dos insucessos. `
+        : '') +
+      `${fmt(insNaoVis)} classificados como "não visitado" (${pct(insNaoVis, insN)}) e ${fmt(insOutros)} como "outros" (${pct(insOutros, insN)}).`
+    : '';
+
+  // === Descontainerizados ===
+  const descRows = csvData.filter(r => r['MOTIVO_DELAY_CAUSE'] === 'Descontainerizado');
+  const descN = descRows.length;
+  const descCauseMap = { 'does_not_enter_the_vehicle': 'não coube no veículo', 'establishment_closed': 'estabelecimento fechado', 'damaged': 'avariado', 'out_of_zone': 'fora de zona', 'address_inaccessible': 'endereço inacessível' };
+  const descBySub = topN(descRows, r => descCauseMap[(r['MOTIVO_DESCON']||'').toLowerCase()] || (r['MOTIVO_DESCON']||'').toLowerCase() || 'sem causa', 5);
+  const descTop3 = topN(descRows, getMlp, 3);
+  const descBlock = descN > 0
+    ? `▪️ Descontainerizados — ${fmt(descN)} IDs (${pct(descN, d1Total)})\n` +
+      (descBySub.length >= 1
+        ? `${fmt(descBySub[0][1])} IDs (${pct(descBySub[0][1], descN)}) por "${descBySub[0][0]}"` +
+          (descBySub.length >= 2 ? `, ${fmt(descBySub[1][1])} por ${descBySub[1][0]} (${pct(descBySub[1][1], descN)})` : '') +
+          (descBySub.length >= 3 ? ` e ${fmt(descBySub[2][1])} ${descBySub[2][0]} (${pct(descBySub[2][1], descN)})` : '') + `. `
+        : '') +
+      (descTop3.length >= 1
+        ? `${descTop3[0][0]} responde por ${fmt(descTop3[0][1])} IDs (${pct(descTop3[0][1], descN)})` +
+          (descTop3.length >= 2 ? `, ${descTop3[1][0]} com ${fmt(descTop3[1][1])} (${pct(descTop3[1][1], descN)})` : '') +
+          (descTop3.length >= 3 ? ` e ${descTop3[2][0]} com ${fmt(descTop3[2][1])} (${pct(descTop3[2][1], descN)})` : '') + '.'
+        : '')
+    : '';
+
+  // === Não carregado ===
+  const ncRows = csvData.filter(r => r['MOTIVO_DELAY_CAUSE'] === 'Nao carregado');
+  const ncN = ncRows.length;
+  // Pelos ciclos (se preenchido) — agrega por SHP_CYCLE_NAME_PLANNED
+  const ncCycle = {};
+  ncRows.forEach(r => {
+    const c = (r['SHP_CYCLE_NAME_PLANNED']||'').trim();
+    if (c) ncCycle[c] = (ncCycle[c]||0)+1;
+  });
+  const ncRotas = new Set(ncRows.map(r => r['SHP_LG_ROUTE_ID']).filter(Boolean));
+  // Identificar AM / SD / PM
+  let ncCycleStr = '';
+  const amSum = Object.entries(ncCycle).filter(([k]) => k.toUpperCase().includes('AM')).reduce((s,[,v]) => s+v, 0);
+  const sdSum = Object.entries(ncCycle).filter(([k]) => k.toUpperCase().includes('SD')).reduce((s,[,v]) => s+v, 0);
+  const pmSum = Object.entries(ncCycle).filter(([k]) => k.toUpperCase().includes('PM')).reduce((s,[,v]) => s+v, 0);
+  if (amSum + sdSum + pmSum > 0) {
+    const parts = [];
+    if (amSum > 0) parts.push(`AM ${fmt(amSum)} pcts`);
+    if (pmSum > 0) parts.push(`PM ${fmt(pmSum)} pcts`);
+    if (sdSum > 0) parts.push(`SD ${fmt(sdSum)} pcts`);
+    ncCycleStr = ' Distribuição por ciclo: ' + parts.join(' · ') + '.';
+  }
+  let ncExtra = '';
+  if (d1Total > 0 && ncN/d1Total >= 0.25) {
+    const ratio = d1Total / ncN;
+    ncExtra = ` Maior causa do dia, representando 1 em cada ${ratio.toFixed(1).replace('.',',')} pacotes do D-1.`;
+  } else if (ncRows.length > 0) {
+    ncExtra = '';
+  }
+  const ncBlock = ncN > 0
+    ? `▪️ Não carregado — ${fmt(ncN)} IDs (${pct(ncN, d1Total)})${ncExtra}${ncCycleStr}${ncRotas.size > 0 ? ` ${ncRotas.size} rotas únicas.` : ''}`
+    : '';
+
+  // === Carregado e não finalizado ===
+  const cnfRows = csvData.filter(r => r['MOTIVO_DELAY_CAUSE'] === 'Carregado nao finalizado');
+  const cnfN = cnfRows.length;
+  const cnfNodos = cnfRows.filter(r => {
+    const dt = (r['LM_DESTINATION_FACILITY_TYPE'] || r['SHP_LG_DESTINATION_FACILITY_TYPE'] || '').toUpperCase();
+    const nodo = (r['NODO'] || '').trim();
+    return dt.includes('NODO') || (nodo && nodo !== '-' && nodo !== '0');
+  }).length;
+  const cnfNodosPct = cnfN > 0 ? (cnfNodos/cnfN*100).toFixed(0) : 0;
+  const cnfBlock = cnfN > 0
+    ? `▪️ Carregado e não finalizado — ${fmt(cnfN)} IDs (${pct(cnfN, d1Total)})\nPacotes que saíram em rota mas não tiveram entrega registrada no dia.${cnfNodos > 0 ? `  ${cnfNodosPct}% NODOS.` : ''}`
+    : '';
+
+  // === Faltante aduana ===
+  const faRows = csvData.filter(r => {
+    const v = (r['FALTANTE_ADUANA']||'').trim();
+    return v !== '' && v !== '0' && v.toLowerCase() !== 'false';
+  });
+  const faN = faRows.length;
+  const faBlock = faN > 0
+    ? `▪️ Faltante aduana — ${fmt(faN)} IDs (${pct(faN, d1Total)})\nIDs não localizados durante expedição.`
+    : '';
+
+  // === Notas opcionais ===
   const txtIns = document.getElementById('txtIns').value.trim();
   const txtDesc = document.getElementById('txtDesc').value.trim();
   const txtNC = document.getElementById('txtNC').value.trim();
 
-  const fmtVal = v => (v === '—' || v === '' || v === '0') ? '—' : v;
+  // === Montar report ===
+  const blocks = [insBlock, descBlock, ncBlock, cnfBlock, faBlock].filter(b => b).join('\n');
 
-  const tbl = (rows) => rows.map(([a,b,c]) => `  ${a} | ${b} | ${fmt(c)}`).join('\n');
-
-  const report = `DIT LM SSP20 | ${dateStr}
-═══════════════════════════════════════════════════════════
-KPIs
-  DIT Total: ${fmtVal(ditTotal)} | D1: ${fmt(total)} | Antigo: ${fmtVal(ditAntigo)}
-  > 7 dias: ${fmtVal(dit7d)} | Em rota: ${fmt(emRota)} | POC LP: ${fmtVal(pocLp)}
-
-ABERTURA D1
-${abertura.map(([m,v]) => `  ${m}: ${fmt(v)} (${pct(v,total)})`).join('\n')}
-
-TOP 10 OFENSORES (Motivo · Ofensor · Qtd · %)
-${ofensores.slice(0,10).map(([m,o,v]) => `  ${m} | ${o} | ${fmt(v)} (${pct(v,total)})`).join('\n')}
-
-TOP 10 ROTAS COM INSUCESSO
-${insucessos.slice(0,10).map(([r,m,v]) => `  ${r} | ${m} | ${fmt(v)} (${pct(v,insTotal)})`).join('\n')}
-
-DESCONTAINERIZADO POR MLP
-${descon.map(([m,v]) => `  ${m}: ${fmt(v)} (${pct(v,descTotal)})`).join('\n')}
-
-CICLO INSUCESSO: ${cycleIns.map(([c,v]) => `${c}=${fmt(v)}`).join(' | ')}
-CICLO DESCON:    ${cycleDesc.map(([c,v]) => `${c}=${fmt(v)}`).join(' | ')}
-${txtIns ? '\nINSUCESSOS — contexto:\n' + txtIns : ''}
-${txtDesc ? '\nDESCONTAINERIZADOS — contexto:\n' + txtDesc : ''}
-${txtNC ? '\nNÃO CARREGADO — contexto:\n' + txtNC : ''}`;
+  let report = `DIT – ${ssp} | ${dateStr}\n`;
+  report += `Total: ${totalKpi > 0 ? fmt(totalKpi) : '—'} | Em rota: ${fmt(emRotaCount)} | D-1: ${fmt(d1Total)}`;
+  if (varStr) report += `\n${varStr}`;
+  report += `\n❌ Offenders D-1:\n${blocks}`;
+  if (txtIns) report += `\n\n📝 Contexto — Insucessos:\n${txtIns}`;
+  if (txtDesc) report += `\n\n📝 Contexto — Descontainerizados:\n${txtDesc}`;
+  if (txtNC) report += `\n\n📝 Contexto — Não carregado:\n${txtNC}`;
 
   document.getElementById('reportOutput').textContent = report;
   document.getElementById('outputSection').style.display = 'block';
