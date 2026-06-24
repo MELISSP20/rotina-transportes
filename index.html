@@ -134,11 +134,11 @@
     }
     .header-inner {
       max-width: 1280px; margin: 0 auto;
-      padding: 26px 0 28px;
+      padding: 28px 0 30px;
       display: grid;
-      grid-template-columns: minmax(0, 1.3fr) auto minmax(280px, 1fr);
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: 36px;
-      align-items: stretch;
+      align-items: center;
       position: relative;
     }
 
@@ -189,110 +189,6 @@
       max-width: 28em;
     }
     .hero-sub b { color: var(--yellow); font-weight: 800; }
-
-    /* COLUNA 2 — hero counter (número grande) */
-    .hero-counter {
-      display: flex; flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 0 28px;
-      border-left: 1px solid rgba(255,255,255,.12);
-      border-right: 1px solid rgba(255,255,255,.12);
-      min-width: 180px;
-    }
-    .hero-counter-num {
-      font-size: 84px; font-weight: 900;
-      color: var(--yellow);
-      letter-spacing: -3.5px;
-      line-height: .85;
-      font-variant-numeric: tabular-nums;
-      display: flex; align-items: baseline; gap: 6px;
-    }
-    .hero-counter-total {
-      font-size: 32px; font-weight: 700;
-      color: rgba(255,255,255,.32);
-      letter-spacing: -1.2px;
-    }
-    .hero-counter-lbl {
-      font-size: 10.5px; font-weight: 800;
-      letter-spacing: .18em;
-      color: rgba(255,255,255,.55);
-      text-transform: uppercase;
-    }
-    .hero-progress-mini {
-      width: 100%;
-      height: 4px;
-      background: rgba(255,255,255,.1);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .hero-progress-mini-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--yellow), #FFA800);
-      transition: width .5s cubic-bezier(.4,0,.2,1);
-      border-radius: 2px;
-    }
-    .hero-counter-foot {
-      display: flex; justify-content: space-between;
-      width: 100%;
-      font-size: 10.5px; font-weight: 700;
-      color: rgba(255,255,255,.5);
-      font-variant-numeric: tabular-nums;
-    }
-    .hero-counter-foot b { color: #fff; font-weight: 800; }
-    .hero-counter-pct b { color: var(--yellow); }
-
-    /* COLUNA 3 — stack: próxima ação + turno/data */
-    .hero-stack {
-      display: flex; flex-direction: column;
-      gap: 14px;
-      min-width: 0;
-    }
-    .hero-next {
-      background: linear-gradient(135deg, rgba(255,230,0,.16), rgba(255,180,0,.04));
-      border: 1px solid rgba(255,230,0,.3);
-      border-radius: 12px;
-      padding: 14px 18px;
-      transition: all .25s;
-    }
-    .hero-next.complete {
-      background: linear-gradient(135deg, rgba(0,166,80,.18), rgba(0,166,80,.04));
-      border-color: rgba(0,166,80,.35);
-    }
-    .hero-next-eyebrow {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .hero-next-lbl {
-      font-size: 9.5px; font-weight: 900;
-      letter-spacing: .2em;
-      color: var(--yellow);
-      text-transform: uppercase;
-    }
-    .hero-next.complete .hero-next-lbl { color: #4ade80; }
-    .hero-next-time {
-      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-      background: var(--yellow);
-      color: var(--navy);
-      padding: 3px 10px;
-      border-radius: 5px;
-      font-size: 11.5px;
-      letter-spacing: -.2px;
-    }
-    .hero-next.complete .hero-next-time { background: #4ade80; color: var(--navy); }
-    .hero-next-name {
-      font-size: 15.5px; font-weight: 800;
-      color: #fff;
-      letter-spacing: -.3px;
-      line-height: 1.25;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
 
     /* meta row: turno + date pequenos lado a lado */
     .hero-meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -756,10 +652,6 @@
       .header-inner { grid-template-columns: 1fr !important; padding: 18px 0 22px !important; gap: 20px !important; }
       .hero-title { font-size: 44px !important; letter-spacing: -1.5px !important; }
       .hero-sub { font-size: 12.5px; }
-      .hero-counter { padding: 14px 0 0 !important; border-left: none !important; border-right: none !important; border-top: 1px solid rgba(255,255,255,.12); }
-      .hero-counter-num { font-size: 60px !important; letter-spacing: -2.5px !important; }
-      .hero-counter-total { font-size: 26px !important; }
-      .hero-next-name { font-size: 14px; }
       .hero-mini-day { font-size: 24px; }
       .hero-mini-emoji { font-size: 22px; }
       .header-footer { padding: 10px 1rem; }
@@ -853,11 +745,11 @@
   </div>
 </div>
 
-<!-- HEADER — editorial layout -->
+<!-- HEADER — editorial clean -->
 <div class="header">
   <div class="header-inner">
 
-    <!-- COLUNA 1: Branding + hero number -->
+    <!-- COLUNA 1: Branding + eyebrow + sub -->
     <div class="hero-brand">
       <div class="hero-meta">
         <span class="hero-live"><span class="hero-live-dot"></span>AO VIVO</span>
@@ -868,46 +760,21 @@
       <div class="hero-sub" id="hero-sub">Carregando rotina do turno…</div>
     </div>
 
-    <!-- COLUNA 2: Hero "número grande" — pendentes -->
-    <div class="hero-counter">
-      <div class="hero-counter-num">
-        <span id="hero-pending-num">—</span>
-        <span class="hero-counter-total">/ <span id="hero-total-num">—</span></span>
-      </div>
-      <div class="hero-counter-lbl">Tarefas pendentes</div>
-      <div class="hero-progress-mini">
-        <div class="hero-progress-mini-bar" id="hero-progress-bar" style="width:0%;"></div>
-      </div>
-      <div class="hero-counter-foot">
-        <span><b id="hero-progress-done">0</b> concluídas</span>
-        <span class="hero-counter-pct"><b id="hero-progress-pct">0</b>%</span>
-      </div>
-    </div>
-
-    <!-- COLUNA 3: Próxima ação + Turno + Data (stack vertical) -->
-    <div class="hero-stack">
-      <div class="hero-next" id="next-task-strip">
-        <div class="hero-next-eyebrow">
-          <span class="hero-next-lbl">PRÓXIMA AÇÃO</span>
-          <span class="hero-next-time" id="next-task-time">--:--</span>
+    <!-- COLUNA 2: Turno + Data (clean, lado a lado) -->
+    <div class="hero-meta-row">
+      <div class="hero-mini turno">
+        <span class="hero-mini-emoji" id="turno-emoji">🌙</span>
+        <div class="hero-mini-text">
+          <span class="hero-mini-lbl">Turno</span>
+          <span class="hero-mini-val" id="turno-name">Madrugada</span>
+          <span class="hero-mini-sub" id="turno-window">02:30 → 10:30</span>
         </div>
-        <div class="hero-next-name" id="next-task-name">—</div>
       </div>
-      <div class="hero-meta-row">
-        <div class="hero-mini turno">
-          <span class="hero-mini-emoji" id="turno-emoji">🌙</span>
-          <div class="hero-mini-text">
-            <span class="hero-mini-lbl">Turno</span>
-            <span class="hero-mini-val" id="turno-name">Madrugada</span>
-            <span class="hero-mini-sub" id="turno-window">02:30 → 10:30</span>
-          </div>
-        </div>
-        <div class="hero-mini date">
-          <span class="hero-mini-day" id="date-day">23</span>
-          <div class="hero-mini-text">
-            <span class="hero-mini-val" id="date-weekday">Terça-feira</span>
-            <span class="hero-mini-sub"><span id="date-month">JUN 2026</span></span>
-          </div>
+      <div class="hero-mini date">
+        <span class="hero-mini-day" id="date-day">23</span>
+        <div class="hero-mini-text">
+          <span class="hero-mini-val" id="date-weekday">Terça-feira</span>
+          <span class="hero-mini-sub"><span id="date-month">JUN 2026</span></span>
         </div>
       </div>
     </div>
@@ -1405,41 +1272,14 @@ function updateStats() {
   const done = all.filter(t => state[t.id]).length;
   const pending = total - done;
   const urgent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length;
-  const pct = total ? Math.round((done/total)*100) : 0;
 
-  // Stats no body
+  // Stats no body (única fonte de verdade)
   document.getElementById('stat-total').textContent   = total;
   document.getElementById('stat-done').textContent    = done;
   document.getElementById('stat-pending').textContent = pending;
   document.getElementById('stat-urgent').textContent  = urgent;
 
-  // Hero counter (header) — número grande = pending; total + % menores
-  const elPending = document.getElementById('hero-pending-num');
-  if (elPending) {
-    elPending.textContent = pending;
-    document.getElementById('hero-total-num').textContent = total;
-    document.getElementById('hero-progress-pct').textContent = pct;
-    document.getElementById('hero-progress-bar').style.width = pct + '%';
-    document.getElementById('hero-progress-done').textContent = done;
-  }
-
-  // Próxima ação (hero-next)
-  const heroNext = document.getElementById('next-task-strip');
-  if (heroNext) {
-    const ordered = (typeof getOrderedTasks === 'function') ? getOrderedTasks() : all;
-    const next = ordered.find(t => !state[t.id]);
-    if (next) {
-      heroNext.classList.remove('complete');
-      document.getElementById('next-task-name').textContent = next.name;
-      document.getElementById('next-task-time').textContent = next.deadline;
-    } else {
-      heroNext.classList.add('complete');
-      document.getElementById('next-task-name').textContent = 'Turno concluído · todas as ações finalizadas';
-      document.getElementById('next-task-time').textContent = '✓';
-    }
-  }
-
-  // Hero sub — frase dinâmica
+  // Hero sub — frase dinâmica resumindo o estado
   const sub = document.getElementById('hero-sub');
   if (sub) {
     let msg;
