@@ -249,50 +249,94 @@
 
   /* ── ORH-SPECIFIC STYLES ── */
   .filter-bar {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    display: flex; align-items: stretch; gap: 14px; flex-wrap: wrap;
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 10px 16px;
+    border-radius: var(--radius-lg); padding: 12px 16px;
     margin-bottom: 1.25rem;
   }
-  .filter-bar-label { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-  .filter-pills { display: flex; gap: 4px; background: var(--bg); padding: 3px; border-radius: 8px; }
+  .filter-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .filter-bar-label { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .filter-pills { display: flex; gap: 3px; background: var(--bg); padding: 3px; border-radius: 8px; flex-wrap: wrap; }
   .filter-pill { font-family: var(--font); font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 6px; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all .15s; white-space: nowrap; }
   .filter-pill:hover { color: var(--text); }
   .filter-pill.active { background: var(--navy); color: var(--yellow); box-shadow: 0 2px 6px rgba(26,26,46,.15); }
   [data-theme="dark"] .filter-pill.active { background: var(--yellow); color: var(--navy); }
+  .date-range { display: flex; align-items: center; gap: 6px; }
+  .filter-info { margin-left: auto; align-self: center; font-size: 11.5px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .filter-info b { color: var(--text); font-weight: 800; }
+
+  /* KPI foot */
+  .kpi-card-foot { font-size: 9.5px; color: rgba(26,26,46,.55); font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  [data-theme="dark"] .kpi-card-foot { color: rgba(255,255,255,.55); }
+
+  /* Hero comparison */
+  .hero-cmp { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 22px; margin-bottom: 1.25rem; }
+  .hero-cmp-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+  .hero-cmp-bars { display: flex; flex-direction: column; gap: 10px; }
+  .hero-cmp-row { display: grid; grid-template-columns: 130px 1fr 100px; gap: 14px; align-items: center; }
+  .hero-cmp-label { font-size: 11.5px; font-weight: 700; color: var(--muted); display: inline-flex; align-items: center; gap: 8px; }
+  .cmp-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .dot-plan { background: var(--blue); }
+  .dot-real { background: var(--yellow); border: 1px solid #F5C518; }
+  .dot-contrato { background: #16a34a; }
+  .hero-cmp-bar-track { background: var(--bg); height: 22px; border-radius: 5px; overflow: hidden; }
+  .hero-cmp-bar { height: 100%; border-radius: 5px; transition: width .5s ease; }
+  .hero-cmp-bar.plan { background: var(--blue); }
+  .hero-cmp-bar.real { background: var(--yellow); border: 1px solid #F5C518; }
+  .hero-cmp-bar.contrato { background: #16a34a; }
+  .hero-cmp-val { font-size: 14px; font-weight: 800; color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
+  .hero-cmp-summary { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .hero-cmp-summary b { color: var(--text); }
+
+  /* Excedentes card */
+  .exc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 22px; }
+  .exc-card-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .exc-card-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+  .exc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .exc-stat { background: var(--bg); border-radius: 8px; padding: 12px 14px; text-align: center; }
+  .exc-stat-val { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+  .exc-stat-lbl { font-size: 10px; font-weight: 700; color: var(--muted); margin-top: 4px; letter-spacing: .04em; text-transform: uppercase; }
+  .exc-breakdown { display: flex; flex-direction: column; gap: 7px; }
+  .exc-bd-row { display: grid; grid-template-columns: 90px 1fr 100px; gap: 10px; align-items: center; }
+  .exc-bd-lbl { font-size: 11px; font-weight: 700; color: var(--text); }
+  .exc-bd-bar-track { background: var(--bg); height: 8px; border-radius: 4px; overflow: hidden; }
+  .exc-bd-bar { height: 100%; border-radius: 4px; transition: width .4s ease; }
+  .exc-bd-val { font-size: 11px; font-weight: 700; color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
 
   /* Comparison bar chart (Plan vs Real por MLP) */
   .compare-chart { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 1.25rem; }
   .compare-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
   .compare-subtitle { font-size: 11px; color: var(--muted); margin-bottom: 18px; }
-  .compare-legend { display: flex; gap: 16px; margin-bottom: 14px; }
+  .compare-legend { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
   .compare-legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: var(--muted); }
   .compare-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
   .compare-legend-dot.plan { background: var(--blue); }
   .compare-legend-dot.real { background: var(--yellow); border: 1px solid #F5C518; }
+  .compare-legend-dot.contrato { background: #16a34a; }
   .compare-bars { display: flex; flex-direction: column; gap: 16px; }
-  .compare-row { display: grid; grid-template-columns: 130px 1fr 60px; gap: 12px; align-items: center; }
+  .compare-row { display: grid; grid-template-columns: 150px 1fr 60px; gap: 12px; align-items: center; }
+  .compare-row.triple .compare-row-bars { gap: 4px; }
   .compare-row-label { font-size: 11.5px; font-weight: 700; color: var(--text); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
   .compare-row-bars { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-  .compare-bar-track { display: flex; align-items: center; height: 18px; }
+  .compare-bar-track { display: flex; align-items: center; height: 16px; }
   .compare-bar {
-    height: 14px; border-radius: 3px;
+    height: 12px; border-radius: 3px;
     display: flex; align-items: center; justify-content: flex-end;
     padding-right: 7px;
-    font-size: 10.5px; font-weight: 800;
+    font-size: 10px; font-weight: 800;
     color: #fff; font-variant-numeric: tabular-nums;
     min-width: 30px;
     transition: width .4s ease;
   }
   .compare-bar.plan { background: var(--blue); }
   .compare-bar.real { background: var(--yellow); color: var(--navy); border: 1px solid #F5C518; }
+  .compare-bar.contrato { background: #16a34a; }
   .compare-row-diff { font-size: 12px; font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
   .compare-row-diff.up { color: var(--red); }
   .compare-row-diff.down { color: var(--green); }
   .compare-row-diff.zero { color: var(--muted); }
 
   /* Histogram */
-  .histogram { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
   .histo-bars { display: flex; align-items: flex-end; gap: 4px; height: 140px; padding-top: 20px; }
   .histo-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
   .histo-bar { width: 100%; background: var(--navy); border-radius: 3px 3px 0 0; min-height: 4px; position: relative; transition: opacity .15s; }
@@ -306,21 +350,31 @@
   /* Scatter plot */
   .scatter-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
   .scatter-svg { width: 100%; height: 220px; }
-  .scatter-dot { fill: var(--navy); opacity: .42; }
-  [data-theme="dark"] .scatter-dot { fill: var(--yellow); }
-  .scatter-diagonal { stroke: var(--green); stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; opacity: .7; }
+  .scatter-diagonal { stroke: #16a34a; stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; opacity: .7; }
   .scatter-axis { stroke: var(--border); stroke-width: 1; }
   .scatter-axis-lbl { font-size: 10px; fill: var(--muted); font-family: var(--font); font-weight: 700; }
+  .scatter-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--muted); justify-content: center; }
+  .scatter-legend span { display: inline-flex; align-items: center; gap: 5px; }
+
+  /* DG/UG card */
+  .dgug-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+
+  /* Category pills */
+  .cat-pill { display: inline-block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; padding: 3px 7px; border-radius: 4px; white-space: nowrap; }
+  .cat-pill.cat-match { background: rgba(0,166,80,.1); color: var(--green); }
+  .cat-pill.cat-dg { background: rgba(227,38,47,.1); color: var(--red); }
+  .cat-pill.cat-ug { background: rgba(52,131,250,.1); color: var(--blue); }
+  .cat-pill.cat-lateral { background: rgba(107,115,148,.1); color: var(--muted); }
 
   /* Two-column responsive grid */
   .two-col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.25rem; }
 
-  /* Bigger table for analysis */
+  /* Data table */
   .data-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.25rem; }
   .data-table-title { padding: 12px 18px; font-size: 13px; font-weight: 800; color: var(--text); background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .data-table-title .tbl-subtitle { font-size: 10.5px; font-weight: 600; color: var(--muted); }
   .data-table-head { display: grid; padding: 9px 18px; font-size: 9.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
-  .data-table-row { display: grid; padding: 9px 18px; font-size: 12px; font-weight: 600; align-items: center; gap: 4px; border-bottom: 1px solid rgba(0,0,0,.04); transition: background .12s; }
+  .data-table-row { display: grid; padding: 9px 18px; font-size: 12px; font-weight: 600; align-items: center; gap: 6px; border-bottom: 1px solid rgba(0,0,0,.04); transition: background .12s; }
   [data-theme="dark"] .data-table-row { border-bottom-color: rgba(255,255,255,.04); }
   .data-table-row:hover { background: var(--bg); }
   .data-table-row:last-child { border-bottom: none; }
@@ -330,11 +384,9 @@
   .data-table .num.zero { color: var(--muted); }
   .data-table .cell-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* Specific column templates */
-  .cols-mlp { grid-template-columns: 1fr 60px 80px 80px 80px 70px; }
-  .cols-modal { grid-template-columns: 1fr 60px 80px 80px 80px; }
-  .cols-rota { grid-template-columns: 110px 1fr 70px 70px 70px; }
-  .cols-dg { grid-template-columns: 1fr 80px 100px 100px 80px; }
+  /* Specific columns */
+  .cols-mlp-full { grid-template-columns: 1fr 60px 80px 80px 90px 70px 70px; }
+  .cols-rota-full { grid-template-columns: 1fr 90px 60px 60px 60px; }
 
   @media (max-width: 900px) {
     .dit-grid { grid-template-columns: 1fr; }
@@ -451,13 +503,13 @@
 </div>
 
 <div class="wrapper">
-  <!-- Upload + Date -->
+  <!-- Upload + Data -->
   <div class="upload-row">
     <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()" style="cursor:pointer;">
       <div class="upload-icon">⏱</div>
       <div class="upload-info">
         <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV BQ Routing</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Colunas necessárias: ORH_PLAN, ORH_REAL (em minutos)</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Colunas: DATA, ORH_PLAN, ORH_REAL, ORH_CONTRATO, MODAL_PLAN, MODAL_REAL, MLP</div>
       </div>
       <input type="file" id="fileCSV" accept=".csv" style="display:none"/>
     </div>
@@ -467,75 +519,153 @@
     </div>
   </div>
 
-  <!-- Filtros -->
+  <!-- FILTROS — período + categoria -->
   <div class="filter-bar" id="filterBar" style="display:none;">
-    <span class="filter-bar-label">📊 Filtro</span>
-    <div class="filter-pills">
-      <button class="filter-pill active" data-f="all" onclick="setFilter('all')">Todas</button>
-      <button class="filter-pill" data-f="match" onclick="setFilter('match')">Match (Plan = Real)</button>
-      <button class="filter-pill" data-f="dg" onclick="setFilter('dg')">Downgrades</button>
-      <button class="filter-pill" data-f="ug" onclick="setFilter('ug')">Upgrades</button>
+    <div class="filter-group">
+      <span class="filter-bar-label">📅 Período</span>
+      <div class="filter-pills">
+        <button class="filter-pill active" data-p="all" onclick="setPeriod('all')">Tudo do arquivo</button>
+        <button class="filter-pill" data-p="today" onclick="setPeriod('today')">Hoje</button>
+        <button class="filter-pill" data-p="yesterday" onclick="setPeriod('yesterday')">Ontem</button>
+        <button class="filter-pill" data-p="7d" onclick="setPeriod('7d')">7 dias</button>
+        <button class="filter-pill" data-p="30d" onclick="setPeriod('30d')">30 dias</button>
+      </div>
+      <div class="date-range">
+        <input type="date" class="field-input" id="dateFrom" style="width:135px;padding:6px 10px;font-size:11.5px;"/>
+        <span style="font-size:11px;color:var(--muted);">→</span>
+        <input type="date" class="field-input" id="dateTo" style="width:135px;padding:6px 10px;font-size:11.5px;"/>
+      </div>
     </div>
-    <span style="margin-left:auto;font-size:11px;color:var(--muted);font-weight:600;" id="filterInfo"></span>
+    <div class="filter-group">
+      <span class="filter-bar-label">🚛 Categoria</span>
+      <div class="filter-pills">
+        <button class="filter-pill active" data-c="all" onclick="setCategory('all')">Todas</button>
+        <button class="filter-pill" data-c="match" onclick="setCategory('match')">Match</button>
+        <button class="filter-pill" data-c="dg" onclick="setCategory('dg')">DG</button>
+        <button class="filter-pill" data-c="ug" onclick="setCategory('ug')">UG</button>
+        <button class="filter-pill" data-c="exceeded" onclick="setCategory('exceeded')">Excederam Plan</button>
+      </div>
+    </div>
+    <div class="filter-info" id="filterInfo"></div>
   </div>
 
-  <!-- KPI Strip — visão geral em horas -->
+  <!-- KPI Strip principal -->
   <div class="kpi-strip">
     <div class="kpi-card">
-      <div class="kpi-card-label">Total Rotas</div>
+      <div class="kpi-card-label">Rotas analisadas</div>
       <div class="kpi-card-value" id="kpiTotal">—</div>
+      <div class="kpi-card-foot" id="kpiTotalFoot"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">ORH Plan (h)</div>
-      <div class="kpi-card-value" id="kpiPlanH">—</div>
+      <div class="kpi-card-label">ORH Plan médio</div>
+      <div class="kpi-card-value" id="kpiPlan">—</div>
+      <div class="kpi-card-foot" id="kpiPlanFoot"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">ORH Real (h)</div>
-      <div class="kpi-card-value" id="kpiRealH">—</div>
+      <div class="kpi-card-label">ORH Real médio</div>
+      <div class="kpi-card-value" id="kpiReal">—</div>
+      <div class="kpi-card-foot" id="kpiRealFoot"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">Variação</div>
-      <div class="kpi-card-value" id="kpiVar">—</div>
+      <div class="kpi-card-label">ORH Contrato</div>
+      <div class="kpi-card-value" id="kpiContrato">—</div>
+      <div class="kpi-card-foot" id="kpiContratoFoot"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">Aderência</div>
+      <div class="kpi-card-label">Excedentes do Plan</div>
+      <div class="kpi-card-value" id="kpiExc">—</div>
+      <div class="kpi-card-foot" id="kpiExcFoot"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card-label">Aderência (±10%)</div>
       <div class="kpi-card-value" id="kpiAder">—</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card-label">Δ médio (min)</div>
-      <div class="kpi-card-value" id="kpiAvgDiff">—</div>
+      <div class="kpi-card-foot" id="kpiAderFoot"></div>
     </div>
   </div>
 
   <!-- Empty state -->
-  <div class="dash-empty" id="emptyState">Importe o CSV BQ Routing (mesmo da Análise OPS) para visualizar o comparativo de ORH plan × real.</div>
+  <div class="dash-empty" id="emptyState">Importe o CSV BQ Routing para visualizar o comparativo de ORH Plan × Real × Contrato.</div>
 
   <!-- ANÁLISE PRINCIPAL -->
   <div id="analysisArea" style="display:none;">
 
-    <!-- Comparativo Plan vs Real por MLP -->
+    <!-- Hero comparison strip -->
+    <div class="hero-cmp">
+      <div class="hero-cmp-title">Visão geral · Plan × Real × Contrato</div>
+      <div class="hero-cmp-bars">
+        <div class="hero-cmp-row">
+          <span class="hero-cmp-label"><span class="cmp-dot dot-plan"></span>Plan médio</span>
+          <div class="hero-cmp-bar-track"><div class="hero-cmp-bar plan" id="hcBarPlan"></div></div>
+          <span class="hero-cmp-val" id="hcValPlan">—</span>
+        </div>
+        <div class="hero-cmp-row">
+          <span class="hero-cmp-label"><span class="cmp-dot dot-real"></span>Real médio</span>
+          <div class="hero-cmp-bar-track"><div class="hero-cmp-bar real" id="hcBarReal"></div></div>
+          <span class="hero-cmp-val" id="hcValReal">—</span>
+        </div>
+        <div class="hero-cmp-row">
+          <span class="hero-cmp-label"><span class="cmp-dot dot-contrato"></span>Contrato</span>
+          <div class="hero-cmp-bar-track"><div class="hero-cmp-bar contrato" id="hcBarContrato"></div></div>
+          <span class="hero-cmp-val" id="hcValContrato">—</span>
+        </div>
+      </div>
+      <div class="hero-cmp-summary" id="heroCmpSummary"></div>
+    </div>
+
+    <!-- Excedentes breakdown -->
+    <div class="two-col-grid">
+      <div class="exc-card">
+        <div class="exc-card-title">⚠ Rotas que excederam o Plan</div>
+        <div class="exc-card-sub">Quantas e quanto excederam · Categoria predominante</div>
+        <div class="exc-stats">
+          <div class="exc-stat">
+            <div class="exc-stat-val" id="excPctVal">—</div>
+            <div class="exc-stat-lbl">% das rotas excederam</div>
+          </div>
+          <div class="exc-stat">
+            <div class="exc-stat-val" id="excAvgVal">—</div>
+            <div class="exc-stat-lbl">Excesso médio (min)</div>
+          </div>
+        </div>
+        <div class="exc-breakdown" id="excBreakdown"></div>
+      </div>
+
+      <div class="exc-card">
+        <div class="exc-card-title">📊 Distribuição da variação (Real − Plan)</div>
+        <div class="exc-card-sub">Negativo = adiantou · Positivo = atrasou</div>
+        <div class="histo-bars" id="histoBars" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
+    <!-- Comparativo Plan vs Real vs Contrato por MLP -->
     <div class="compare-chart">
-      <div class="compare-title">Comparativo Plan × Real por MLP</div>
-      <div class="compare-subtitle">Tempo médio de rota planejado vs realizado (em horas) — por contrato</div>
+      <div class="compare-title">Plan × Real × Contrato por MLP</div>
+      <div class="compare-subtitle">Médias em horas por contrato · Excedentes destacados</div>
       <div class="compare-legend">
-        <span class="compare-legend-item"><span class="compare-legend-dot plan"></span> Plan (média)</span>
-        <span class="compare-legend-item"><span class="compare-legend-dot real"></span> Real (média)</span>
-        <span class="compare-legend-item" style="margin-left:auto;color:var(--text);"><span style="font-weight:800;">Δ</span> Variação</span>
+        <span class="compare-legend-item"><span class="compare-legend-dot plan"></span> Plan</span>
+        <span class="compare-legend-item"><span class="compare-legend-dot real"></span> Real</span>
+        <span class="compare-legend-item"><span class="compare-legend-dot contrato"></span> Contrato</span>
+        <span class="compare-legend-item" style="margin-left:auto;color:var(--text);"><span style="font-weight:800;">Δ</span> Real − Plan</span>
       </div>
       <div class="compare-bars" id="compareBars"></div>
     </div>
 
-    <!-- Histograma + Scatter -->
+    <!-- Scatter + DG/UG impact -->
     <div class="two-col-grid">
-      <div class="histogram">
-        <div class="compare-title">Distribuição da variação (min)</div>
-        <div class="compare-subtitle">Δ = ORH_REAL − ORH_PLAN · Negativo = adiantou · Positivo = atrasou</div>
-        <div class="histo-bars" id="histoBars" style="margin-top:14px;"></div>
-      </div>
       <div class="scatter-card">
         <div class="compare-title">Plan × Real (dispersão)</div>
-        <div class="compare-subtitle">Cada ponto = uma rota · Diagonal verde = aderência perfeita</div>
+        <div class="compare-subtitle">Acima da diagonal = atrasou · Cores por categoria</div>
         <svg class="scatter-svg" id="scatterSvg" viewBox="0 0 400 220" preserveAspectRatio="none"></svg>
+        <div class="scatter-legend">
+          <span><span class="cmp-dot" style="background:var(--green);"></span> Match</span>
+          <span><span class="cmp-dot" style="background:var(--red);"></span> Downgrade</span>
+          <span><span class="cmp-dot" style="background:var(--blue);"></span> Upgrade</span>
+        </div>
+      </div>
+      <div class="dgug-card">
+        <div class="compare-title">Impacto de DG / UG no ORH</div>
+        <div class="compare-subtitle">Tempo médio por categoria — minutos</div>
+        <div id="dgugBars" style="margin-top:14px;"></div>
       </div>
     </div>
 
@@ -543,61 +673,30 @@
     <div class="data-table">
       <div class="data-table-title">
         <span>📦 Análise por MLP</span>
-        <span class="tbl-subtitle">Contrato · Rotas · Médias Plan/Real · Δ · Aderência</span>
+        <span class="tbl-subtitle">Rotas · Médias Plan/Real/Contrato · Excedentes</span>
       </div>
-      <div class="data-table-head cols-mlp">
+      <div class="data-table-head cols-mlp-full">
         <span>MLP</span>
         <span class="num">Rotas</span>
         <span class="num">Plan (h)</span>
         <span class="num">Real (h)</span>
+        <span class="num">Contrato (h)</span>
         <span class="num">Δ (min)</span>
-        <span class="num">% Ader</span>
+        <span class="num">% Exced</span>
       </div>
       <div id="tblMLP"></div>
     </div>
 
-    <!-- Tabela por Modal/Veículo -->
-    <div class="data-table">
-      <div class="data-table-title">
-        <span>🚛 Análise por Modal (Veículo Planejado)</span>
-        <span class="tbl-subtitle">Tempo médio plan/real por tipo de veículo</span>
-      </div>
-      <div class="data-table-head cols-modal">
-        <span>Modal</span>
-        <span class="num">Rotas</span>
-        <span class="num">Plan (h)</span>
-        <span class="num">Real (h)</span>
-        <span class="num">Δ (min)</span>
-      </div>
-      <div id="tblModal"></div>
-    </div>
-
-    <!-- ORH x DG/UG -->
-    <div class="data-table">
-      <div class="data-table-title">
-        <span>🔀 ORH × Downgrade / Upgrade</span>
-        <span class="tbl-subtitle">Impacto da substituição de veículo no tempo de rota</span>
-      </div>
-      <div class="data-table-head cols-dg">
-        <span>Categoria</span>
-        <span class="num">Rotas</span>
-        <span class="num">ORH Plan médio</span>
-        <span class="num">ORH Real médio</span>
-        <span class="num">Δ médio</span>
-      </div>
-      <div id="tblDgUg"></div>
-    </div>
-
-    <!-- Top atrasos e adiantamentos -->
+    <!-- Top rotas com maior atraso/adiantamento -->
     <div class="two-col-grid">
       <div class="data-table" style="margin-bottom:0;">
         <div class="data-table-title">
           <span>⏰ Top 10 Atrasos</span>
-          <span class="tbl-subtitle">Maior Δ positivo</span>
+          <span class="tbl-subtitle">Maior excesso sobre o Plan</span>
         </div>
-        <div class="data-table-head cols-rota">
-          <span>Rota</span>
-          <span>MLP</span>
+        <div class="data-table-head cols-rota-full">
+          <span>Data · Rota</span>
+          <span>Categoria</span>
           <span class="num">Plan</span>
           <span class="num">Real</span>
           <span class="num">Δ</span>
@@ -607,11 +706,11 @@
       <div class="data-table" style="margin-bottom:0;">
         <div class="data-table-title">
           <span>⚡ Top 10 Adiantamentos</span>
-          <span class="tbl-subtitle">Maior Δ negativo</span>
+          <span class="tbl-subtitle">Maior tempo poupado vs Plan</span>
         </div>
-        <div class="data-table-head cols-rota">
-          <span>Rota</span>
-          <span>MLP</span>
+        <div class="data-table-head cols-rota-full">
+          <span>Data · Rota</span>
+          <span>Categoria</span>
           <span class="num">Plan</span>
           <span class="num">Real</span>
           <span class="num">Δ</span>
@@ -622,28 +721,28 @@
 
   </div>
 
-  <!-- Contexto narrativo -->
+  <!-- Narrativas -->
   <div class="section-label">Contexto narrativo (opcional)</div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#3483FA"></span> Análise plan × real
+      <span class="dot" style="background:#3483FA"></span> Análise geral
       <span class="stats"><span id="hdrAder">—</span></span>
     </div>
-    <textarea id="txtAder" placeholder="Ex: Aderência geral de 88,2%. Maior desvio em rotas de utilitário, com Δ médio de +45 min..."></textarea>
+    <textarea id="txtAder" placeholder="Ex: 88% das rotas dentro do plano, mas 12% excederam — com média de +32 min..."></textarea>
   </div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#e24b4a"></span> Atrasos
-      <span class="stats"><span id="hdrAtraso">—</span></span>
+      <span class="dot" style="background:#e24b4a"></span> Excedentes
+      <span class="stats"><span id="hdrExc">—</span></span>
     </div>
-    <textarea id="txtAtraso" placeholder="Ex: 47% das rotas com atraso pertencem ao MLP Envios Extra. Causa principal..."></textarea>
+    <textarea id="txtExc" placeholder="Ex: Dos excedentes, 60% foram downgrades. MLP Envios Extra lidera..."></textarea>
   </div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#16a34a"></span> DG / UG vs ORH
+      <span class="dot" style="background:#16a34a"></span> DG / UG
       <span class="stats"><span id="hdrDgUg">—</span></span>
     </div>
-    <textarea id="txtDgUg" placeholder="Ex: Rotas com upgrade tiveram ORH real 23 min menor em média..."></textarea>
+    <textarea id="txtDgUg" placeholder="Ex: Downgrades resultaram em ORH médio 18 min maior que match..."></textarea>
   </div>
 
   <!-- Botões -->
@@ -676,7 +775,6 @@ tbtn.addEventListener('click', () => {
   localStorage.setItem('theme', next);
 });
 
-// Reports dropdown
 function toggleReportsMenu() {
   const btn = document.getElementById('reports-btn');
   const menu = document.getElementById('reports-menu');
@@ -693,17 +791,22 @@ document.addEventListener('click', function(e) {
 document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 
 // ── State ──
-let csvRows = null;          // raw rows
-let rowsFiltered = null;     // rows after applying filter
-let agg = null;              // aggregated data
-let currentFilter = 'all';
+let csvRows = null;            // rows brutos
+let agg = null;                // dados agregados
+let currentPeriod = 'all';     // filtro período
+let currentCategory = 'all';   // filtro categoria
+let availableDates = [];       // datas únicas do CSV
 
-// Helpers
+// ── Helpers ──
 const fmtN = n => Number(n).toLocaleString('pt-BR');
-const fmtH = h => h.toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + 'h';
-const fmtMin = m => (m >= 0 ? '+' : '') + m.toFixed(0).replace('.',',') + ' min';
+const fmtH = (h, decimals=1) => h.toLocaleString('pt-BR', {minimumFractionDigits:decimals, maximumFractionDigits:decimals}) + 'h';
+const fmtMin = m => (m >= 0 ? '+' : '') + Math.round(m) + 'm';
 const fmtPct = p => p.toFixed(1).replace('.',',') + '%';
-const safe = s => (s == null || s === '' || String(s).toLowerCase() === 'nan') ? '—' : String(s);
+const toNum = s => {
+  if (s == null) return NaN;
+  const n = parseFloat(String(s).replace(',','.').trim());
+  return isNaN(n) ? NaN : n;
+};
 
 function vrank(v) {
   v = (v || '').toLowerCase();
@@ -715,6 +818,22 @@ function vrank(v) {
   if (v.includes('van')) return 7;
   return 4;
 }
+
+// Parse data — tenta dd/mm/yyyy, yyyy-mm-dd, etc.
+function parseDate(s) {
+  if (!s) return null;
+  s = String(s).trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return new Date(parseInt(m[3]), parseInt(m[2])-1, parseInt(m[1]));
+  m = s.match(/^(\d{1,2})\/(\d{1,2})/);
+  if (m) return new Date(new Date().getFullYear(), parseInt(m[2])-1, parseInt(m[1]));
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+const isoDate = d => d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` : '';
+const fmtDateBR = d => d ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}` : '—';
 
 function parseCSVLine(line) {
   const out = []; let cur = ''; let q = false;
@@ -745,333 +864,451 @@ const zCSV = document.getElementById('zoneCSV');
 zCSV.addEventListener('dragover', e => { e.preventDefault(); zCSV.style.borderColor='var(--yellow)'; });
 zCSV.addEventListener('dragleave', () => zCSV.style.borderColor='');
 zCSV.addEventListener('drop', e => { e.preventDefault(); zCSV.style.borderColor=''; handleCSV(e.dataTransfer.files[0]); });
+document.getElementById('dateFrom').addEventListener('change', () => { currentPeriod = 'custom'; updatePeriodActive(); applyFilters(); });
+document.getElementById('dateTo').addEventListener('change', () => { currentPeriod = 'custom'; updatePeriodActive(); applyFilters(); });
 
 function handleCSV(file) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
     const parsed = parseCSV(e.target.result);
-    // Validar colunas
-    if (parsed.length === 0 || !('ORH_PLAN' in parsed[0]) || !('ORH_REAL' in parsed[0])) {
-      alert('CSV não contém as colunas ORH_PLAN e ORH_REAL. Verifique o arquivo.');
+    if (parsed.length === 0) { alert('CSV vazio.'); return; }
+    const sample = parsed[0];
+    const need = ['ORH_PLAN','ORH_REAL'];
+    const missing = need.filter(c => !(c in sample));
+    if (missing.length) {
+      alert('CSV não contém: ' + missing.join(', '));
       return;
     }
-    // Filtra rows com ORH numéricos
-    csvRows = parsed.filter(r => {
-      const p = parseFloat(String(r['ORH_PLAN']).replace(',','.'));
-      const re = parseFloat(String(r['ORH_REAL']).replace(',','.'));
-      return !isNaN(p) && !isNaN(re) && p > 0 && re > 0;
+    // Normaliza: parse num + parse date + categoria
+    csvRows = parsed.map(r => {
+      const plan = toNum(r['ORH_PLAN']);
+      const real = toNum(r['ORH_REAL']);
+      const contr = toNum(r['ORH_CONTRATO']);
+      const date = parseDate(r['DATA']);
+      const modal = (r['MODAL_PLAN'] || '').trim();
+      const realModal = (r['MODAL_REAL'] || '').trim();
+      let category = 'match';
+      if (vrank(modal) > vrank(realModal)) category = 'dg';
+      else if (vrank(modal) < vrank(realModal)) category = 'ug';
+      else if (modal.toLowerCase() !== realModal.toLowerCase()) category = 'lateral';
+      return {
+        raw: r,
+        plan, real, contr, date,
+        diff: !isNaN(plan) && !isNaN(real) ? real - plan : NaN,
+        excessOverContrato: !isNaN(real) && !isNaN(contr) ? real - contr : NaN,
+        category,
+        mlp: (r['MLP'] || '').trim() || '—',
+        modal: modal || '—',
+        realModal: realModal || '—',
+        route: r['SHP_LG_ROUTE_ID'] || r['ROUTE_ID'] || r['ROTA'] || '—',
+        valid: !isNaN(plan) && !isNaN(real) && plan > 0 && real > 0
+      };
     });
+    const validRows = csvRows.filter(r => r.valid);
+    availableDates = [...new Set(validRows.filter(r => r.date).map(r => isoDate(r.date)))].sort();
+
     document.getElementById('zoneCSV').classList.add('loaded-csv');
-    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(csvRows.length)} rotas válidas</span>`;
+    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(validRows.length)} rotas válidas · ${availableDates.length} dia(s)</span>`;
     document.getElementById('filterBar').style.display = 'flex';
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('analysisArea').style.display = 'block';
     document.getElementById('genBtn').disabled = false;
-    applyFilter();
+
+    // Pré-popular date range
+    if (availableDates.length > 0) {
+      document.getElementById('dateFrom').value = availableDates[0];
+      document.getElementById('dateTo').value = availableDates[availableDates.length-1];
+      document.getElementById('dateFrom').min = availableDates[0];
+      document.getElementById('dateFrom').max = availableDates[availableDates.length-1];
+      document.getElementById('dateTo').min = availableDates[0];
+      document.getElementById('dateTo').max = availableDates[availableDates.length-1];
+    }
+    applyFilters();
   };
   reader.readAsText(file, 'utf-8');
 }
 
-function setFilter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p.dataset.f === f));
-  applyFilter();
+function setPeriod(p) {
+  currentPeriod = p;
+  updatePeriodActive();
+  // Ajustar inputs DE/ATÉ
+  if (availableDates.length === 0) { applyFilters(); return; }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const minD = new Date(availableDates[0]);
+  const maxD = new Date(availableDates[availableDates.length-1]);
+  let from, to;
+  if (p === 'all') { from = minD; to = maxD; }
+  else if (p === 'today') { from = today; to = today; }
+  else if (p === 'yesterday') { from = new Date(today.getTime() - 86400000); to = new Date(today.getTime() - 86400000); }
+  else if (p === '7d') { from = new Date(today.getTime() - 6*86400000); to = today; }
+  else if (p === '30d') { from = new Date(today.getTime() - 29*86400000); to = today; }
+  if (from && to) {
+    document.getElementById('dateFrom').value = isoDate(from);
+    document.getElementById('dateTo').value = isoDate(to);
+  }
+  applyFilters();
 }
 
-function applyFilter() {
+function updatePeriodActive() {
+  document.querySelectorAll('.filter-pill[data-p]').forEach(p => p.classList.toggle('active', p.dataset.p === currentPeriod));
+}
+
+function setCategory(c) {
+  currentCategory = c;
+  document.querySelectorAll('.filter-pill[data-c]').forEach(p => p.classList.toggle('active', p.dataset.c === c));
+  applyFilters();
+}
+
+function applyFilters() {
   if (!csvRows) return;
-  let filtered;
-  if (currentFilter === 'all') filtered = csvRows;
-  else if (currentFilter === 'match') {
-    filtered = csvRows.filter(r => {
-      const p = String(r['MODAL_PLAN']||'').toLowerCase();
-      const re = String(r['MODAL_REAL']||'').toLowerCase();
-      return p && re && p === re;
-    });
+  let rows = csvRows.filter(r => r.valid);
+
+  // Período
+  const from = document.getElementById('dateFrom').value;
+  const to = document.getElementById('dateTo').value;
+  if (from && to) {
+    const fd = new Date(from); fd.setHours(0,0,0,0);
+    const td = new Date(to); td.setHours(23,59,59,999);
+    rows = rows.filter(r => r.date && r.date >= fd && r.date <= td);
   }
-  else if (currentFilter === 'dg') {
-    filtered = csvRows.filter(r => vrank(r['MODAL_PLAN']) > vrank(r['MODAL_REAL']));
-  }
-  else if (currentFilter === 'ug') {
-    filtered = csvRows.filter(r => vrank(r['MODAL_PLAN']) < vrank(r['MODAL_REAL']));
-  }
-  rowsFiltered = filtered;
-  document.getElementById('filterInfo').textContent = `${fmtN(filtered.length)} de ${fmtN(csvRows.length)} rotas`;
-  aggregate();
+
+  // Categoria
+  if (currentCategory === 'match') rows = rows.filter(r => r.category === 'match');
+  else if (currentCategory === 'dg') rows = rows.filter(r => r.category === 'dg');
+  else if (currentCategory === 'ug') rows = rows.filter(r => r.category === 'ug');
+  else if (currentCategory === 'exceeded') rows = rows.filter(r => r.diff > 0);
+
+  const total = rows.length;
+  const periodLbl = from && to ? `${fmtDateBR(new Date(from))} → ${fmtDateBR(new Date(to))}` : '—';
+  document.getElementById('filterInfo').innerHTML = `<b>${fmtN(total)}</b> rotas · <span style="opacity:.7;">${periodLbl}</span>`;
+
+  aggregate(rows);
   render();
 }
 
-function aggregate() {
-  if (!rowsFiltered) return;
+function aggregate(rows) {
+  if (rows.length === 0) { agg = null; return; }
 
-  const rows = rowsFiltered.map(r => {
-    const plan = parseFloat(String(r['ORH_PLAN']).replace(',','.'));
-    const real = parseFloat(String(r['ORH_REAL']).replace(',','.'));
-    const planH = plan / 60;
-    const realH = real / 60;
-    const diff = real - plan; // em minutos
-    const mlp = (r['MLP'] || '').trim() || '—';
-    const modal = (r['MODAL_PLAN'] || '').trim() || '—';
-    const realModal = (r['MODAL_REAL'] || '').trim() || '—';
-    const route = r['SHP_LG_ROUTE_ID'] || r['ROUTE_ID'] || r['ROTA'] || '—';
-    let category = 'match';
-    if (vrank(modal) > vrank(realModal)) category = 'dg';
-    else if (vrank(modal) < vrank(realModal)) category = 'ug';
-    else if (modal.toLowerCase() !== realModal.toLowerCase()) category = 'other';
-    return { plan, real, planH, realH, diff, mlp, modal, realModal, route, category };
-  });
+  const sum = (arr, k) => arr.reduce((s,r) => s + (isNaN(r[k]) ? 0 : r[k]), 0);
+  const count = arr => arr.length;
+  const validForKey = (arr, k) => arr.filter(r => !isNaN(r[k]) && r[k] > 0);
+
+  const planValid = validForKey(rows, 'plan');
+  const realValid = validForKey(rows, 'real');
+  const contrValid = validForKey(rows, 'contr');
 
   const total = rows.length;
-  const totalPlanH = rows.reduce((s,r) => s+r.planH, 0);
-  const totalRealH = rows.reduce((s,r) => s+r.realH, 0);
-  const diffH = totalRealH - totalPlanH;
-  const avgDiffMin = total ? rows.reduce((s,r) => s+r.diff, 0) / total : 0;
-  // Aderência: % de rotas dentro de ±10% do plan
-  const adherent = rows.filter(r => Math.abs(r.diff) <= (r.plan * 0.10)).length;
-  const aderPct = total ? (adherent/total)*100 : 0;
+  const planTotal = sum(planValid, 'plan');
+  const realTotal = sum(realValid, 'real');
+  const contrTotal = sum(contrValid, 'contr');
+  const planAvg = planValid.length ? planTotal/planValid.length : 0;
+  const realAvg = realValid.length ? realTotal/realValid.length : 0;
+  const contrAvg = contrValid.length ? contrTotal/contrValid.length : 0;
+
+  // Excedentes do Plan
+  const exceeded = rows.filter(r => r.diff > 0);
+  const excPct = total ? (exceeded.length/total)*100 : 0;
+  const excAvgMin = exceeded.length ? (exceeded.reduce((s,r) => s+r.diff, 0)/exceeded.length)*60 : 0; // converte horas → min
+
+  // Aderência (±10% do plan)
+  const adherent = rows.filter(r => !isNaN(r.diff) && Math.abs(r.diff) <= (r.plan * 0.10));
+  const aderPct = total ? (adherent.length/total)*100 : 0;
+
+  // Por categoria
+  const cats = ['match', 'dg', 'ug', 'lateral'];
+  const catData = cats.map(c => {
+    const arr = rows.filter(r => r.category === c);
+    if (arr.length === 0) return null;
+    const exceeded = arr.filter(r => r.diff > 0);
+    return {
+      cat: c,
+      count: arr.length,
+      planAvg: arr.reduce((s,r) => s+r.plan, 0) / arr.length,
+      realAvg: arr.reduce((s,r) => s+r.real, 0) / arr.length,
+      diffAvg: arr.reduce((s,r) => s+r.diff, 0) / arr.length,
+      excPct: arr.length ? (exceeded.length/arr.length)*100 : 0
+    };
+  }).filter(Boolean);
+
+  // Breakdown dos excedentes — por categoria
+  const excByCat = cats.map(c => {
+    const inCat = exceeded.filter(r => r.category === c);
+    return { cat: c, count: inCat.length, pct: exceeded.length ? (inCat.length/exceeded.length)*100 : 0 };
+  }).filter(d => d.count > 0);
 
   // Por MLP
   const byMLP = {};
   rows.forEach(r => {
-    if (!byMLP[r.mlp]) byMLP[r.mlp] = { rows: 0, plan: 0, real: 0, adherent: 0 };
+    if (!byMLP[r.mlp]) byMLP[r.mlp] = { rows: [], planSum: 0, realSum: 0, contrSum: 0 };
     const m = byMLP[r.mlp];
-    m.rows++; m.plan += r.plan; m.real += r.real;
-    if (Math.abs(r.diff) <= r.plan*0.10) m.adherent++;
+    m.rows.push(r);
+    m.planSum += r.plan;
+    m.realSum += r.real;
+    if (!isNaN(r.contr)) m.contrSum += r.contr;
   });
-  const mlpAgg = Object.entries(byMLP).map(([mlp, s]) => ({
-    mlp,
-    rows: s.rows,
-    planAvgH: (s.plan/s.rows)/60,
-    realAvgH: (s.real/s.rows)/60,
-    diffAvgMin: (s.real - s.plan) / s.rows,
-    aderPct: s.rows ? (s.adherent/s.rows)*100 : 0
-  })).sort((a,b) => b.rows - a.rows);
-
-  // Por Modal
-  const byModal = {};
-  rows.forEach(r => {
-    if (!byModal[r.modal]) byModal[r.modal] = { rows: 0, plan: 0, real: 0 };
-    const m = byModal[r.modal];
-    m.rows++; m.plan += r.plan; m.real += r.real;
-  });
-  const modalAgg = Object.entries(byModal).map(([modal, s]) => ({
-    modal,
-    rows: s.rows,
-    planAvgH: (s.plan/s.rows)/60,
-    realAvgH: (s.real/s.rows)/60,
-    diffAvgMin: (s.real - s.plan) / s.rows
-  })).sort((a,b) => b.rows - a.rows);
-
-  // DG/UG/Match
-  const cat = { match: [], dg: [], ug: [], other: [] };
-  rows.forEach(r => { cat[r.category].push(r); });
-  const catAgg = ['match','dg','ug','other'].map(k => {
-    const arr = cat[k];
-    if (arr.length === 0) return { cat: k, rows: 0, planAvgMin: 0, realAvgMin: 0, diffAvgMin: 0 };
-    const tp = arr.reduce((s,r) => s+r.plan, 0);
-    const tr = arr.reduce((s,r) => s+r.real, 0);
+  const mlpAgg = Object.entries(byMLP).map(([mlp, s]) => {
+    const n = s.rows.length;
+    const exc = s.rows.filter(r => r.diff > 0).length;
     return {
-      cat: k,
-      rows: arr.length,
-      planAvgMin: tp/arr.length,
-      realAvgMin: tr/arr.length,
-      diffAvgMin: (tr-tp)/arr.length
+      mlp,
+      rows: n,
+      planAvg: s.planSum/n,
+      realAvg: s.realSum/n,
+      contrAvg: s.contrSum/n,
+      diffAvg: (s.realSum - s.planSum)/n,
+      excPct: (exc/n)*100
     };
-  }).filter(c => c.rows > 0);
+  }).sort((a,b) => b.rows - a.rows);
 
-  // Top atrasos & adiantamentos
-  const sorted = [...rows].sort((a,b) => b.diff - a.diff);
-  const topAtrasos = sorted.slice(0, 10);
-  const topAdiantamentos = sorted.slice(-10).reverse();
-
-  // Histograma — buckets de Δ
+  // Histograma — buckets em min
   const buckets = [
-    { lbl: '< -60', min: -Infinity, max: -60, type: 'negative' },
-    { lbl: '-60 a -30', min: -60, max: -30, type: 'negative' },
-    { lbl: '-30 a -10', min: -30, max: -10, type: 'negative' },
-    { lbl: '±10', min: -10, max: 10, type: 'zero' },
-    { lbl: '+10 a +30', min: 10, max: 30, type: 'positive' },
-    { lbl: '+30 a +60', min: 30, max: 60, type: 'positive' },
-    { lbl: '> +60', min: 60, max: Infinity, type: 'positive' }
+    { lbl: '< -60', min: -Infinity, max: -1, type: 'negative' },
+    { lbl: '-60→-30', min: -1, max: -0.5, type: 'negative' },
+    { lbl: '-30→-10', min: -0.5, max: -10/60, type: 'negative' },
+    { lbl: '±10', min: -10/60, max: 10/60, type: 'zero' },
+    { lbl: '+10→+30', min: 10/60, max: 0.5, type: 'positive' },
+    { lbl: '+30→+60', min: 0.5, max: 1, type: 'positive' },
+    { lbl: '> +60', min: 1, max: Infinity, type: 'positive' }
   ];
   buckets.forEach(b => { b.count = 0; });
   rows.forEach(r => {
+    if (isNaN(r.diff)) return;
     const b = buckets.find(b => r.diff > b.min && r.diff <= b.max);
     if (b) b.count++;
   });
 
-  agg = { total, totalPlanH, totalRealH, diffH, avgDiffMin, aderPct, mlpAgg, modalAgg, catAgg, topAtrasos, topAdiantamentos, buckets, rows };
+  // Top atrasos / adiantamentos
+  const sorted = [...rows].filter(r => !isNaN(r.diff)).sort((a,b) => b.diff - a.diff);
+  const topAtrasos = sorted.slice(0, 10);
+  const topAdiantamentos = sorted.slice(-10).reverse();
+
+  agg = {
+    total, planAvg, realAvg, contrAvg, planTotal, realTotal, contrTotal,
+    excCount: exceeded.length, excPct, excAvgMin,
+    aderPct,
+    catData, excByCat,
+    mlpAgg, buckets,
+    topAtrasos, topAdiantamentos,
+    rows
+  };
 }
 
 function render() {
-  if (!agg) return;
-  const { total, totalPlanH, totalRealH, diffH, avgDiffMin, aderPct, mlpAgg, modalAgg, catAgg, topAtrasos, topAdiantamentos, buckets, rows } = agg;
+  if (!agg) {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('analysisArea').style.display = 'none';
+    return;
+  }
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('analysisArea').style.display = 'block';
 
-  // KPIs
+  const { total, planAvg, realAvg, contrAvg, planTotal, realTotal, contrTotal,
+          excCount, excPct, excAvgMin, aderPct, catData, excByCat, mlpAgg, buckets,
+          topAtrasos, topAdiantamentos, rows } = agg;
+
+  // === KPI Strip ===
   document.getElementById('kpiTotal').textContent = fmtN(total);
-  document.getElementById('kpiPlanH').textContent = fmtH(totalPlanH);
-  document.getElementById('kpiRealH').textContent = fmtH(totalRealH);
-  document.getElementById('kpiVar').textContent = (diffH >= 0 ? '+' : '') + diffH.toFixed(1).replace('.',',') + 'h';
-  document.getElementById('kpiVar').style.color = diffH > 0 ? 'var(--red)' : diffH < 0 ? 'var(--green)' : 'var(--navy)';
-  document.getElementById('kpiAder').textContent = fmtPct(aderPct);
-  document.getElementById('kpiAvgDiff').textContent = (avgDiffMin >= 0 ? '+' : '') + avgDiffMin.toFixed(0) + ' min';
+  document.getElementById('kpiTotalFoot').textContent = `total ${fmtH(planTotal,0)} plan · ${fmtH(realTotal,0)} real`;
 
-  // === Comparativo Plan vs Real ===
-  const topMlp = mlpAgg.slice(0, 10);
-  const maxH = Math.max(...topMlp.map(m => Math.max(m.planAvgH, m.realAvgH)), 0.1);
-  document.getElementById('compareBars').innerHTML = topMlp.map(m => {
-    const planW = (m.planAvgH/maxH*100).toFixed(1);
-    const realW = (m.realAvgH/maxH*100).toFixed(1);
-    const diffCls = m.diffAvgMin > 5 ? 'up' : m.diffAvgMin < -5 ? 'down' : 'zero';
-    return `<div class="compare-row">
-      <span class="compare-row-label" title="${m.mlp}">${m.mlp}</span>
-      <div class="compare-row-bars">
-        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${planW}%">${m.planAvgH.toFixed(1)}h</div></div>
-        <div class="compare-bar-track"><div class="compare-bar real" style="width:${realW}%">${m.realAvgH.toFixed(1)}h</div></div>
-      </div>
-      <span class="compare-row-diff ${diffCls}">${(m.diffAvgMin >= 0 ? '+' : '')}${m.diffAvgMin.toFixed(0)}m</span>
-    </div>`;
-  }).join('');
+  document.getElementById('kpiPlan').textContent = fmtH(planAvg, 2);
+  document.getElementById('kpiPlanFoot').textContent = `por rota · ${(planAvg*60).toFixed(0)} min`;
+
+  document.getElementById('kpiReal').textContent = fmtH(realAvg, 2);
+  const realDiff = realAvg - planAvg;
+  document.getElementById('kpiRealFoot').innerHTML = `por rota · <span style="color:${realDiff > 0 ? 'var(--red)' : 'var(--green)'};font-weight:800;">${realDiff >= 0 ? '+' : ''}${(realDiff*60).toFixed(0)} min vs plan</span>`;
+
+  document.getElementById('kpiContrato').textContent = contrAvg > 0 ? fmtH(contrAvg, 2) : '—';
+  document.getElementById('kpiContratoFoot').textContent = contrAvg > 0 ? `por rota · ${(contrAvg*60).toFixed(0)} min` : 'Sem dados';
+
+  document.getElementById('kpiExc').textContent = fmtN(excCount);
+  document.getElementById('kpiExc').style.color = excPct > 30 ? 'var(--red)' : excPct > 10 ? '#D97706' : 'var(--green)';
+  document.getElementById('kpiExcFoot').textContent = `${fmtPct(excPct)} · média +${Math.round(excAvgMin)} min`;
+
+  document.getElementById('kpiAder').textContent = fmtPct(aderPct);
+  document.getElementById('kpiAder').style.color = aderPct > 80 ? 'var(--green)' : aderPct > 60 ? '#D97706' : 'var(--red)';
+  document.getElementById('kpiAderFoot').textContent = 'rotas dentro de ±10% do plan';
+
+  // === Hero comparison ===
+  const maxVal = Math.max(planAvg, realAvg, contrAvg || 0, 0.1);
+  document.getElementById('hcBarPlan').style.width = (planAvg/maxVal*100).toFixed(1) + '%';
+  document.getElementById('hcBarReal').style.width = (realAvg/maxVal*100).toFixed(1) + '%';
+  document.getElementById('hcBarContrato').style.width = ((contrAvg||0)/maxVal*100).toFixed(1) + '%';
+  document.getElementById('hcValPlan').textContent = fmtH(planAvg, 2);
+  document.getElementById('hcValReal').textContent = fmtH(realAvg, 2);
+  document.getElementById('hcValContrato').textContent = contrAvg > 0 ? fmtH(contrAvg, 2) : '—';
+  const summary = `Em média, cada rota foi <b style="color:${realDiff > 0 ? 'var(--red)' : 'var(--green)'};">${realDiff >= 0 ? Math.round(realDiff*60)+' min mais lenta' : Math.round(-realDiff*60)+' min mais rápida'}</b> que o planejado.${contrAvg>0?` Vs contrato: <b>${((realAvg-contrAvg)*60).toFixed(0) >= 0 ? '+' : ''}${((realAvg-contrAvg)*60).toFixed(0)} min</b>.`:''}`;
+  document.getElementById('heroCmpSummary').innerHTML = summary;
+
+  // === Excedentes ===
+  document.getElementById('excPctVal').textContent = fmtPct(excPct);
+  document.getElementById('excPctVal').style.color = excPct > 30 ? 'var(--red)' : excPct > 10 ? '#D97706' : 'var(--green)';
+  document.getElementById('excAvgVal').textContent = '+' + Math.round(excAvgMin) + ' min';
+  document.getElementById('excAvgVal').style.color = 'var(--red)';
+
+  const catLabels = { match: 'Match', dg: 'Downgrade', ug: 'Upgrade', lateral: 'Lateral' };
+  const catColors = { match: 'var(--green)', dg: 'var(--red)', ug: 'var(--blue)', lateral: 'var(--muted)' };
+  document.getElementById('excBreakdown').innerHTML = excByCat.length ? excByCat.map(c => `
+    <div class="exc-bd-row">
+      <span class="exc-bd-lbl">${catLabels[c.cat]}</span>
+      <div class="exc-bd-bar-track"><div class="exc-bd-bar" style="width:${c.pct.toFixed(1)}%;background:${catColors[c.cat]};"></div></div>
+      <span class="exc-bd-val">${fmtN(c.count)} <span style="color:var(--muted);font-weight:600;">(${fmtPct(c.pct)})</span></span>
+    </div>
+  `).join('') : '<div style="color:var(--muted);font-size:11.5px;padding:8px 0;">Nenhuma rota excedeu o plan no período.</div>';
 
   // === Histograma ===
   const maxCount = Math.max(...buckets.map(b => b.count), 1);
   document.getElementById('histoBars').innerHTML = buckets.map(b => {
     const h = (b.count/maxCount*100).toFixed(1);
     return `<div class="histo-bar-wrap">
-      <div class="histo-bar ${b.type}" style="height:${h}%">
-        ${b.count > 0 ? `<div class="histo-bar-val">${b.count}</div>` : ''}
-      </div>
+      <div class="histo-bar ${b.type}" style="height:${h}%">${b.count > 0 ? `<div class="histo-bar-val">${b.count}</div>` : ''}</div>
       <div class="histo-bar-lbl">${b.lbl}</div>
     </div>`;
   }).join('');
 
-  // === Scatter Plan x Real (em horas) ===
+  // === Compare bars por MLP ===
+  const topMlp = mlpAgg.slice(0, 10);
+  const mlpMaxH = Math.max(...topMlp.flatMap(m => [m.planAvg, m.realAvg, m.contrAvg || 0]), 0.1);
+  document.getElementById('compareBars').innerHTML = topMlp.map(m => {
+    const planW = (m.planAvg/mlpMaxH*100).toFixed(1);
+    const realW = (m.realAvg/mlpMaxH*100).toFixed(1);
+    const contrW = m.contrAvg ? (m.contrAvg/mlpMaxH*100).toFixed(1) : 0;
+    const diffMin = m.diffAvg * 60;
+    const diffCls = diffMin > 5 ? 'up' : diffMin < -5 ? 'down' : 'zero';
+    return `<div class="compare-row triple">
+      <span class="compare-row-label" title="${m.mlp}">${m.mlp} <span style="color:var(--muted);font-weight:600;font-size:10.5px;">(${fmtN(m.rows)})</span></span>
+      <div class="compare-row-bars">
+        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${planW}%">${m.planAvg.toFixed(2)}h</div></div>
+        <div class="compare-bar-track"><div class="compare-bar real" style="width:${realW}%">${m.realAvg.toFixed(2)}h</div></div>
+        ${m.contrAvg ? `<div class="compare-bar-track"><div class="compare-bar contrato" style="width:${contrW}%">${m.contrAvg.toFixed(2)}h</div></div>` : ''}
+      </div>
+      <span class="compare-row-diff ${diffCls}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}m</span>
+    </div>`;
+  }).join('');
+
+  // === Scatter ===
+  renderScatter(rows);
+
+  // === DG/UG bars ===
+  const dgUgRows = catData.filter(c => c.cat !== 'lateral');
+  const maxCatH = Math.max(...dgUgRows.flatMap(c => [c.planAvg, c.realAvg]), 0.1);
+  document.getElementById('dgugBars').innerHTML = dgUgRows.map(c => {
+    const planW = (c.planAvg/maxCatH*100).toFixed(1);
+    const realW = (c.realAvg/maxCatH*100).toFixed(1);
+    const diffMin = c.diffAvg * 60;
+    return `<div class="compare-row" style="grid-template-columns:120px 1fr 70px;">
+      <span class="compare-row-label" style="color:${catColors[c.cat]};font-weight:800;">${catLabels[c.cat]} (${fmtN(c.count)})</span>
+      <div class="compare-row-bars">
+        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${planW}%">${c.planAvg.toFixed(2)}h</div></div>
+        <div class="compare-bar-track"><div class="compare-bar real" style="width:${realW}%">${c.realAvg.toFixed(2)}h</div></div>
+      </div>
+      <span class="compare-row-diff ${diffMin > 5 ? 'up' : diffMin < -5 ? 'down' : 'zero'}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}m</span>
+    </div>`;
+  }).join('');
+
+  // === Tabela MLP ===
+  document.getElementById('tblMLP').innerHTML = mlpAgg.slice(0, 15).map(m => {
+    const diffMin = m.diffAvg * 60;
+    const diffCls = diffMin > 5 ? 'up' : diffMin < -5 ? 'down' : 'zero';
+    const excCls = m.excPct > 30 ? 'up' : m.excPct > 10 ? 'zero' : 'down';
+    return `<div class="data-table-row cols-mlp-full">
+      <span class="cell-ellipsis" title="${m.mlp}">${m.mlp}</span>
+      <span class="num">${fmtN(m.rows)}</span>
+      <span class="num">${m.planAvg.toFixed(2)}</span>
+      <span class="num">${m.realAvg.toFixed(2)}</span>
+      <span class="num">${m.contrAvg ? m.contrAvg.toFixed(2) : '—'}</span>
+      <span class="num ${diffCls}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}</span>
+      <span class="num ${excCls}">${fmtPct(m.excPct)}</span>
+    </div>`;
+  }).join('');
+
+  // === Top atrasos & adiantamentos ===
+  const renderRoute = r => {
+    const diffMin = r.diff * 60;
+    return `<div class="data-table-row cols-rota-full">
+      <span><span style="color:var(--muted);font-weight:600;font-size:10.5px;">${fmtDateBR(r.date)}</span> <span style="font-variant-numeric:tabular-nums;">${r.route}</span></span>
+      <span><span class="cat-pill cat-${r.category}">${catLabels[r.category]||'—'}</span></span>
+      <span class="num">${r.plan.toFixed(2)}h</span>
+      <span class="num">${r.real.toFixed(2)}h</span>
+      <span class="num ${diffMin > 0 ? 'up' : 'down'}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}m</span>
+    </div>`;
+  };
+  document.getElementById('tblAtrasos').innerHTML = topAtrasos.map(renderRoute).join('') || '<div style="padding:14px 18px;color:var(--muted);font-size:12px;">Nenhum atraso no período.</div>';
+  document.getElementById('tblAdiantamentos').innerHTML = topAdiantamentos.map(renderRoute).join('') || '<div style="padding:14px 18px;color:var(--muted);font-size:12px;">Nenhum adiantamento no período.</div>';
+
+  // Narrativas headers
+  document.getElementById('hdrAder').textContent = `${fmtPct(aderPct)} aderência · Δ médio ${realDiff >= 0 ? '+' : ''}${Math.round(realDiff*60)}m`;
+  document.getElementById('hdrExc').textContent = `${fmtN(excCount)} rotas (${fmtPct(excPct)})`;
+  const dgInfo = catData.find(c => c.cat === 'dg');
+  const ugInfo = catData.find(c => c.cat === 'ug');
+  document.getElementById('hdrDgUg').textContent = `DG: ${dgInfo?fmtN(dgInfo.count):'0'} · UG: ${ugInfo?fmtN(ugInfo.count):'0'}`;
+}
+
+function renderScatter(rows) {
   const W = 400, H = 220, PAD = 30;
-  const allH = rows.flatMap(r => [r.planH, r.realH]);
-  const maxScatterH = Math.max(...allH, 1);
-  const xScale = v => PAD + (v/maxScatterH) * (W - 2*PAD);
-  const yScale = v => H - PAD - (v/maxScatterH) * (H - 2*PAD);
-  const sampleSize = Math.min(rows.length, 800); // cap p/ performance visual
+  const allH = rows.flatMap(r => [r.plan, r.real]).filter(v => !isNaN(v));
+  const maxH = Math.max(...allH, 1);
+  const xScale = v => PAD + (v/maxH) * (W - 2*PAD);
+  const yScale = v => H - PAD - (v/maxH) * (H - 2*PAD);
+  // Sample
+  const sampleSize = Math.min(rows.length, 600);
   const sample = rows.length > sampleSize ? rows.filter((_,i) => i % Math.ceil(rows.length/sampleSize) === 0) : rows;
-  const dots = sample.map(r => `<circle cx="${xScale(r.planH).toFixed(1)}" cy="${yScale(r.realH).toFixed(1)}" r="2.2" class="scatter-dot"/>`).join('');
+  const catColors = { match: '#16a34a', dg: '#E3262F', ug: '#3483FA', lateral: '#6B7394' };
+  const dots = sample.map(r => `<circle cx="${xScale(r.plan).toFixed(1)}" cy="${yScale(r.real).toFixed(1)}" r="2.3" fill="${catColors[r.category]||'#6B7394'}" opacity=".55"/>`).join('');
   document.getElementById('scatterSvg').innerHTML = `
     <line class="scatter-axis" x1="${PAD}" y1="${H-PAD}" x2="${W-PAD}" y2="${H-PAD}"/>
     <line class="scatter-axis" x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${H-PAD}"/>
-    <line class="scatter-diagonal" x1="${xScale(0)}" y1="${yScale(0)}" x2="${xScale(maxScatterH)}" y2="${yScale(maxScatterH)}"/>
+    <line class="scatter-diagonal" x1="${xScale(0)}" y1="${yScale(0)}" x2="${xScale(maxH)}" y2="${yScale(maxH)}"/>
     ${dots}
     <text class="scatter-axis-lbl" x="${W/2}" y="${H-6}" text-anchor="middle">Plan (h) →</text>
     <text class="scatter-axis-lbl" x="6" y="${H/2}" text-anchor="middle" transform="rotate(-90 6 ${H/2})">← Real (h)</text>
-    <text class="scatter-axis-lbl" x="${W-PAD-2}" y="${H-PAD-4}" text-anchor="end">${maxScatterH.toFixed(1)}h</text>
+    <text class="scatter-axis-lbl" x="${W-PAD-2}" y="${H-PAD-4}" text-anchor="end">${maxH.toFixed(1)}h</text>
   `;
-
-  // === Tabela MLP ===
-  document.getElementById('tblMLP').innerHTML = mlpAgg.slice(0,15).map(m => {
-    const diffCls = m.diffAvgMin > 5 ? 'up' : m.diffAvgMin < -5 ? 'down' : 'zero';
-    const aderCls = m.aderPct > 80 ? 'down' : m.aderPct > 60 ? 'zero' : 'up';
-    return `<div class="data-table-row cols-mlp">
-      <span class="cell-ellipsis" title="${m.mlp}">${m.mlp}</span>
-      <span class="num">${fmtN(m.rows)}</span>
-      <span class="num">${m.planAvgH.toFixed(1)}</span>
-      <span class="num">${m.realAvgH.toFixed(1)}</span>
-      <span class="num ${diffCls}">${m.diffAvgMin >= 0 ? '+' : ''}${m.diffAvgMin.toFixed(0)}</span>
-      <span class="num ${aderCls}">${fmtPct(m.aderPct)}</span>
-    </div>`;
-  }).join('');
-
-  // === Tabela Modal ===
-  document.getElementById('tblModal').innerHTML = modalAgg.map(m => {
-    const diffCls = m.diffAvgMin > 5 ? 'up' : m.diffAvgMin < -5 ? 'down' : 'zero';
-    return `<div class="data-table-row cols-modal">
-      <span class="cell-ellipsis" title="${m.modal}">${m.modal}</span>
-      <span class="num">${fmtN(m.rows)}</span>
-      <span class="num">${m.planAvgH.toFixed(1)}</span>
-      <span class="num">${m.realAvgH.toFixed(1)}</span>
-      <span class="num ${diffCls}">${m.diffAvgMin >= 0 ? '+' : ''}${m.diffAvgMin.toFixed(0)}</span>
-    </div>`;
-  }).join('');
-
-  // === Tabela DG/UG ===
-  const catNames = { match: 'Match (Plan = Real)', dg: 'Downgrade (veículo menor)', ug: 'Upgrade (veículo maior)', other: 'Lateral (mesma classe)' };
-  const catColors = { match: 'var(--green)', dg: 'var(--red)', ug: 'var(--blue)', other: 'var(--muted)' };
-  document.getElementById('tblDgUg').innerHTML = catAgg.map(c => {
-    const diffCls = c.diffAvgMin > 5 ? 'up' : c.diffAvgMin < -5 ? 'down' : 'zero';
-    return `<div class="data-table-row cols-dg">
-      <span style="color:${catColors[c.cat]};font-weight:800;">${catNames[c.cat]}</span>
-      <span class="num">${fmtN(c.rows)}</span>
-      <span class="num">${(c.planAvgMin/60).toFixed(1)}h <span style="color:var(--muted);font-weight:600;font-size:10.5px;">(${c.planAvgMin.toFixed(0)}m)</span></span>
-      <span class="num">${(c.realAvgMin/60).toFixed(1)}h <span style="color:var(--muted);font-weight:600;font-size:10.5px;">(${c.realAvgMin.toFixed(0)}m)</span></span>
-      <span class="num ${diffCls}">${c.diffAvgMin >= 0 ? '+' : ''}${c.diffAvgMin.toFixed(0)} min</span>
-    </div>`;
-  }).join('');
-
-  // === Top Atrasos & Adiantamentos ===
-  const renderTopRoute = r => `
-    <div class="data-table-row cols-rota">
-      <span class="num" style="text-align:left;">${r.route}</span>
-      <span class="cell-ellipsis" style="font-size:10.5px;color:var(--muted);">${r.mlp}</span>
-      <span class="num">${r.planH.toFixed(1)}h</span>
-      <span class="num">${r.realH.toFixed(1)}h</span>
-      <span class="num ${r.diff > 0 ? 'up' : 'down'}">${r.diff >= 0 ? '+' : ''}${r.diff.toFixed(0)}m</span>
-    </div>`;
-  document.getElementById('tblAtrasos').innerHTML = topAtrasos.map(renderTopRoute).join('');
-  document.getElementById('tblAdiantamentos').innerHTML = topAdiantamentos.map(renderTopRoute).join('');
-
-  // Narrative headers
-  document.getElementById('hdrAder').textContent = `${fmtPct(aderPct)} aderência · Δ médio ${(avgDiffMin >= 0 ? '+' : '')}${avgDiffMin.toFixed(0)}m`;
-  const atrasoCount = rows.filter(r => r.diff > 10).length;
-  document.getElementById('hdrAtraso').textContent = `${fmtN(atrasoCount)} rotas (${fmtPct(atrasoCount/total*100)})`;
-  const dgInfo = catAgg.find(c => c.cat === 'dg');
-  const ugInfo = catAgg.find(c => c.cat === 'ug');
-  document.getElementById('hdrDgUg').textContent = `DG: ${dgInfo?fmtN(dgInfo.rows):'0'} · UG: ${ugInfo?fmtN(ugInfo.rows):'0'}`;
 }
 
 function generateReport() {
   if (!agg) return;
-  const { total, totalPlanH, totalRealH, diffH, avgDiffMin, aderPct, mlpAgg, modalAgg, catAgg, topAtrasos, topAdiantamentos } = agg;
   const dateStr = (() => {
     const d = document.getElementById('reportDate').value;
     if (!d) return new Date().toLocaleDateString('pt-BR');
     const [y,m,day] = d.split('-');
     return `${day}/${m}/${y}`;
   })();
-  const filterLbl = currentFilter === 'all' ? 'Todas' : currentFilter === 'match' ? 'Apenas Match' : currentFilter === 'dg' ? 'Apenas Downgrades' : 'Apenas Upgrades';
-  const txtAder = document.getElementById('txtAder').value.trim();
-  const txtAtraso = document.getElementById('txtAtraso').value.trim();
-  const txtDgUg = document.getElementById('txtDgUg').value.trim();
+  const from = document.getElementById('dateFrom').value;
+  const to = document.getElementById('dateTo').value;
+  const periodLbl = from && to ? `${fmtDateBR(new Date(from))} → ${fmtDateBR(new Date(to))}` : 'todo o arquivo';
+  const catLabels = { match: 'Match', dg: 'Downgrade', ug: 'Upgrade', lateral: 'Lateral' };
 
-  const report = `ORH LM SSP20 | ${dateStr} | Filtro: ${filterLbl}
+  const txt = id => document.getElementById(id).value.trim();
+  const txtAder = txt('txtAder'), txtExc = txt('txtExc'), txtDgUg = txt('txtDgUg');
+
+  const r = `ORH LM SSP20 | ${dateStr} | Período: ${periodLbl} | Categoria: ${currentCategory}
 ═══════════════════════════════════════════════════════════
-INDICADORES GERAIS
-  Total rotas: ${fmtN(total)}
-  ORH Plan total: ${fmtH(totalPlanH)}
-  ORH Real total: ${fmtH(totalRealH)}
-  Variação: ${(diffH >= 0 ? '+' : '')}${diffH.toFixed(1)} h
-  Aderência (±10%): ${fmtPct(aderPct)}
-  Δ médio por rota: ${(avgDiffMin >= 0 ? '+' : '')}${avgDiffMin.toFixed(0)} min
+INDICADORES
+  Rotas analisadas: ${fmtN(agg.total)}
+  ORH Plan médio: ${fmtH(agg.planAvg, 2)} (${Math.round(agg.planAvg*60)} min/rota)
+  ORH Real médio: ${fmtH(agg.realAvg, 2)} (${Math.round(agg.realAvg*60)} min/rota)
+  ORH Contrato médio: ${agg.contrAvg ? fmtH(agg.contrAvg, 2)+' ('+Math.round(agg.contrAvg*60)+' min/rota)' : 'sem dados'}
+  Δ Real vs Plan: ${Math.round((agg.realAvg - agg.planAvg)*60)} min/rota
+  Excedentes do Plan: ${fmtN(agg.excCount)} rotas (${fmtPct(agg.excPct)}) · excesso médio +${Math.round(agg.excAvgMin)} min
+  Aderência (±10%): ${fmtPct(agg.aderPct)}
+
+POR CATEGORIA (Plan/Real médios em horas · Δ em min)
+${agg.catData.map(c => `  ${catLabels[c.cat]}: ${fmtN(c.count)} rotas | plan ${c.planAvg.toFixed(2)}h | real ${c.realAvg.toFixed(2)}h | Δ ${(c.diffAvg*60 >= 0 ? '+' : '')}${Math.round(c.diffAvg*60)}m | exced ${fmtPct(c.excPct)}`).join('\n')}
 
 POR MLP (top 10)
-${mlpAgg.slice(0,10).map(m => `  ${m.mlp}: ${m.rows} rotas | plan ${m.planAvgH.toFixed(1)}h | real ${m.realAvgH.toFixed(1)}h | Δ ${(m.diffAvgMin >= 0 ? '+' : '')}${m.diffAvgMin.toFixed(0)}m | ader ${fmtPct(m.aderPct)}`).join('\n')}
-
-POR MODAL
-${modalAgg.map(m => `  ${m.modal}: ${m.rows} rotas | plan ${m.planAvgH.toFixed(1)}h | real ${m.realAvgH.toFixed(1)}h | Δ ${(m.diffAvgMin >= 0 ? '+' : '')}${m.diffAvgMin.toFixed(0)}m`).join('\n')}
-
-ORH × DG/UG
-${catAgg.map(c => {
-  const name = c.cat === 'match' ? 'Match' : c.cat === 'dg' ? 'Downgrade' : c.cat === 'ug' ? 'Upgrade' : 'Lateral';
-  return `  ${name}: ${c.rows} rotas | plan médio ${c.planAvgMin.toFixed(0)}m | real médio ${c.realAvgMin.toFixed(0)}m | Δ ${(c.diffAvgMin >= 0 ? '+' : '')}${c.diffAvgMin.toFixed(0)}m`;
-}).join('\n')}
+${agg.mlpAgg.slice(0,10).map(m => `  ${m.mlp}: ${fmtN(m.rows)} rotas | plan ${m.planAvg.toFixed(2)}h | real ${m.realAvg.toFixed(2)}h${m.contrAvg ? ' | contrato '+m.contrAvg.toFixed(2)+'h' : ''} | Δ ${(m.diffAvg*60 >= 0 ? '+' : '')}${Math.round(m.diffAvg*60)}m | exced ${fmtPct(m.excPct)}`).join('\n')}
 
 TOP 5 ATRASOS
-${topAtrasos.slice(0,5).map(r => `  Rota ${r.route} (${r.mlp}): plan ${r.planH.toFixed(1)}h | real ${r.realH.toFixed(1)}h | Δ +${r.diff.toFixed(0)}m`).join('\n')}
+${agg.topAtrasos.slice(0,5).map(r => `  ${fmtDateBR(r.date)} · Rota ${r.route} (${r.mlp}, ${catLabels[r.category]||'—'}): plan ${r.plan.toFixed(2)}h | real ${r.real.toFixed(2)}h | Δ +${Math.round(r.diff*60)}m`).join('\n')}
 
 TOP 5 ADIANTAMENTOS
-${topAdiantamentos.slice(0,5).map(r => `  Rota ${r.route} (${r.mlp}): plan ${r.planH.toFixed(1)}h | real ${r.realH.toFixed(1)}h | Δ ${r.diff.toFixed(0)}m`).join('\n')}
+${agg.topAdiantamentos.slice(0,5).map(r => `  ${fmtDateBR(r.date)} · Rota ${r.route} (${r.mlp}, ${catLabels[r.category]||'—'}): plan ${r.plan.toFixed(2)}h | real ${r.real.toFixed(2)}h | Δ ${Math.round(r.diff*60)}m`).join('\n')}
 ${txtAder ? '\nANÁLISE GERAL:\n' + txtAder : ''}
-${txtAtraso ? '\nATRASOS:\n' + txtAtraso : ''}
-${txtDgUg ? '\nDG/UG vs ORH:\n' + txtDgUg : ''}`;
+${txtExc ? '\nEXCEDENTES:\n' + txtExc : ''}
+${txtDgUg ? '\nDG/UG:\n' + txtDgUg : ''}`;
 
-  document.getElementById('reportOutput').textContent = report;
+  document.getElementById('reportOutput').textContent = r;
   document.getElementById('outputSection').style.display = 'block';
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth', block:'start'});
 }
@@ -1086,15 +1323,16 @@ function copyReport() {
 
 function clearAll() {
   if (!confirm('Limpar tudo?')) return;
-  csvRows = null; rowsFiltered = null; agg = null;
+  csvRows = null; agg = null;
+  currentPeriod = 'all'; currentCategory = 'all';
   document.getElementById('zoneCSV').classList.remove('loaded-csv');
   document.getElementById('csvLabel').innerHTML = 'Importar CSV BQ Routing';
-  ['kpiTotal','kpiPlanH','kpiRealH','kpiVar','kpiAder','kpiAvgDiff'].forEach(id => {
+  ['kpiTotal','kpiPlan','kpiReal','kpiContrato','kpiExc','kpiAder'].forEach(id => {
     const el = document.getElementById(id);
     el.textContent = '—';
     el.style.color = '';
   });
-  ['txtAder','txtAtraso','txtDgUg'].forEach(id => document.getElementById(id).value = '');
+  ['txtAder','txtExc','txtDgUg'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('analysisArea').style.display = 'none';
   document.getElementById('filterBar').style.display = 'none';
   document.getElementById('emptyState').style.display = 'block';
