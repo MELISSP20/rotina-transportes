@@ -107,104 +107,232 @@
     .topbar-section { font-size: 11px; font-weight: 500; color: rgba(255,255,255,.4); }
 
     /* ── HEADER ── */
-    .header { background: var(--yellow); padding: 0 2rem; position: relative; overflow: hidden; }
-    [data-theme="dark"] .header { background: var(--navy); border-bottom: 3px solid var(--yellow); }
-    .header::before { content: ''; position: absolute; top: -80px; right: -50px; width: 320px; height: 320px; background: radial-gradient(circle, rgba(26,26,46,.05) 0%, transparent 70%); pointer-events: none; }
-    [data-theme="dark"] .header::before { background: radial-gradient(circle, rgba(255,230,0,.06) 0%, transparent 70%); }
-    .header-inner { max-width: 1280px; margin: 0 auto; min-height: 132px; display: grid; grid-template-columns: minmax(0, 1.4fr) auto auto auto; align-items: center; gap: 20px; padding: 18px 0; position: relative; }
-
-    .brand-block { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-    .header-title { font-size: 32px; font-weight: 800; color: var(--navy); letter-spacing: -.8px; line-height: 1; display: inline-flex; align-items: center; gap: 10px; }
-    [data-theme="dark"] .header-title { color: #fff; }
-    .header-title-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(26,26,46,.1); color: var(--navy);
-      padding: 4px 10px; border-radius: 6px;
-      font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
-      vertical-align: middle;
+    /* ── HEADER EDITORIAL — navy primário, accent amarelo ── */
+    .header {
+      background: linear-gradient(180deg, var(--navy) 0%, #1F2240 100%);
+      padding: 0 2rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 4px solid var(--yellow);
     }
-    [data-theme="dark"] .header-title-badge { background: rgba(255,255,255,.1); color: #fff; }
-    .header-title-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: livePulseBadge 1.5s infinite; }
-    @keyframes livePulseBadge { 0%,100% { box-shadow: 0 0 0 0 rgba(0,166,80,.5); } 50% { box-shadow: 0 0 0 5px rgba(0,166,80,0); } }
-    .header-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: .18em; color: rgba(26,26,46,.5); text-transform: uppercase; margin-top: 8px; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 8px; }
-    [data-theme="dark"] .header-eyebrow { color: rgba(255,255,255,.45); }
-    .header-eyebrow .eyebrow-sep { opacity: .5; }
-    .header-sub { font-size: 13px; font-weight: 600; color: rgba(26,26,46,.7); margin-top: 5px; letter-spacing: -.05px; }
-    [data-theme="dark"] .header-sub { color: rgba(255,255,255,.65); }
-    .next-task-strip {
-      margin-top: 10px;
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 12px;
-      background: rgba(26,26,46,.07);
-      border: 1px solid rgba(26,26,46,.12);
-      border-radius: 8px;
-      font-size: 11.5px; font-weight: 600;
-      color: var(--navy);
-      align-self: flex-start;
-      max-width: 100%;
+    [data-theme="dark"] .header { background: linear-gradient(180deg, #0C0F1E 0%, #1A1A2E 100%); border-bottom-color: var(--yellow); }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -60px;
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(255,230,0,.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -4px;
+      width: 60%; height: 4px;
+      background: linear-gradient(90deg, var(--yellow) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1280px; margin: 0 auto;
+      padding: 26px 0 28px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) auto minmax(280px, 1fr);
+      gap: 36px;
+      align-items: stretch;
+      position: relative;
+    }
+
+    /* COLUNA 1 — branding editorial */
+    .hero-brand { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .hero-meta {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 10.5px; font-weight: 800; letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-meta-text { color: rgba(255,255,255,.55); }
+    .hero-meta-sep { opacity: .35; margin: 0 1px; }
+    .hero-live {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(0,166,80,.15);
+      border: 1px solid rgba(0,166,80,.35);
+      padding: 4px 10px;
+      border-radius: 5px;
+      color: #4ade80;
+      font-size: 9.5px; font-weight: 900; letter-spacing: .18em;
+    }
+    .hero-live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%; background: #4ade80;
+      animation: heroPulse 1.5s infinite;
+    }
+    @keyframes heroPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,.6); }
+      50% { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+    }
+    .hero-title {
+      font-size: 64px; font-weight: 900;
+      color: #fff;
+      letter-spacing: -2.4px;
+      line-height: .92;
+      margin: 0;
+      display: inline-flex;
+      align-items: baseline;
+      font-feature-settings: 'ss01';
+    }
+    .hero-title-dot { color: var(--yellow); }
+    .hero-sub {
+      font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,.7);
+      line-height: 1.4;
+      max-width: 28em;
+    }
+    .hero-sub b { color: var(--yellow); font-weight: 800; }
+
+    /* COLUNA 2 — hero counter (número grande) */
+    .hero-counter {
+      display: flex; flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 0 28px;
+      border-left: 1px solid rgba(255,255,255,.12);
+      border-right: 1px solid rgba(255,255,255,.12);
+      min-width: 180px;
+    }
+    .hero-counter-num {
+      font-size: 84px; font-weight: 900;
+      color: var(--yellow);
+      letter-spacing: -3.5px;
+      line-height: .85;
+      font-variant-numeric: tabular-nums;
+      display: flex; align-items: baseline; gap: 6px;
+    }
+    .hero-counter-total {
+      font-size: 32px; font-weight: 700;
+      color: rgba(255,255,255,.32);
+      letter-spacing: -1.2px;
+    }
+    .hero-counter-lbl {
+      font-size: 10.5px; font-weight: 800;
+      letter-spacing: .18em;
+      color: rgba(255,255,255,.55);
+      text-transform: uppercase;
+    }
+    .hero-progress-mini {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,.1);
+      border-radius: 2px;
       overflow: hidden;
     }
-    [data-theme="dark"] .next-task-strip { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.15); color: #fff; }
-    .next-task-strip.complete { background: rgba(0,166,80,.1); border-color: rgba(0,166,80,.3); color: #006634; }
-    [data-theme="dark"] .next-task-strip.complete { background: rgba(0,166,80,.15); color: #4ade80; }
-    .next-task-lbl { font-size: 9.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .65; flex-shrink: 0; }
-    .next-task-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; }
-    .next-task-time {
+    .hero-progress-mini-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--yellow), #FFA800);
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+      border-radius: 2px;
+    }
+    .hero-counter-foot {
+      display: flex; justify-content: space-between;
+      width: 100%;
+      font-size: 10.5px; font-weight: 700;
+      color: rgba(255,255,255,.5);
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-counter-foot b { color: #fff; font-weight: 800; }
+    .hero-counter-pct b { color: var(--yellow); }
+
+    /* COLUNA 3 — stack: próxima ação + turno/data */
+    .hero-stack {
+      display: flex; flex-direction: column;
+      gap: 14px;
+      min-width: 0;
+    }
+    .hero-next {
+      background: linear-gradient(135deg, rgba(255,230,0,.16), rgba(255,180,0,.04));
+      border: 1px solid rgba(255,230,0,.3);
+      border-radius: 12px;
+      padding: 14px 18px;
+      transition: all .25s;
+    }
+    .hero-next.complete {
+      background: linear-gradient(135deg, rgba(0,166,80,.18), rgba(0,166,80,.04));
+      border-color: rgba(0,166,80,.35);
+    }
+    .hero-next-eyebrow {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .hero-next-lbl {
+      font-size: 9.5px; font-weight: 900;
+      letter-spacing: .2em;
+      color: var(--yellow);
+      text-transform: uppercase;
+    }
+    .hero-next.complete .hero-next-lbl { color: #4ade80; }
+    .hero-next-time {
       font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-      font-weight: 800; font-variant-numeric: tabular-nums;
-      background: var(--navy); color: var(--yellow);
-      padding: 2px 8px; border-radius: 5px;
-      font-size: 11px; letter-spacing: -.1px;
-      flex-shrink: 0;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      background: var(--yellow);
+      color: var(--navy);
+      padding: 3px 10px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      letter-spacing: -.2px;
     }
-    [data-theme="dark"] .next-task-time { background: var(--yellow); color: var(--navy); }
-
-    /* Turno card */
-    .turno-card { display: flex; align-items: center; gap: 14px; background: rgba(26,26,46,.07); border: 1px solid rgba(26,26,46,.12); border-radius: 12px; padding: 12px 16px 12px 14px; }
-    [data-theme="dark"] .turno-card { background: rgba(255,230,0,.08); border-color: rgba(255,230,0,.2); }
-    .turno-emoji { font-size: 36px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(26,26,46,.1)); }
-    .turno-info { display: flex; flex-direction: column; }
-    .turno-eyebrow { font-size: 9px; font-weight: 800; letter-spacing: .18em; color: rgba(26,26,46,.5); text-transform: uppercase; }
-    [data-theme="dark"] .turno-eyebrow { color: rgba(255,230,0,.6); }
-    .turno-name { font-size: 17px; font-weight: 800; color: var(--navy); letter-spacing: -.3px; line-height: 1.1; margin-top: 2px; }
-    [data-theme="dark"] .turno-name { color: #fff; }
-    .turno-window { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; color: rgba(26,26,46,.55); font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; margin-top: 3px; }
-    [data-theme="dark"] .turno-window { color: rgba(255,230,0,.55); }
-
-    /* Progress card */
-    .progress-card {
-      display: flex; flex-direction: column; gap: 4px;
-      background: rgba(26,26,46,.07); border: 1px solid rgba(26,26,46,.12);
-      border-radius: 12px; padding: 12px 18px;
-      min-width: 132px;
+    .hero-next.complete .hero-next-time { background: #4ade80; color: var(--navy); }
+    .hero-next-name {
+      font-size: 15.5px; font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+      line-height: 1.25;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
-    [data-theme="dark"] .progress-card { background: rgba(255,230,0,.08); border-color: rgba(255,230,0,.2); }
-    .progress-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-    .progress-card-lbl { font-size: 9px; font-weight: 800; letter-spacing: .18em; color: rgba(26,26,46,.5); text-transform: uppercase; }
-    [data-theme="dark"] .progress-card-lbl { color: rgba(255,230,0,.6); }
-    .progress-card-pct { font-size: 22px; font-weight: 800; color: var(--navy); line-height: 1; letter-spacing: -.6px; font-variant-numeric: tabular-nums; }
-    [data-theme="dark"] .progress-card-pct { color: #fff; }
-    .progress-bar-track { height: 6px; background: rgba(26,26,46,.12); border-radius: 3px; overflow: hidden; }
-    [data-theme="dark"] .progress-bar-track { background: rgba(255,255,255,.12); }
-    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #FFA800, var(--navy)); border-radius: 3px; transition: width .5s ease; }
-    [data-theme="dark"] .progress-bar-fill { background: linear-gradient(90deg, #FFA800, var(--yellow)); }
-    .progress-card-foot { font-size: 10.5px; font-weight: 700; color: rgba(26,26,46,.6); font-variant-numeric: tabular-nums; }
-    [data-theme="dark"] .progress-card-foot { color: rgba(255,255,255,.6); }
-    .progress-card-foot b { color: var(--navy); font-weight: 800; }
-    [data-theme="dark"] .progress-card-foot b { color: #fff; }
 
-    /* Date block */
-    .date-block { display: flex; align-items: stretch; gap: 12px; padding-left: 18px; border-left: 1px solid rgba(26,26,46,.18); }
-    [data-theme="dark"] .date-block { border-left-color: rgba(255,255,255,.15); }
-    .date-day { font-size: 46px; font-weight: 800; color: var(--navy); line-height: 1; letter-spacing: -1.8px; font-variant-numeric: tabular-nums; }
-    [data-theme="dark"] .date-day { color: #fff; }
-    .date-detail { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
-    .date-month { font-size: 11px; font-weight: 800; letter-spacing: .16em; color: rgba(26,26,46,.7); text-transform: uppercase; font-variant-numeric: tabular-nums; }
-    [data-theme="dark"] .date-month { color: rgba(255,255,255,.65); }
-    .date-weekday { font-size: 12.5px; font-weight: 700; color: var(--navy); letter-spacing: -.1px; }
-    [data-theme="dark"] .date-weekday { color: #fff; }
-    .date-week { font-size: 9.5px; font-weight: 800; letter-spacing: .2em; color: rgba(26,26,46,.5); text-transform: uppercase; margin-top: 1px; }
-    [data-theme="dark"] .date-week { color: rgba(255,230,0,.55); }
+    /* meta row: turno + date pequenos lado a lado */
+    .hero-meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .hero-mini {
+      display: flex; align-items: center; gap: 11px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      padding: 10px 13px;
+    }
+    .hero-mini-emoji { font-size: 26px; line-height: 1; filter: drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
+    .hero-mini-day {
+      font-size: 30px; font-weight: 900;
+      color: #fff;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-mini-text { display: flex; flex-direction: column; min-width: 0; }
+    .hero-mini-lbl {
+      font-size: 8.5px; font-weight: 800;
+      letter-spacing: .16em;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+    }
+    .hero-mini-val {
+      font-size: 13px; font-weight: 800;
+      color: #fff;
+      letter-spacing: -.2px;
+      line-height: 1.1;
+      margin-top: 1px;
+    }
+    .hero-mini-sub {
+      font-size: 10.5px; font-weight: 700;
+      color: rgba(255,255,255,.45);
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      letter-spacing: -.1px;
+      margin-top: 2px;
+    }
 
     /* Header footer with shift selector */
     .header-footer { background: rgba(26,26,46,.05); border-top: 1px solid rgba(26,26,46,.1); padding: 10px 2rem; display: flex; justify-content: center; }
@@ -623,24 +751,18 @@
       .topbar-nav-link.active::after { display: none; }
       .qh-arrow { display: inline-block !important; }
       .theme-btn { padding: 7px 8px; font-size: 13px; }
-      .header { padding: 0 .75rem; }
+      .header { padding: 0 1rem; }
       .header::before { display: none; }
-      .header-inner { grid-template-columns: 1fr !important; min-height: auto !important; padding: 14px 0 12px !important; gap: 12px !important; }
-      .brand-block { gap: 6px; }
-      .header-title { font-size: 24px; }
-      .header-title-badge { font-size: 9px; padding: 3px 8px; }
-      .header-eyebrow { font-size: 9.5px; letter-spacing: .12em; }
-      .header-sub { font-size: 11.5px; }
-      .next-task-strip { font-size: 11px; }
-      .next-task-name { max-width: 200px; }
-      .turno-card { width: 100%; }
-      .turno-emoji { font-size: 32px; }
-      .turno-name { font-size: 16px; }
-      .progress-card { width: 100%; }
-      .date-block { border-left: none; padding-left: 0; border-top: 1px solid rgba(26,26,46,.12); padding-top: 12px; gap: 14px; }
-      [data-theme="dark"] .date-block { border-top-color: rgba(255,255,255,.1); }
-      .date-day { font-size: 38px; }
-      .header-footer { padding: 10px .75rem; }
+      .header-inner { grid-template-columns: 1fr !important; padding: 18px 0 22px !important; gap: 20px !important; }
+      .hero-title { font-size: 44px !important; letter-spacing: -1.5px !important; }
+      .hero-sub { font-size: 12.5px; }
+      .hero-counter { padding: 14px 0 0 !important; border-left: none !important; border-right: none !important; border-top: 1px solid rgba(255,255,255,.12); }
+      .hero-counter-num { font-size: 60px !important; letter-spacing: -2.5px !important; }
+      .hero-counter-total { font-size: 26px !important; }
+      .hero-next-name { font-size: 14px; }
+      .hero-mini-day { font-size: 24px; }
+      .hero-mini-emoji { font-size: 22px; }
+      .header-footer { padding: 10px 1rem; }
       .shift-selector { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; padding: 4px; border-radius: 8px; }
       .shift-btn { padding: 8px 4px; font-size: 11px; text-align: center; justify-content: center; border-radius: 6px; }
       .wrapper { padding: .75rem .75rem 5rem; }
@@ -731,46 +853,65 @@
   </div>
 </div>
 
-<!-- HEADER -->
+<!-- HEADER — editorial layout -->
 <div class="header">
   <div class="header-inner">
-    <div class="brand-block">
-      <div class="header-title">Assignments <span class="header-title-badge" id="header-status-badge">AO VIVO</span></div>
-      <div class="header-eyebrow">TRANSPORTES <span class="eyebrow-sep">·</span> <span id="status-ssp-header">SSP·20</span> <span class="eyebrow-sep">·</span> <span id="hero-week-label">SEMANA 26</span></div>
-      <div class="header-sub" id="hero-sub">Carregando rotina do turno…</div>
-      <div class="next-task-strip" id="next-task-strip">
-        <span class="next-task-lbl">PRÓXIMA</span>
-        <span class="next-task-name" id="next-task-name">—</span>
-        <span class="next-task-time" id="next-task-time">--:--</span>
+
+    <!-- COLUNA 1: Branding + hero number -->
+    <div class="hero-brand">
+      <div class="hero-meta">
+        <span class="hero-live"><span class="hero-live-dot"></span>AO VIVO</span>
+        <span class="hero-meta-sep">·</span>
+        <span class="hero-meta-text">TRANSPORTES <span class="hero-meta-sep">·</span> <span id="status-ssp-header">SSP·20</span> <span class="hero-meta-sep">·</span> <span id="hero-week-label">SEMANA 26</span></span>
+      </div>
+      <h1 class="hero-title">Assignments<span class="hero-title-dot">.</span></h1>
+      <div class="hero-sub" id="hero-sub">Carregando rotina do turno…</div>
+    </div>
+
+    <!-- COLUNA 2: Hero "número grande" — pendentes -->
+    <div class="hero-counter">
+      <div class="hero-counter-num">
+        <span id="hero-pending-num">—</span>
+        <span class="hero-counter-total">/ <span id="hero-total-num">—</span></span>
+      </div>
+      <div class="hero-counter-lbl">Tarefas pendentes</div>
+      <div class="hero-progress-mini">
+        <div class="hero-progress-mini-bar" id="hero-progress-bar" style="width:0%;"></div>
+      </div>
+      <div class="hero-counter-foot">
+        <span><b id="hero-progress-done">0</b> concluídas</span>
+        <span class="hero-counter-pct"><b id="hero-progress-pct">0</b>%</span>
       </div>
     </div>
 
-    <div class="turno-card">
-      <div class="turno-emoji" id="turno-emoji">🌙</div>
-      <div class="turno-info">
-        <div class="turno-eyebrow">TURNO ATIVO</div>
-        <div class="turno-name" id="turno-name">Madrugada</div>
-        <div class="turno-window" id="turno-window">02:30 → 10:30</div>
+    <!-- COLUNA 3: Próxima ação + Turno + Data (stack vertical) -->
+    <div class="hero-stack">
+      <div class="hero-next" id="next-task-strip">
+        <div class="hero-next-eyebrow">
+          <span class="hero-next-lbl">PRÓXIMA AÇÃO</span>
+          <span class="hero-next-time" id="next-task-time">--:--</span>
+        </div>
+        <div class="hero-next-name" id="next-task-name">—</div>
+      </div>
+      <div class="hero-meta-row">
+        <div class="hero-mini turno">
+          <span class="hero-mini-emoji" id="turno-emoji">🌙</span>
+          <div class="hero-mini-text">
+            <span class="hero-mini-lbl">Turno</span>
+            <span class="hero-mini-val" id="turno-name">Madrugada</span>
+            <span class="hero-mini-sub" id="turno-window">02:30 → 10:30</span>
+          </div>
+        </div>
+        <div class="hero-mini date">
+          <span class="hero-mini-day" id="date-day">23</span>
+          <div class="hero-mini-text">
+            <span class="hero-mini-val" id="date-weekday">Terça-feira</span>
+            <span class="hero-mini-sub"><span id="date-month">JUN 2026</span></span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="progress-card">
-      <div class="progress-card-head">
-        <span class="progress-card-lbl">Progresso</span>
-        <span class="progress-card-pct"><span id="hero-progress-pct">0</span>%</span>
-      </div>
-      <div class="progress-bar-track"><div class="progress-bar-fill" id="hero-progress-bar" style="width:0%;"></div></div>
-      <div class="progress-card-foot"><b id="hero-progress-done">0</b>/<b id="hero-progress-total">0</b> tarefas concluídas</div>
-    </div>
-
-    <div class="date-block">
-      <div class="date-day" id="date-day">23</div>
-      <div class="date-detail">
-        <div class="date-month" id="date-month">JUN 2026</div>
-        <div class="date-weekday" id="date-weekday">Terça-feira</div>
-        <div class="date-week" id="date-week">SEMANA 26</div>
-      </div>
-    </div>
   </div>
 
   <div class="header-footer">
@@ -1272,39 +1413,40 @@ function updateStats() {
   document.getElementById('stat-pending').textContent = pending;
   document.getElementById('stat-urgent').textContent  = urgent;
 
-  // Hero progress card (header)
-  const heroPct = document.getElementById('hero-progress-pct');
-  if (heroPct) {
-    heroPct.textContent = pct;
+  // Hero counter (header) — número grande = pending; total + % menores
+  const elPending = document.getElementById('hero-pending-num');
+  if (elPending) {
+    elPending.textContent = pending;
+    document.getElementById('hero-total-num').textContent = total;
+    document.getElementById('hero-progress-pct').textContent = pct;
     document.getElementById('hero-progress-bar').style.width = pct + '%';
     document.getElementById('hero-progress-done').textContent = done;
-    document.getElementById('hero-progress-total').textContent = total;
   }
 
-  // Próxima tarefa (na ordem custom)
-  const strip = document.getElementById('next-task-strip');
-  if (strip) {
+  // Próxima ação (hero-next)
+  const heroNext = document.getElementById('next-task-strip');
+  if (heroNext) {
     const ordered = (typeof getOrderedTasks === 'function') ? getOrderedTasks() : all;
     const next = ordered.find(t => !state[t.id]);
     if (next) {
-      strip.classList.remove('complete');
+      heroNext.classList.remove('complete');
       document.getElementById('next-task-name').textContent = next.name;
       document.getElementById('next-task-time').textContent = next.deadline;
     } else {
-      strip.classList.add('complete');
-      document.getElementById('next-task-name').textContent = 'Todas as tarefas concluídas';
+      heroNext.classList.add('complete');
+      document.getElementById('next-task-name').textContent = 'Turno concluído · todas as ações finalizadas';
       document.getElementById('next-task-time').textContent = '✓';
     }
   }
 
-  // Hero sub — frase dinâmica baseada em pendentes/críticas
+  // Hero sub — frase dinâmica
   const sub = document.getElementById('hero-sub');
   if (sub) {
     let msg;
     if (total === 0) msg = 'Sem tarefas configuradas para este turno';
-    else if (pending === 0) msg = '✓ Turno concluído · Todas as tarefas finalizadas';
-    else if (urgent > 0) msg = `⚠ <b>${urgent}</b> ${urgent === 1 ? 'pendência crítica' : 'pendências críticas'} · ${pending} no total`;
-    else msg = `<b>${pending}</b> ${pending === 1 ? 'tarefa pendente' : 'tarefas pendentes'} · sem urgência crítica`;
+    else if (pending === 0) msg = '✓ Turno concluído · todas as tarefas finalizadas';
+    else if (urgent > 0) msg = `<b>${urgent}</b> ${urgent === 1 ? 'pendência crítica' : 'pendências críticas'} no turno · ${pending} no total`;
+    else msg = `<b>${pending}</b> ${pending === 1 ? 'ação pendente' : 'ações pendentes'} no turno · sem urgência crítica`;
     sub.innerHTML = msg;
   }
 }
@@ -1332,17 +1474,11 @@ function tick() {
   const elDay = document.getElementById('date-day');
   const elMonth = document.getElementById('date-month');
   const elWeekday = document.getElementById('date-weekday');
-  const elWeek = document.getElementById('date-week');
-  const elSub = document.getElementById('hero-sub');
+  const elWeek = document.getElementById('hero-week-label');
   if (elDay) elDay.textContent = String(n.getDate()).padStart(2,'0');
   if (elMonth) elMonth.textContent = MONTHS_SHORT[n.getMonth()] + ' ' + n.getFullYear();
   if (elWeekday) elWeekday.textContent = DAYS[n.getDay()];
   if (elWeek) elWeek.textContent = 'SEMANA ' + week;
-
-  // header-sub se for o do madrugada (default)
-  if (elSub && elSub.dataset.shift !== 'set') {
-    // Mantém comportamento padrão sem sobrescrever quando trocou turno
-  }
 }
 
 // Dark mode

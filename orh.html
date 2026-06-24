@@ -247,6 +247,145 @@
   /* Empty state */
   .dash-empty { padding: 40px 20px; text-align: center; color: var(--muted); font-size: 13px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-lg); }
 
+  /* ORH HERO — número da variação como protagonista */
+  .orh-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #2A2F4F 100%);
+    border-radius: var(--radius-lg);
+    padding: 36px 42px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+  }
+  .orh-hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(255,230,0,.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .orh-hero.is-bad::before { background: radial-gradient(circle, rgba(227,38,47,.18) 0%, transparent 60%); }
+  .orh-hero.is-good::before { background: radial-gradient(circle, rgba(0,166,80,.18) 0%, transparent 60%); }
+  .orh-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: center;
+    position: relative;
+  }
+  .orh-hero-left {
+    display: flex; flex-direction: column;
+    gap: 6px;
+  }
+  .orh-hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 11px; font-weight: 900;
+    letter-spacing: .2em;
+    color: rgba(255,255,255,.6);
+    text-transform: uppercase;
+  }
+  .orh-hero-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--yellow);
+    box-shadow: 0 0 0 0 rgba(255,230,0,.5);
+    animation: orhHeroPulse 1.6s infinite;
+  }
+  .orh-hero.is-bad .orh-hero-dot { background: var(--red); animation: orhHeroPulseBad 1.6s infinite; }
+  .orh-hero.is-good .orh-hero-dot { background: #4ade80; animation: orhHeroPulseGood 1.6s infinite; }
+  @keyframes orhHeroPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,230,0,.6); } 50% { box-shadow: 0 0 0 8px rgba(255,230,0,0); } }
+  @keyframes orhHeroPulseBad { 0%,100% { box-shadow: 0 0 0 0 rgba(227,38,47,.6); } 50% { box-shadow: 0 0 0 8px rgba(227,38,47,0); } }
+  @keyframes orhHeroPulseGood { 0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,.6); } 50% { box-shadow: 0 0 0 8px rgba(74,222,128,0); } }
+
+  .orh-hero-number {
+    font-size: 112px;
+    font-weight: 900;
+    color: var(--yellow);
+    letter-spacing: -5px;
+    line-height: .88;
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+    text-shadow: 0 4px 24px rgba(0,0,0,.3);
+  }
+  .orh-hero.is-bad .orh-hero-number { color: #FF6B73; }
+  .orh-hero.is-good .orh-hero-number { color: #4ade80; }
+  .orh-hero-label {
+    font-size: 14px; font-weight: 700;
+    color: rgba(255,255,255,.65);
+    letter-spacing: .04em;
+    margin-top: 8px;
+  }
+  .orh-hero-label b { color: #fff; font-weight: 800; }
+
+  .orh-hero-right {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 18px;
+    align-items: center;
+    padding-left: 38px;
+    border-left: 1px solid rgba(255,255,255,.12);
+  }
+  .orh-hero-stat {
+    text-align: center;
+    min-width: 110px;
+  }
+  .orh-hero-stat-val {
+    font-size: 32px; font-weight: 900;
+    color: #fff;
+    letter-spacing: -1.2px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .orh-hero-stat-lbl {
+    font-size: 9.5px; font-weight: 800;
+    letter-spacing: .16em;
+    color: rgba(255,255,255,.55);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .orh-hero-stat-arrow {
+    font-size: 26px;
+    font-weight: 900;
+    color: rgba(255,255,255,.4);
+    line-height: 1;
+  }
+  .orh-hero.is-bad .orh-hero-stat-arrow { color: #FF6B73; }
+  .orh-hero.is-good .orh-hero-stat-arrow { color: #4ade80; }
+
+  .orh-hero-summary {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,.1);
+    font-size: 13.5px;
+    color: rgba(255,255,255,.7);
+    line-height: 1.5;
+    font-weight: 500;
+    position: relative;
+  }
+  .orh-hero-summary b { color: #fff; font-weight: 800; }
+  .orh-hero-summary .hero-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(255,255,255,.1);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: #fff;
+    margin: 0 2px;
+  }
+  .orh-hero-summary .hero-tag.bad { background: rgba(227,38,47,.2); color: #FF8088; }
+  .orh-hero-summary .hero-tag.good { background: rgba(74,222,128,.2); color: #4ade80; }
+
+  @media (max-width: 900px) {
+    .orh-hero { padding: 26px 24px; }
+    .orh-hero-grid { grid-template-columns: 1fr; gap: 22px; }
+    .orh-hero-number { font-size: 72px; letter-spacing: -3px; }
+    .orh-hero-right { padding-left: 0; border-left: none; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.12); justify-content: center; }
+    .orh-hero-stat-val { font-size: 26px; }
+  }
+
   /* BATTLE — comparativo Plan x Real protagonista */
   .battle-card {
     background: var(--surface);
@@ -751,6 +890,29 @@
 
   <!-- ANÁLISE PRINCIPAL -->
   <div id="analysisArea" style="display:none;">
+
+    <!-- HERO GIGANTE: variação Real - Plan como protagonista -->
+    <div class="orh-hero" id="orhHero">
+      <div class="orh-hero-grid">
+        <div class="orh-hero-left">
+          <div class="orh-hero-eyebrow"><span id="orhHeroDot" class="orh-hero-dot"></span>VARIAÇÃO MÉDIA REAL − PLAN</div>
+          <div class="orh-hero-number" id="orhHeroNumber">—</div>
+          <div class="orh-hero-label" id="orhHeroLabel">por rota</div>
+        </div>
+        <div class="orh-hero-right">
+          <div class="orh-hero-stat">
+            <div class="orh-hero-stat-val" id="orhHeroPlan">—</div>
+            <div class="orh-hero-stat-lbl">ORH PLAN médio</div>
+          </div>
+          <div class="orh-hero-stat-arrow" id="orhHeroArrow">→</div>
+          <div class="orh-hero-stat">
+            <div class="orh-hero-stat-val" id="orhHeroReal">—</div>
+            <div class="orh-hero-stat-lbl">ORH REAL médio</div>
+          </div>
+        </div>
+      </div>
+      <div class="orh-hero-summary" id="orhHeroSummary"></div>
+    </div>
 
     <!-- BATTLE: Plan vs Real (com variação em destaque) -->
     <div class="battle-card">
@@ -1306,6 +1468,33 @@ function render() {
   document.getElementById('kpiAder').textContent = fmtPct(aderPct);
   document.getElementById('kpiAder').style.color = aderPct > 80 ? 'var(--green)' : aderPct > 60 ? '#D97706' : 'var(--red)';
   document.getElementById('kpiAderFoot').textContent = 'rotas dentro de ±10% do plan';
+
+  // === ORH HERO — variação Real-Plan protagonista ===
+  const orhHero = document.getElementById('orhHero');
+  const realDiffMinHero = realDiff * 60;
+  const planPctHero = planAvg > 0 ? Math.abs(realDiff/planAvg*100) : 0;
+  orhHero.classList.remove('is-bad','is-good');
+  const sigDiffHero = Math.abs(realDiffMinHero) > 5;
+  if (sigDiffHero && realDiffMinHero > 0) orhHero.classList.add('is-bad');
+  else if (sigDiffHero && realDiffMinHero < 0) orhHero.classList.add('is-good');
+
+  const heroNum = document.getElementById('orhHeroNumber');
+  if (realDiffMinHero > 0.5) heroNum.textContent = '+' + Math.round(realDiffMinHero) + ' min';
+  else if (realDiffMinHero < -0.5) heroNum.textContent = Math.round(realDiffMinHero) + ' min';
+  else heroNum.textContent = '≈ 0 min';
+
+  document.getElementById('orhHeroLabel').innerHTML = sigDiffHero
+    ? (realDiffMinHero > 0 ? `cada rota gastou em média a <b>MAIS</b> que o planejado (${planPctHero.toFixed(1).replace('.',',')}% acima)` : `cada rota gastou em média a <b>MENOS</b> que o planejado (${planPctHero.toFixed(1).replace('.',',')}% abaixo)`)
+    : `Tempo real <b>aderente</b> ao planejado (variação dentro de ±5 min)`;
+
+  document.getElementById('orhHeroPlan').textContent = fmtH(planAvg, 2);
+  document.getElementById('orhHeroReal').textContent = fmtH(realAvg, 2);
+  document.getElementById('orhHeroArrow').textContent = realDiffMinHero > 5 ? '→' : realDiffMinHero < -5 ? '←' : '≈';
+
+  const tagCls = realDiffMinHero > 5 ? 'bad' : realDiffMinHero < -5 ? 'good' : '';
+  const tagTxt = realDiffMinHero > 5 ? 'ATRASOU' : realDiffMinHero < -5 ? 'ADIANTOU' : 'NO ALVO';
+  document.getElementById('orhHeroSummary').innerHTML =
+    `Análise de <b>${fmtN(total)}</b> rotas · <span class="hero-tag ${tagCls}">${tagTxt}</span> · <b>${fmtN(agg.excCount)}</b> rotas excederam o Plan (${fmtPct(agg.excPct)}) · Aderência ±10%: <b>${fmtPct(aderPct)}</b>${contrAvg>0?` · vs <b>Contrato</b> (${fmtH(contrAvg,2)}): ${((realAvg-contrAvg)*60 >= 0 ? '+' : '')}${Math.round((realAvg-contrAvg)*60)} min`:''}`;
 
   // === Battle Plan x Real ===
   document.getElementById('battlePlanH').textContent = fmtH(planAvg, 2);
