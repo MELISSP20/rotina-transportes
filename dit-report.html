@@ -768,6 +768,24 @@ function clearAll() {
   document.getElementById('genBtn').disabled = true;
   document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 }
+
+// === Topbar clock ===
+function tickClock() {
+  const n = new Date();
+  const lc = document.getElementById('live-clock');
+  const cd = document.getElementById('clock-date');
+  if (lc) {
+    lc.textContent = String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+  }
+  if (cd) {
+    const DAYS_SHORT = ['DOM','SEG','TER','QUA','QUI','SEX','SAB'];
+    const MONTHS_SHORT = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    cd.textContent = DAYS_SHORT[n.getDay()] + ' ' + String(n.getDate()).padStart(2,'0') + ' ' + MONTHS_SHORT[n.getMonth()];
+  }
+}
+tickClock();
+setInterval(tickClock, 1000);
+
 </script>
 </body>
 </html>

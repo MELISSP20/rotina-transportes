@@ -247,53 +247,58 @@
     .section-line { flex: 1; height: 1px; background: var(--border); }
 
     /* ── PRIMORDIAL CARD ── */
-    .primordial-card { background: var(--surface); border: 2px solid var(--yellow); border-radius: var(--radius-lg); padding: 16px 18px; display: grid; grid-template-columns: 28px 1fr; gap: 12px; margin-bottom: 1rem; cursor: pointer; transition: box-shadow .15s; }
-    .primordial-card:hover { box-shadow: 0 4px 20px rgba(255,230,0,.2); }
-    .primordial-card.done { opacity: .5; }
-    .primordial-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #8A6200; background: rgba(255,230,0,.15); padding: 3px 10px; border-radius: 20px; margin-bottom: 6px; }
-    [data-theme="dark"] .primordial-badge { color: var(--yellow); background: rgba(255,230,0,.08); }
-    .primordial-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .primordial-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-    .primordial-footer { margin-top: 8px; }
+    /* ── TASK TIMELINE — sequencial + drag&drop ── */
 
     /* ── TASK TABLE ── */
-    /* ── TASK TIMELINE — agrupada por horário + sequência interna ── */
-    .task-timeline { display: flex; flex-direction: column; gap: 6px; margin-bottom: 2rem; }
+    /* ── TASK TIMELINE — sequencial + drag&drop ── */
+    .task-timeline { display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
 
-    .time-group { display: flex; flex-direction: column; gap: 8px; padding: 10px 0 16px; border-top: 1px solid var(--border); }
-    .time-group:first-child { border-top: none; padding-top: 0; }
-
-    .time-group-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
-    .time-group-marker {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--navy); color: var(--yellow);
-      padding: 6px 14px; border-radius: 10px;
-      font-size: 13px; font-weight: 800;
-      font-variant-numeric: tabular-nums;
-      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-      letter-spacing: -.1px;
-      box-shadow: 0 2px 8px rgba(26,26,46,.15);
+    /* Toolbar acima da lista */
+    .task-toolbar {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 14px;
     }
-    [data-theme="dark"] .time-group-marker { background: var(--yellow); color: var(--navy); }
-    .time-group-marker.now { animation: tgmPulse 1.8s infinite; }
-    @keyframes tgmPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,230,0,.5); } 50% { box-shadow: 0 0 0 6px rgba(255,230,0,0); } }
-    .time-group-marker::before { content: '⏱'; font-size: 13px; }
-    .time-group-count { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
-    .time-group-count b { color: var(--text); font-weight: 800; }
-    .time-group-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+    .task-toolbar-info {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11.5px; font-weight: 600; color: var(--muted);
+    }
+    .task-toolbar-info b { color: var(--text); font-weight: 800; font-variant-numeric: tabular-nums; }
+    .task-toolbar-hint {
+      margin-left: auto;
+      font-size: 10.5px; color: var(--muted);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--bg);
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .task-toolbar-hint::before { content: '⇅'; font-size: 12px; color: var(--text); font-weight: 800; }
+    .task-toolbar-btn {
+      font-family: var(--font); font-size: 11px; font-weight: 700;
+      padding: 5px 12px; border-radius: 7px; cursor: pointer;
+      background: var(--bg); color: var(--muted); border: 1px solid var(--border);
+      transition: all .15s;
+    }
+    .task-toolbar-btn:hover { color: var(--text); border-color: var(--text); }
+    .task-toolbar-btn.active { background: var(--navy); color: var(--yellow); border-color: var(--navy); }
+    [data-theme="dark"] .task-toolbar-btn.active { background: var(--yellow); color: var(--navy); border-color: var(--yellow); }
 
-    /* Task card */
+    /* Card */
     .task-card {
       position: relative;
-      display: grid; grid-template-columns: 4px 28px 28px 1fr auto;
+      display: grid; grid-template-columns: 4px 24px 28px 1fr auto;
       gap: 12px; align-items: center;
-      padding: 13px 16px 13px 0;
+      padding: 14px 16px 14px 0;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       cursor: pointer;
       transition: all .2s cubic-bezier(.4,0,.2,1);
-      overflow: hidden;
+      overflow: visible;
     }
     .task-card::before {
       content: '';
@@ -312,11 +317,28 @@
     .task-card.done::before { background: var(--green); }
     [data-theme="dark"] .task-card.done { background: rgba(0,166,80,.08); }
     .task-card.next-up { border-color: rgba(255,230,0,.5); box-shadow: 0 0 0 1px rgba(255,230,0,.3), 0 4px 18px rgba(255,230,0,.18); }
-    .task-card.late:not(.done) { border-color: rgba(227,38,47,.25); background: rgba(227,38,47,.025); }
-    [data-theme="dark"] .task-card.late:not(.done) { background: rgba(227,38,47,.05); }
+    .task-card.dragging { opacity: .4; transform: scale(.98); cursor: grabbing; }
+    .task-card.drop-target-above { box-shadow: 0 -3px 0 var(--yellow), 0 4px 14px rgba(0,0,0,.06); }
+    .task-card.drop-target-below { box-shadow: 0 3px 0 var(--yellow), 0 4px 14px rgba(0,0,0,.06); }
 
-    .task-card .spacer-1 { width: 4px; }
+    /* Drag handle */
+    .task-drag {
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: grab;
+      color: var(--muted);
+      opacity: .35;
+      transition: opacity .15s, color .15s;
+      border-radius: 5px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .task-drag:active { cursor: grabbing; }
+    .task-card:hover .task-drag { opacity: 1; }
+    .task-drag:hover { color: var(--text); background: var(--bg); }
+    .task-drag svg { width: 14px; height: 14px; pointer-events: none; }
 
+    /* Step marker — numerado */
     .task-step {
       width: 28px; height: 28px;
       background: var(--bg);
@@ -334,14 +356,6 @@
     .task-card.done .task-step .step-num { display: none; }
     .task-card.next-up .task-step { background: var(--yellow); color: var(--navy); border-color: var(--yellow); animation: stepPulse 1.8s infinite; }
     @keyframes stepPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,230,0,.5); } 50% { box-shadow: 0 0 0 6px rgba(255,230,0,0); } }
-
-    .task-check-area { display: flex; align-items: center; justify-content: center; }
-    .task-check-box { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 7px; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; background: var(--bg); flex-shrink: 0; }
-    .task-check-box:hover { border-color: var(--text); transform: scale(1.05); }
-    .task-card.done .task-check-box { background: var(--green); border-color: var(--green); }
-    .task-check-mark { color: #fff; font-size: 14px; font-weight: 900; line-height: 1; display: none; }
-    .task-card.done .task-check-mark { display: block; animation: checkPop .3s cubic-bezier(.34,1.56,.64,1); }
-    @keyframes checkPop { 0% { transform: scale(0) rotate(-45deg); } 100% { transform: scale(1) rotate(0); } }
 
     .task-body { min-width: 0; }
     .task-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -364,69 +378,41 @@
     .task-prio-pill.baixa { background: rgba(107,115,148,.12); color: var(--muted); }
     .task-prio-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
+    /* DEADLINE — protagonista */
     .task-deadline {
-      display: inline-flex; flex-direction: column; align-items: center;
-      padding: 4px 11px;
-      border-radius: 7px;
-      line-height: 1.1;
-      gap: 1px;
-      white-space: nowrap;
-      border: 1px solid transparent;
-    }
-    .task-deadline-label { font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
-    .task-deadline-time { font-size: 12px; font-weight: 800; letter-spacing: -.1px; font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
-    .task-deadline.ok    { background: rgba(52,131,250,.08); color: var(--blue); border-color: rgba(52,131,250,.18); }
-    .task-deadline.done  { background: rgba(0,166,80,.1); color: var(--green); border-color: rgba(0,166,80,.22); }
-
-    /* Atrasada badge — separate pill */
-    .task-late-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(227,38,47,.1); color: var(--red);
-      border: 1px solid rgba(227,38,47,.25);
-      padding: 5px 10px; border-radius: 7px;
-      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-      animation: lateAlert 2s infinite;
-    }
-    @keyframes lateAlert { 0%,100% { background: rgba(227,38,47,.1); } 50% { background: rgba(227,38,47,.18); } }
-    .task-late-badge::before { content: '⏰'; font-size: 11px; }
-
-    /* AGORA marker entre grupos */
-    .now-marker {
-      display: flex; align-items: center; gap: 12px;
-      padding: 6px 0;
-      margin: 4px 0;
-    }
-    .now-marker-label {
-      font-size: 11px; font-weight: 800; letter-spacing: .14em;
-      color: var(--red); text-transform: uppercase;
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(227,38,47,.06);
-      padding: 5px 11px;
-      border-radius: 14px;
-      border: 1px solid rgba(227,38,47,.25);
+      padding: 7px 12px 7px 10px;
+      border-radius: 10px;
+      background: var(--navy);
+      color: var(--yellow);
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(26,26,46,.15);
     }
-    .now-marker-label::before {
-      content: ''; width: 8px; height: 8px;
-      border-radius: 50%; background: var(--red);
-      animation: nowDotPulse 1.2s infinite;
-    }
-    @keyframes nowDotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(227,38,47,.5); } 50% { box-shadow: 0 0 0 5px rgba(227,38,47,0); } }
-    .now-marker-time {
+    [data-theme="dark"] .task-deadline { background: var(--yellow); color: var(--navy); }
+    .task-deadline-clock { font-size: 14px; opacity: .85; line-height: 1; }
+    .task-deadline-label { font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .65; }
+    .task-deadline-time {
+      font-size: 14px; font-weight: 800; letter-spacing: -.2px;
       font-variant-numeric: tabular-nums;
       font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-      font-size: 12px;
     }
-    .now-marker-line { flex: 1; height: 1px; background: linear-gradient(to right, rgba(227,38,47,.3), transparent); }
+    .task-card.done .task-deadline { background: var(--green); color: #fff; opacity: .85; }
+    .task-card.done .task-deadline-label { opacity: .8; }
+
+    .task-check-box { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 7px; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; background: var(--bg); flex-shrink: 0; }
+    .task-check-box:hover { border-color: var(--text); transform: scale(1.05); }
+    .task-card.done .task-check-box { background: var(--green); border-color: var(--green); }
+    .task-check-mark { color: #fff; font-size: 14px; font-weight: 900; line-height: 1; display: none; }
+    .task-card.done .task-check-mark { display: block; animation: checkPop .3s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes checkPop { 0% { transform: scale(0) rotate(-45deg); } 100% { transform: scale(1) rotate(0); } }
 
     @media (max-width: 768px) {
-      .task-card { grid-template-columns: 4px 24px 24px 1fr; padding: 11px 14px 11px 0; }
+      .task-card { grid-template-columns: 4px 22px 26px 1fr; padding: 11px 14px 11px 0; }
       .task-meta { grid-column: 3 / -1; margin-top: 8px; justify-content: flex-start; }
       .task-name-link { font-size: 13px; }
       .task-desc { font-size: 11.5px; }
-      .time-group-marker { font-size: 12px; padding: 5px 12px; }
-      .time-group-count { font-size: 9.5px; }
+      .task-deadline { padding: 6px 10px 6px 8px; }
+      .task-deadline-time { font-size: 13px; }
     }
     .th { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
     .task-row { display: grid; grid-template-columns: 32px 1fr 90px 85px 36px; padding: 11px 16px; border-bottom: 1px solid var(--border); gap: 8px; align-items: center; cursor: pointer; transition: background .1s; }
@@ -559,7 +545,6 @@
       .task-row { grid-template-columns: 32px 1fr; padding: 11px 12px; }
       .task-row > div:nth-child(3), .task-row > div:nth-child(4), .task-row > div:nth-child(5) { display: none; }
       .task-info-meta { display: flex !important; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
-      .primordial-card { grid-template-columns: 28px 1fr; padding: 12px; }
       .feedback-btn { bottom: 72px; right: 14px; font-size: 11px; padding: 8px 12px; }
       footer { padding: 10px .75rem; }
       .footer-inner { flex-direction: column; gap: 4px; align-items: center; text-align: center; }
@@ -741,21 +726,6 @@
   <div class="countdown-banner" id="countdown-banner">
     <div style="min-width:0"><div class="countdown-label">Próximo prazo</div><div class="countdown-task" id="countdown-task">—</div></div>
     <div class="countdown-timer" id="countdown-timer">00:00</div>
-  </div>
-
-  <!-- TAREFA PRIMORDIAL -->
-  <div class="primordial-card" id="primordial-card">
-    <div class="task-check-wrap" style="padding-top:2px">
-      <input type="checkbox" class="task-check" id="primordial-check">
-    </div>
-    <div>
-      <div class="primordial-badge">⭐ Primordial</div>
-      <div class="primordial-title">Análise crítica dos roteiros — Geral</div>
-      <div class="primordial-desc">Análise geral da roteirização do ciclo, compilando pontos de <a href="https://docs.google.com/forms/d/e/1FAIpQLSfEFmmy7j3b5AgL1KWIKqJVJ-siEIT6zayXIbOy8AiZFkEhug/viewform" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none;" title="Formulário de desvios ROUT">desvios ↗</a> para tratativa em calibração semanal. Imprescindível.</div>
-      <div class="primordial-footer">
-        <span class="prio critico">crítico</span>
-      </div>
-    </div>
   </div>
 
   <div class="section-header">
@@ -991,13 +961,7 @@ async function initState() {
   setInterval(poll, 2000); // poll every 2 seconds
 }
 
-function refreshPrimordial() {
-  const primCb   = document.getElementById('primordial-check');
-  const primCard = document.getElementById('primordial-card');
-  if (!primCb) return;
-  primCb.checked = !!state['primordial'];
-  primCard.classList.toggle('done', !!state['primordial']);
-}
+function refreshPrimordial() { /* removed */ }
 function dlSeverity(dl) {
   const [h,m] = dl.split(':').map(Number);
   const now = new Date();
@@ -1007,111 +971,86 @@ function dlSeverity(dl) {
   return 'normal';
 }
 
+// Ordem customizada das tarefas (drag&drop). Mantém ordem do array TASKS por padrão.
+const ORDER_KEY = `rotina-ssp${currentSSP}-order`;
+function loadCustomOrder() {
+  try { return JSON.parse(localStorage.getItem(ORDER_KEY)) || null; } catch { return null; }
+}
+function saveCustomOrder(ids) {
+  localStorage.setItem(ORDER_KEY, JSON.stringify(ids));
+}
+function getOrderedTasks() {
+  const tasks = TASKS['list-tarefas'] || [];
+  const order = loadCustomOrder();
+  if (!order || !Array.isArray(order)) return tasks;
+  const byId = Object.fromEntries(tasks.map(t => [t.id, t]));
+  const ordered = [];
+  // Tasks na ordem custom
+  order.forEach(id => { if (byId[id]) { ordered.push(byId[id]); delete byId[id]; } });
+  // Tasks novas que não estão na ordem custom — append no final
+  tasks.forEach(t => { if (byId[t.id]) ordered.push(t); });
+  return ordered;
+}
+
 function renderAll() {
   const container = document.getElementById('list-tarefas-timeline');
   if (!container) return;
   container.innerHTML = '';
 
-  const tasks = TASKS['list-tarefas'] || [];
+  const tasks = getOrderedTasks();
   if (tasks.length === 0) { updateStats(); return; }
 
-  const now = new Date();
-  const nowMin = now.getHours()*60 + now.getMinutes();
-
-  // Próxima pendente — primeira da sequência que ainda não está done
+  // Próxima pendente — primeira da sequência atual que ainda não está done
   let nextTaskId = null;
   for (const t of tasks) {
     if (!state[t.id]) { nextTaskId = t.id; break; }
   }
 
-  // Agrupar por deadline mantendo a sequência interna do array
-  const groupsMap = new Map();
+  // Toolbar info
+  const doneCount = tasks.filter(t => state[t.id]).length;
+  const toolbar = document.createElement('div');
+  toolbar.className = 'task-toolbar';
+  toolbar.innerHTML = `
+    <span class="task-toolbar-info"><b>${tasks.length}</b> tarefas · <b>${doneCount}</b> concluída${doneCount === 1 ? '' : 's'}</span>
+    <button class="task-toolbar-btn" id="reset-order-btn" title="Restaurar ordem original">↺ Restaurar ordem</button>
+    <span class="task-toolbar-hint">Arraste para reordenar</span>
+  `;
+  container.appendChild(toolbar);
+  toolbar.querySelector('#reset-order-btn').addEventListener('click', () => {
+    if (!confirm('Restaurar ordem original das tarefas?')) return;
+    localStorage.removeItem(ORDER_KEY);
+    renderAll();
+  });
+
+  // Cards
   tasks.forEach((t, idx) => {
-    if (!groupsMap.has(t.deadline)) groupsMap.set(t.deadline, []);
-    groupsMap.get(t.deadline).push({ task: t, stepNum: idx + 1 });
-  });
-  // Ordenar grupos por horário
-  const sortedDeadlines = Array.from(groupsMap.keys()).sort();
-
-  // Decidir onde inserir o marker AGORA — antes do primeiro grupo cujo deadline >= agora
-  let nowInsertedBefore = null;
-  for (const dl of sortedDeadlines) {
-    const [h,m] = dl.split(':').map(Number);
-    const dMin = h*60 + m;
-    if (dMin >= nowMin) { nowInsertedBefore = dl; break; }
-  }
-
-  sortedDeadlines.forEach(dl => {
-    if (dl === nowInsertedBefore) {
-      const nm = document.createElement('div');
-      nm.className = 'now-marker';
-      nm.innerHTML = `
-        <span class="now-marker-label">AGORA <span class="now-marker-time">${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}</span></span>
-        <div class="now-marker-line"></div>
-      `;
-      container.appendChild(nm);
-    }
-
-    const items = groupsMap.get(dl);
-    const doneInGroup = items.filter(it => state[it.task.id]).length;
-    const total = items.length;
-    const [h,m] = dl.split(':').map(Number);
-    const dMin = h*60 + m;
-    const isNow = Math.abs(nowMin - dMin) <= 30 && dl === nowInsertedBefore;
-
-    const group = document.createElement('div');
-    group.className = 'time-group';
-    const header = document.createElement('div');
-    header.className = 'time-group-header';
-    header.innerHTML = `
-      <div class="time-group-marker ${isNow ? 'now' : ''}">${dl}</div>
-      <span class="time-group-count"><b>${total}</b> ${total === 1 ? 'tarefa' : 'tarefas'} · <b>${doneInGroup}</b> concluída${doneInGroup === 1 ? '' : 's'}</span>
-      <div class="time-group-line"></div>
-    `;
-    group.appendChild(header);
-
-    items.forEach(it => {
-      group.appendChild(buildCard(it.task, it.stepNum, it.task.id === nextTaskId, nowMin));
-    });
-    container.appendChild(group);
+    container.appendChild(buildCard(t, idx + 1, t.id === nextTaskId));
   });
 
+  enableDragAndDrop(container);
   updateStats();
 }
 
-function buildCard(t, stepNum, isNext, nowMin) {
+function buildCard(t, stepNum, isNext) {
   const done = !!state[t.id];
-  const [h,m] = t.deadline.split(':').map(Number);
-  const dMin = h*60 + m;
-  const delayMin = nowMin - dMin; // minutos passados depois do prazo (positivo se atrasada)
-  const isLate = !done && delayMin > 0;
 
   const card = document.createElement('div');
   card.className = 'task-card prio-' + t.priority +
     (done ? ' done' : '') +
-    (isNext && !done ? ' next-up' : '') +
-    (isLate ? ' late' : '');
+    (isNext && !done ? ' next-up' : '');
+  card.draggable = true;
+  card.dataset.taskId = t.id;
 
   const hasLink = t.link && t.link !== '#';
   const linkArrow = hasLink ? '<span class="task-link-arrow">↗</span>' : '';
 
-  // Formatador de tempo atraso
-  const fmtDelay = (m) => {
-    if (m < 60) return `${m} min atrasada`;
-    const h = Math.floor(m/60), mm = m % 60;
-    return mm ? `${h}h ${mm}min atrasada` : `${h}h atrasada`;
-  };
-
-  // Badge prazo: só ok ou done
-  const dlCls = done ? 'done' : 'ok';
-
   card.innerHTML = `
+    <div class="task-drag" title="Arraste para reordenar">
+      <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="3" r="1.5"/><circle cx="5" cy="8" r="1.5"/><circle cx="5" cy="13" r="1.5"/><circle cx="11" cy="3" r="1.5"/><circle cx="11" cy="8" r="1.5"/><circle cx="11" cy="13" r="1.5"/></svg>
+    </div>
     <div class="task-step"><span class="step-num">${String(stepNum).padStart(2,'0')}</span></div>
-    <div class="spacer-1"></div>
-    <div class="task-check-area">
-      <div class="task-check-box" data-id="${t.id}">
-        <span class="task-check-mark">✓</span>
-      </div>
+    <div class="task-check-box" data-id="${t.id}">
+      <span class="task-check-mark">✓</span>
     </div>
     <div class="task-body">
       <div class="task-title-row">
@@ -1124,11 +1063,13 @@ function buildCard(t, stepNum, isNext, nowMin) {
     </div>
     <div class="task-meta">
       <span class="task-prio-pill ${t.priority}">${t.priority}</span>
-      <div class="task-deadline ${dlCls}">
-        <span class="task-deadline-label">PRAZO ATÉ</span>
-        <span class="task-deadline-time">${t.deadline}</span>
+      <div class="task-deadline">
+        <span class="task-deadline-clock">⏱</span>
+        <span style="display:inline-flex;flex-direction:column;gap:1px;line-height:1;">
+          <span class="task-deadline-label">PRAZO</span>
+          <span class="task-deadline-time">${t.deadline}</span>
+        </span>
       </div>
-      ${isLate ? `<span class="task-late-badge">${fmtDelay(delayMin)}</span>` : ''}
     </div>
   `;
 
@@ -1141,20 +1082,59 @@ function buildCard(t, stepNum, isNext, nowMin) {
   };
   box.addEventListener('click', toggle);
   card.addEventListener('click', (e) => {
-    if (e.target.closest('a') || e.target.closest('.task-check-box')) return;
+    if (e.target.closest('a') || e.target.closest('.task-check-box') || e.target.closest('.task-drag')) return;
     toggle(e);
   });
   return card;
 }
 
+// === Drag & Drop ===
+function enableDragAndDrop(container) {
+  let draggingEl = null;
+
+  container.querySelectorAll('.task-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      draggingEl = card;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', card.dataset.taskId);
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      container.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-target-above','drop-target-below'));
+      draggingEl = null;
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (!draggingEl || draggingEl === card) return;
+      const rect = card.getBoundingClientRect();
+      const middle = rect.top + rect.height / 2;
+      container.querySelectorAll('.task-card').forEach(c => c.classList.remove('drop-target-above','drop-target-below'));
+      if (e.clientY < middle) card.classList.add('drop-target-above');
+      else card.classList.add('drop-target-below');
+    });
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      if (!draggingEl || draggingEl === card) return;
+      const rect = card.getBoundingClientRect();
+      const middle = rect.top + rect.height / 2;
+      if (e.clientY < middle) container.insertBefore(draggingEl, card);
+      else container.insertBefore(draggingEl, card.nextSibling);
+
+      // Persistir nova ordem
+      const newIds = Array.from(container.querySelectorAll('.task-card')).map(c => c.dataset.taskId);
+      saveCustomOrder(newIds);
+      renderAll();
+    });
+  });
+}
+
 function updateStats() {
   const all = Object.values(TASKS).flat();
-  const total = all.length + 1; // +1 primordial
-  const doneTasks = all.filter(t => state[t.id]).length;
-  const donePrim = state['primordial'] ? 1 : 0;
-  const done = doneTasks + donePrim;
+  const total = all.length;
+  const done = all.filter(t => state[t.id]).length;
   const pending = total - done;
-  const urgent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length + (state['primordial'] ? 0 : 1);
+  const urgent = all.filter(t => (t.priority === 'urgente' || t.priority === 'critico') && !state[t.id]).length;
   const pct = total ? Math.round((done/total)*100) : 0;
 
   document.getElementById('stat-total').textContent   = total;
@@ -1219,8 +1199,6 @@ btn.addEventListener('click', () => {
 
 tick();
 setInterval(tick, 1000);
-// Re-render tasks a cada 30s pra atualizar contagem regressiva do prazo + posição do AGORA marker
-setInterval(() => { if (document.getElementById('list-tarefas-timeline')) renderAll(); }, 30000);
 initState(); // loads from Firebase, then starts polling
 
 // Diário de Bordo
@@ -1341,18 +1319,6 @@ document.getElementById('uncheck-all-btn').addEventListener('click', () => {
   updateStats();
 });
 
-// Primordial card
-const primCard = document.getElementById('primordial-card');
-const primCb   = document.getElementById('primordial-check');
-primCb.addEventListener('change', () => {
-  state['primordial'] = primCb.checked;
-  save('primordial');
-  primCard.classList.toggle('done', primCb.checked);
-  updateStats();
-});
-primCard.addEventListener('click', (e) => {
-  if (e.target.tagName !== 'INPUT') { primCb.checked = !primCb.checked; primCb.dispatchEvent(new Event('change')); }
-});
 // PWA Service Worker
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/rotina-transportes/sw.js').catch(() => {});

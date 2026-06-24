@@ -247,11 +247,103 @@
   /* Empty state */
   .dash-empty { padding: 40px 20px; text-align: center; color: var(--muted); font-size: 13px; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-lg); }
 
+  /* ── ORH-SPECIFIC STYLES ── */
+  .filter-bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 10px 16px;
+    margin-bottom: 1.25rem;
+  }
+  .filter-bar-label { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .filter-pills { display: flex; gap: 4px; background: var(--bg); padding: 3px; border-radius: 8px; }
+  .filter-pill { font-family: var(--font); font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 6px; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all .15s; white-space: nowrap; }
+  .filter-pill:hover { color: var(--text); }
+  .filter-pill.active { background: var(--navy); color: var(--yellow); box-shadow: 0 2px 6px rgba(26,26,46,.15); }
+  [data-theme="dark"] .filter-pill.active { background: var(--yellow); color: var(--navy); }
+
+  /* Comparison bar chart (Plan vs Real por MLP) */
+  .compare-chart { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 1.25rem; }
+  .compare-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+  .compare-subtitle { font-size: 11px; color: var(--muted); margin-bottom: 18px; }
+  .compare-legend { display: flex; gap: 16px; margin-bottom: 14px; }
+  .compare-legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: var(--muted); }
+  .compare-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .compare-legend-dot.plan { background: var(--blue); }
+  .compare-legend-dot.real { background: var(--yellow); border: 1px solid #F5C518; }
+  .compare-bars { display: flex; flex-direction: column; gap: 16px; }
+  .compare-row { display: grid; grid-template-columns: 130px 1fr 60px; gap: 12px; align-items: center; }
+  .compare-row-label { font-size: 11.5px; font-weight: 700; color: var(--text); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+  .compare-row-bars { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .compare-bar-track { display: flex; align-items: center; height: 18px; }
+  .compare-bar {
+    height: 14px; border-radius: 3px;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 7px;
+    font-size: 10.5px; font-weight: 800;
+    color: #fff; font-variant-numeric: tabular-nums;
+    min-width: 30px;
+    transition: width .4s ease;
+  }
+  .compare-bar.plan { background: var(--blue); }
+  .compare-bar.real { background: var(--yellow); color: var(--navy); border: 1px solid #F5C518; }
+  .compare-row-diff { font-size: 12px; font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
+  .compare-row-diff.up { color: var(--red); }
+  .compare-row-diff.down { color: var(--green); }
+  .compare-row-diff.zero { color: var(--muted); }
+
+  /* Histogram */
+  .histogram { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .histo-bars { display: flex; align-items: flex-end; gap: 4px; height: 140px; padding-top: 20px; }
+  .histo-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+  .histo-bar { width: 100%; background: var(--navy); border-radius: 3px 3px 0 0; min-height: 4px; position: relative; transition: opacity .15s; }
+  .histo-bar.negative { background: var(--green); }
+  .histo-bar.positive { background: var(--red); }
+  .histo-bar.zero { background: var(--muted); }
+  .histo-bar:hover { opacity: .85; }
+  .histo-bar-val { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 9.5px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .histo-bar-lbl { font-size: 9px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; text-align: center; line-height: 1.1; }
+
+  /* Scatter plot */
+  .scatter-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .scatter-svg { width: 100%; height: 220px; }
+  .scatter-dot { fill: var(--navy); opacity: .42; }
+  [data-theme="dark"] .scatter-dot { fill: var(--yellow); }
+  .scatter-diagonal { stroke: var(--green); stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; opacity: .7; }
+  .scatter-axis { stroke: var(--border); stroke-width: 1; }
+  .scatter-axis-lbl { font-size: 10px; fill: var(--muted); font-family: var(--font); font-weight: 700; }
+
+  /* Two-column responsive grid */
+  .two-col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.25rem; }
+
+  /* Bigger table for analysis */
+  .data-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.25rem; }
+  .data-table-title { padding: 12px 18px; font-size: 13px; font-weight: 800; color: var(--text); background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .data-table-title .tbl-subtitle { font-size: 10.5px; font-weight: 600; color: var(--muted); }
+  .data-table-head { display: grid; padding: 9px 18px; font-size: 9.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .data-table-row { display: grid; padding: 9px 18px; font-size: 12px; font-weight: 600; align-items: center; gap: 4px; border-bottom: 1px solid rgba(0,0,0,.04); transition: background .12s; }
+  [data-theme="dark"] .data-table-row { border-bottom-color: rgba(255,255,255,.04); }
+  .data-table-row:hover { background: var(--bg); }
+  .data-table-row:last-child { border-bottom: none; }
+  .data-table .num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+  .data-table .num.up { color: var(--red); }
+  .data-table .num.down { color: var(--green); }
+  .data-table .num.zero { color: var(--muted); }
+  .data-table .cell-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Specific column templates */
+  .cols-mlp { grid-template-columns: 1fr 60px 80px 80px 80px 70px; }
+  .cols-modal { grid-template-columns: 1fr 60px 80px 80px 80px; }
+  .cols-rota { grid-template-columns: 110px 1fr 70px 70px 70px; }
+  .cols-dg { grid-template-columns: 1fr 80px 100px 100px 80px; }
+
   @media (max-width: 900px) {
     .dit-grid { grid-template-columns: 1fr; }
     .kpi-strip { grid-template-columns: repeat(3, 1fr); }
     .table-grid { grid-template-columns: 1fr 1fr; }
     .charts-grid { grid-template-columns: 1fr; }
+    .two-col-grid { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 100px 1fr 56px; gap: 8px; }
+    .compare-row-label { font-size: 11px; }
     .topbar-sep, .topbar-section { display: none; }
     .wrapper { padding: 1rem 1rem 4rem; }
     .topbar { padding: 0 1rem; }
@@ -266,6 +358,9 @@
     .dit-info-card { margin-left: 0; width: 100%; }
     .dit-info-emoji { font-size: 28px; }
     .dit-info-name { font-size: 15px; }
+    .cols-mlp, .cols-modal, .cols-rota, .cols-dg { grid-template-columns: 1fr 60px 70px 70px; }
+    .cols-mlp > :nth-child(5), .cols-mlp > :nth-child(6) { display: none; }
+    .cols-modal > :nth-child(5) { display: none; }
   }
 
   @media (max-width: 640px) {
@@ -339,17 +434,17 @@
   <div class="header-inner">
     <div class="brand-block">
       <div>
-        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> ROTEIRIZAÇÃO</div>
+        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> TEMPO DE ROTA</div>
         <div class="header-title">ORH</div>
-        <div class="header-sub">Otimização de Rotas · Plan x Real · Análise de desvios e contratos</div>
+        <div class="header-sub">Outbound Route Hours · Comparativo plan x real · Análise de aderência</div>
       </div>
     </div>
     <div class="dit-info-card">
-      <span class="dit-info-emoji">🚛</span>
+      <span class="dit-info-emoji">⏱</span>
       <span class="dit-info-text">
         <span class="dit-info-eyebrow">FONTE</span>
         <span class="dit-info-name">BQ Routing</span>
-        <span class="dit-info-hint">CSV → MODAL_PLAN · MODAL_REAL</span>
+        <span class="dit-info-hint">ORH_PLAN · ORH_REAL (min)</span>
       </span>
     </div>
   </div>
@@ -359,10 +454,10 @@
   <!-- Upload + Date -->
   <div class="upload-row">
     <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()" style="cursor:pointer;">
-      <div class="upload-icon">🚛</div>
+      <div class="upload-icon">⏱</div>
       <div class="upload-info">
         <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV BQ Routing</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">bq-results-*.csv (mesmo arquivo da Análise OPS)</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Colunas necessárias: ORH_PLAN, ORH_REAL (em minutos)</div>
       </div>
       <input type="file" id="fileCSV" accept=".csv" style="display:none"/>
     </div>
@@ -372,67 +467,186 @@
     </div>
   </div>
 
-  <!-- KPI Strip amarelo -->
+  <!-- Filtros -->
+  <div class="filter-bar" id="filterBar" style="display:none;">
+    <span class="filter-bar-label">📊 Filtro</span>
+    <div class="filter-pills">
+      <button class="filter-pill active" data-f="all" onclick="setFilter('all')">Todas</button>
+      <button class="filter-pill" data-f="match" onclick="setFilter('match')">Match (Plan = Real)</button>
+      <button class="filter-pill" data-f="dg" onclick="setFilter('dg')">Downgrades</button>
+      <button class="filter-pill" data-f="ug" onclick="setFilter('ug')">Upgrades</button>
+    </div>
+    <span style="margin-left:auto;font-size:11px;color:var(--muted);font-weight:600;" id="filterInfo"></span>
+  </div>
+
+  <!-- KPI Strip — visão geral em horas -->
   <div class="kpi-strip">
     <div class="kpi-card">
       <div class="kpi-card-label">Total Rotas</div>
       <div class="kpi-card-value" id="kpiTotal">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">Plan = Real</div>
-      <div class="kpi-card-value" id="kpiMatch">—</div>
+      <div class="kpi-card-label">ORH Plan (h)</div>
+      <div class="kpi-card-value" id="kpiPlanH">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">Downgrades</div>
-      <div class="kpi-card-value" id="kpiDG">—</div>
+      <div class="kpi-card-label">ORH Real (h)</div>
+      <div class="kpi-card-value" id="kpiRealH">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">Upgrades</div>
-      <div class="kpi-card-value" id="kpiUG">—</div>
+      <div class="kpi-card-label">Variação</div>
+      <div class="kpi-card-value" id="kpiVar">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">% Aderência</div>
+      <div class="kpi-card-label">Aderência</div>
       <div class="kpi-card-value" id="kpiAder">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">% Desvio</div>
-      <div class="kpi-card-value" id="kpiDesv">—</div>
+      <div class="kpi-card-label">Δ médio (min)</div>
+      <div class="kpi-card-value" id="kpiAvgDiff">—</div>
     </div>
   </div>
 
-  <!-- Tabelas em grid -->
-  <div class="table-grid" id="tableGrid">
-    <div class="dash-empty" style="grid-column:1/-1;">Importe o CSV BQ Routing para visualizar a análise de Plan x Real, desvios e contratos.</div>
-  </div>
+  <!-- Empty state -->
+  <div class="dash-empty" id="emptyState">Importe o CSV BQ Routing (mesmo da Análise OPS) para visualizar o comparativo de ORH plan × real.</div>
 
-  <!-- Charts -->
-  <div class="charts-grid" id="chartsGrid"></div>
+  <!-- ANÁLISE PRINCIPAL -->
+  <div id="analysisArea" style="display:none;">
+
+    <!-- Comparativo Plan vs Real por MLP -->
+    <div class="compare-chart">
+      <div class="compare-title">Comparativo Plan × Real por MLP</div>
+      <div class="compare-subtitle">Tempo médio de rota planejado vs realizado (em horas) — por contrato</div>
+      <div class="compare-legend">
+        <span class="compare-legend-item"><span class="compare-legend-dot plan"></span> Plan (média)</span>
+        <span class="compare-legend-item"><span class="compare-legend-dot real"></span> Real (média)</span>
+        <span class="compare-legend-item" style="margin-left:auto;color:var(--text);"><span style="font-weight:800;">Δ</span> Variação</span>
+      </div>
+      <div class="compare-bars" id="compareBars"></div>
+    </div>
+
+    <!-- Histograma + Scatter -->
+    <div class="two-col-grid">
+      <div class="histogram">
+        <div class="compare-title">Distribuição da variação (min)</div>
+        <div class="compare-subtitle">Δ = ORH_REAL − ORH_PLAN · Negativo = adiantou · Positivo = atrasou</div>
+        <div class="histo-bars" id="histoBars" style="margin-top:14px;"></div>
+      </div>
+      <div class="scatter-card">
+        <div class="compare-title">Plan × Real (dispersão)</div>
+        <div class="compare-subtitle">Cada ponto = uma rota · Diagonal verde = aderência perfeita</div>
+        <svg class="scatter-svg" id="scatterSvg" viewBox="0 0 400 220" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+    <!-- Tabela por MLP -->
+    <div class="data-table">
+      <div class="data-table-title">
+        <span>📦 Análise por MLP</span>
+        <span class="tbl-subtitle">Contrato · Rotas · Médias Plan/Real · Δ · Aderência</span>
+      </div>
+      <div class="data-table-head cols-mlp">
+        <span>MLP</span>
+        <span class="num">Rotas</span>
+        <span class="num">Plan (h)</span>
+        <span class="num">Real (h)</span>
+        <span class="num">Δ (min)</span>
+        <span class="num">% Ader</span>
+      </div>
+      <div id="tblMLP"></div>
+    </div>
+
+    <!-- Tabela por Modal/Veículo -->
+    <div class="data-table">
+      <div class="data-table-title">
+        <span>🚛 Análise por Modal (Veículo Planejado)</span>
+        <span class="tbl-subtitle">Tempo médio plan/real por tipo de veículo</span>
+      </div>
+      <div class="data-table-head cols-modal">
+        <span>Modal</span>
+        <span class="num">Rotas</span>
+        <span class="num">Plan (h)</span>
+        <span class="num">Real (h)</span>
+        <span class="num">Δ (min)</span>
+      </div>
+      <div id="tblModal"></div>
+    </div>
+
+    <!-- ORH x DG/UG -->
+    <div class="data-table">
+      <div class="data-table-title">
+        <span>🔀 ORH × Downgrade / Upgrade</span>
+        <span class="tbl-subtitle">Impacto da substituição de veículo no tempo de rota</span>
+      </div>
+      <div class="data-table-head cols-dg">
+        <span>Categoria</span>
+        <span class="num">Rotas</span>
+        <span class="num">ORH Plan médio</span>
+        <span class="num">ORH Real médio</span>
+        <span class="num">Δ médio</span>
+      </div>
+      <div id="tblDgUg"></div>
+    </div>
+
+    <!-- Top atrasos e adiantamentos -->
+    <div class="two-col-grid">
+      <div class="data-table" style="margin-bottom:0;">
+        <div class="data-table-title">
+          <span>⏰ Top 10 Atrasos</span>
+          <span class="tbl-subtitle">Maior Δ positivo</span>
+        </div>
+        <div class="data-table-head cols-rota">
+          <span>Rota</span>
+          <span>MLP</span>
+          <span class="num">Plan</span>
+          <span class="num">Real</span>
+          <span class="num">Δ</span>
+        </div>
+        <div id="tblAtrasos"></div>
+      </div>
+      <div class="data-table" style="margin-bottom:0;">
+        <div class="data-table-title">
+          <span>⚡ Top 10 Adiantamentos</span>
+          <span class="tbl-subtitle">Maior Δ negativo</span>
+        </div>
+        <div class="data-table-head cols-rota">
+          <span>Rota</span>
+          <span>MLP</span>
+          <span class="num">Plan</span>
+          <span class="num">Real</span>
+          <span class="num">Δ</span>
+        </div>
+        <div id="tblAdiantamentos"></div>
+      </div>
+    </div>
+
+  </div>
 
   <!-- Contexto narrativo -->
   <div class="section-label">Contexto narrativo (opcional)</div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#e24b4a"></span> Downgrades
-      <span class="stats"><span id="hdrDG">—</span> <span class="pct-badge" id="hdrPctDG"></span></span>
-    </div>
-    <textarea id="txtDG" placeholder="Ex: Envios Extra com 124 downgrades (54% do total). Principal causa: indisponibilidade de veículo maior no ato da partida..."></textarea>
-  </div>
-  <div class="narrative-block">
-    <div class="narrative-header">
-      <span class="dot" style="background:#16a34a"></span> Upgrades
-      <span class="stats"><span id="hdrUG">—</span> <span class="pct-badge" id="hdrPctUG"></span></span>
-    </div>
-    <textarea id="txtUG" placeholder="Ex: 1.783 upgrades — substituição de moto/passeio por utilitário/van. JM Transportes liderou com 412..."></textarea>
-  </div>
-  <div class="narrative-block">
-    <div class="narrative-header">
-      <span class="dot" style="background:#3483FA"></span> Aderência geral
+      <span class="dot" style="background:#3483FA"></span> Análise plan × real
       <span class="stats"><span id="hdrAder">—</span></span>
     </div>
-    <textarea id="txtAder" placeholder="Ex: Aderência geral de 88,2%. Principal fonte de desvio é o modal Passeio sendo substituído..."></textarea>
+    <textarea id="txtAder" placeholder="Ex: Aderência geral de 88,2%. Maior desvio em rotas de utilitário, com Δ médio de +45 min..."></textarea>
+  </div>
+  <div class="narrative-block">
+    <div class="narrative-header">
+      <span class="dot" style="background:#e24b4a"></span> Atrasos
+      <span class="stats"><span id="hdrAtraso">—</span></span>
+    </div>
+    <textarea id="txtAtraso" placeholder="Ex: 47% das rotas com atraso pertencem ao MLP Envios Extra. Causa principal..."></textarea>
+  </div>
+  <div class="narrative-block">
+    <div class="narrative-header">
+      <span class="dot" style="background:#16a34a"></span> DG / UG vs ORH
+      <span class="stats"><span id="hdrDgUg">—</span></span>
+    </div>
+    <textarea id="txtDgUg" placeholder="Ex: Rotas com upgrade tiveram ORH real 23 min menor em média..."></textarea>
   </div>
 
-  <!-- Botões + Output -->
+  <!-- Botões -->
   <div class="btn-row" style="margin-top:1rem;">
     <button class="btn btn-primary" onclick="generateReport()" id="genBtn" disabled>⚡ Gerar report</button>
     <button class="btn btn-secondary" onclick="clearAll()">🗑 Limpar tudo</button>
@@ -478,16 +692,19 @@ document.addEventListener('click', function(e) {
 
 document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 
-// State
-let csvData = null;
-let agg = null;
+// ── State ──
+let csvRows = null;          // raw rows
+let rowsFiltered = null;     // rows after applying filter
+let agg = null;              // aggregated data
+let currentFilter = 'all';
 
 // Helpers
-const fmt = n => Number(n).toLocaleString('pt-BR');
-const pct = (v, t) => t ? ((v/t)*100).toFixed(2).replace('.',',') + '%' : '—';
-const safe = s => (s == null || s === '' || String(s).toLowerCase() === 'nan') ? '-' : String(s);
+const fmtN = n => Number(n).toLocaleString('pt-BR');
+const fmtH = h => h.toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + 'h';
+const fmtMin = m => (m >= 0 ? '+' : '') + m.toFixed(0).replace('.',',') + ' min';
+const fmtPct = p => p.toFixed(1).replace('.',',') + '%';
+const safe = s => (s == null || s === '' || String(s).toLowerCase() === 'nan') ? '—' : String(s);
 
-// Vehicle ranking (smaller → bigger)
 function vrank(v) {
   v = (v || '').toLowerCase();
   if (v.includes('walker')) return 1;
@@ -510,7 +727,6 @@ function parseCSVLine(line) {
   out.push(cur);
   return out;
 }
-
 function parseCSV(text) {
   const lines = text.split(/\r?\n/).filter(l => l.length);
   if (lines.length < 2) return [];
@@ -523,6 +739,7 @@ function parseCSV(text) {
   });
 }
 
+// File handlers
 document.getElementById('fileCSV').addEventListener('change', e => handleCSV(e.target.files[0]));
 const zCSV = document.getElementById('zoneCSV');
 zCSV.addEventListener('dragover', e => { e.preventDefault(); zCSV.style.borderColor='var(--yellow)'; });
@@ -533,231 +750,326 @@ function handleCSV(file) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    csvData = parseCSV(e.target.result);
+    const parsed = parseCSV(e.target.result);
+    // Validar colunas
+    if (parsed.length === 0 || !('ORH_PLAN' in parsed[0]) || !('ORH_REAL' in parsed[0])) {
+      alert('CSV não contém as colunas ORH_PLAN e ORH_REAL. Verifique o arquivo.');
+      return;
+    }
+    // Filtra rows com ORH numéricos
+    csvRows = parsed.filter(r => {
+      const p = parseFloat(String(r['ORH_PLAN']).replace(',','.'));
+      const re = parseFloat(String(r['ORH_REAL']).replace(',','.'));
+      return !isNaN(p) && !isNaN(re) && p > 0 && re > 0;
+    });
     document.getElementById('zoneCSV').classList.add('loaded-csv');
-    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmt(csvData.length)} rotas</span>`;
-    aggregate();
-    render();
+    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(csvRows.length)} rotas válidas</span>`;
+    document.getElementById('filterBar').style.display = 'flex';
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('analysisArea').style.display = 'block';
     document.getElementById('genBtn').disabled = false;
+    applyFilter();
   };
   reader.readAsText(file, 'utf-8');
 }
 
-// === Aggregation ===
-function aggregate() {
-  if (!csvData || csvData.length === 0) return;
-
-  const total = csvData.length;
-  let matchCount = 0, dgCount = 0, ugCount = 0;
-
-  // Matriz plan x real
-  const matrix = {};
-  // Por MLP (contrato)
-  const mlpStats = {};
-  // Por veículo planejado — desvios
-  const vehiclePlan = {};
-  // Downgrades/Upgrades por MLP
-  const dgMLP = {}, ugMLP = {};
-  // Por veículo plano — quem mais virou outro
-  const vehicleDeviation = {};
-
-  csvData.forEach(r => {
-    const plan = (r['MODAL_PLAN'] || '').trim() || '—';
-    const real = (r['MODAL_REAL'] || '').trim() || '—';
-    const mlp  = (r['MLP'] || '').trim() || '—';
-
-    // matriz
-    const k = plan + '||' + real;
-    matrix[k] = (matrix[k] || 0) + 1;
-
-    // MLP — stats
-    if (!mlpStats[mlp]) mlpStats[mlp] = { total:0, match:0, dg:0, ug:0 };
-    mlpStats[mlp].total++;
-
-    // Veículo plano — total + desvios
-    if (!vehiclePlan[plan]) vehiclePlan[plan] = { total:0, match:0, dg:0, ug:0 };
-    vehiclePlan[plan].total++;
-
-    if (plan === real || (plan && real && plan.toLowerCase() === real.toLowerCase())) {
-      matchCount++;
-      mlpStats[mlp].match++;
-      vehiclePlan[plan].match++;
-    } else if (vrank(plan) > vrank(real)) {
-      dgCount++;
-      mlpStats[mlp].dg++;
-      vehiclePlan[plan].dg++;
-      dgMLP[mlp] = (dgMLP[mlp] || 0) + 1;
-      // Desvio: planejado → real (downgrade)
-      const dk = plan + ' → ' + real;
-      vehicleDeviation[dk] = (vehicleDeviation[dk] || 0) + 1;
-    } else if (vrank(plan) < vrank(real)) {
-      ugCount++;
-      mlpStats[mlp].ug++;
-      vehiclePlan[plan].ug++;
-      ugMLP[mlp] = (ugMLP[mlp] || 0) + 1;
-      const dk = plan + ' → ' + real;
-      vehicleDeviation[dk] = (vehicleDeviation[dk] || 0) + 1;
-    } else {
-      // rank igual mas valores diferentes — desvio lateral
-      const dk = plan + ' → ' + real;
-      vehicleDeviation[dk] = (vehicleDeviation[dk] || 0) + 1;
-    }
-  });
-
-  const deviationCount = dgCount + ugCount;
-
-  agg = {
-    total,
-    matchCount, dgCount, ugCount, deviationCount,
-    aderPct: total ? ((matchCount/total)*100) : 0,
-    desvPct: total ? ((deviationCount/total)*100) : 0,
-    matrix: Object.entries(matrix).map(([k,v]) => { const [p,r] = k.split('||'); return [p,r,v]; }).sort((a,b) => b[2]-a[2]),
-    mlpStats: Object.entries(mlpStats).map(([mlp,s]) => ({mlp, ...s, devPct: s.total ? ((s.dg+s.ug)/s.total)*100 : 0})).sort((a,b) => b.total - a.total),
-    vehiclePlan: Object.entries(vehiclePlan).map(([v,s]) => ({plan:v, ...s, devPct: s.total ? ((s.dg+s.ug)/s.total)*100 : 0})).sort((a,b) => (b.dg+b.ug) - (a.dg+a.ug)),
-    dgMLP: Object.entries(dgMLP).sort((a,b) => b[1]-a[1]),
-    ugMLP: Object.entries(ugMLP).sort((a,b) => b[1]-a[1]),
-    vehicleDeviation: Object.entries(vehicleDeviation).sort((a,b) => b[1]-a[1]),
-  };
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p.dataset.f === f));
+  applyFilter();
 }
 
-// === Render ===
+function applyFilter() {
+  if (!csvRows) return;
+  let filtered;
+  if (currentFilter === 'all') filtered = csvRows;
+  else if (currentFilter === 'match') {
+    filtered = csvRows.filter(r => {
+      const p = String(r['MODAL_PLAN']||'').toLowerCase();
+      const re = String(r['MODAL_REAL']||'').toLowerCase();
+      return p && re && p === re;
+    });
+  }
+  else if (currentFilter === 'dg') {
+    filtered = csvRows.filter(r => vrank(r['MODAL_PLAN']) > vrank(r['MODAL_REAL']));
+  }
+  else if (currentFilter === 'ug') {
+    filtered = csvRows.filter(r => vrank(r['MODAL_PLAN']) < vrank(r['MODAL_REAL']));
+  }
+  rowsFiltered = filtered;
+  document.getElementById('filterInfo').textContent = `${fmtN(filtered.length)} de ${fmtN(csvRows.length)} rotas`;
+  aggregate();
+  render();
+}
+
+function aggregate() {
+  if (!rowsFiltered) return;
+
+  const rows = rowsFiltered.map(r => {
+    const plan = parseFloat(String(r['ORH_PLAN']).replace(',','.'));
+    const real = parseFloat(String(r['ORH_REAL']).replace(',','.'));
+    const planH = plan / 60;
+    const realH = real / 60;
+    const diff = real - plan; // em minutos
+    const mlp = (r['MLP'] || '').trim() || '—';
+    const modal = (r['MODAL_PLAN'] || '').trim() || '—';
+    const realModal = (r['MODAL_REAL'] || '').trim() || '—';
+    const route = r['SHP_LG_ROUTE_ID'] || r['ROUTE_ID'] || r['ROTA'] || '—';
+    let category = 'match';
+    if (vrank(modal) > vrank(realModal)) category = 'dg';
+    else if (vrank(modal) < vrank(realModal)) category = 'ug';
+    else if (modal.toLowerCase() !== realModal.toLowerCase()) category = 'other';
+    return { plan, real, planH, realH, diff, mlp, modal, realModal, route, category };
+  });
+
+  const total = rows.length;
+  const totalPlanH = rows.reduce((s,r) => s+r.planH, 0);
+  const totalRealH = rows.reduce((s,r) => s+r.realH, 0);
+  const diffH = totalRealH - totalPlanH;
+  const avgDiffMin = total ? rows.reduce((s,r) => s+r.diff, 0) / total : 0;
+  // Aderência: % de rotas dentro de ±10% do plan
+  const adherent = rows.filter(r => Math.abs(r.diff) <= (r.plan * 0.10)).length;
+  const aderPct = total ? (adherent/total)*100 : 0;
+
+  // Por MLP
+  const byMLP = {};
+  rows.forEach(r => {
+    if (!byMLP[r.mlp]) byMLP[r.mlp] = { rows: 0, plan: 0, real: 0, adherent: 0 };
+    const m = byMLP[r.mlp];
+    m.rows++; m.plan += r.plan; m.real += r.real;
+    if (Math.abs(r.diff) <= r.plan*0.10) m.adherent++;
+  });
+  const mlpAgg = Object.entries(byMLP).map(([mlp, s]) => ({
+    mlp,
+    rows: s.rows,
+    planAvgH: (s.plan/s.rows)/60,
+    realAvgH: (s.real/s.rows)/60,
+    diffAvgMin: (s.real - s.plan) / s.rows,
+    aderPct: s.rows ? (s.adherent/s.rows)*100 : 0
+  })).sort((a,b) => b.rows - a.rows);
+
+  // Por Modal
+  const byModal = {};
+  rows.forEach(r => {
+    if (!byModal[r.modal]) byModal[r.modal] = { rows: 0, plan: 0, real: 0 };
+    const m = byModal[r.modal];
+    m.rows++; m.plan += r.plan; m.real += r.real;
+  });
+  const modalAgg = Object.entries(byModal).map(([modal, s]) => ({
+    modal,
+    rows: s.rows,
+    planAvgH: (s.plan/s.rows)/60,
+    realAvgH: (s.real/s.rows)/60,
+    diffAvgMin: (s.real - s.plan) / s.rows
+  })).sort((a,b) => b.rows - a.rows);
+
+  // DG/UG/Match
+  const cat = { match: [], dg: [], ug: [], other: [] };
+  rows.forEach(r => { cat[r.category].push(r); });
+  const catAgg = ['match','dg','ug','other'].map(k => {
+    const arr = cat[k];
+    if (arr.length === 0) return { cat: k, rows: 0, planAvgMin: 0, realAvgMin: 0, diffAvgMin: 0 };
+    const tp = arr.reduce((s,r) => s+r.plan, 0);
+    const tr = arr.reduce((s,r) => s+r.real, 0);
+    return {
+      cat: k,
+      rows: arr.length,
+      planAvgMin: tp/arr.length,
+      realAvgMin: tr/arr.length,
+      diffAvgMin: (tr-tp)/arr.length
+    };
+  }).filter(c => c.rows > 0);
+
+  // Top atrasos & adiantamentos
+  const sorted = [...rows].sort((a,b) => b.diff - a.diff);
+  const topAtrasos = sorted.slice(0, 10);
+  const topAdiantamentos = sorted.slice(-10).reverse();
+
+  // Histograma — buckets de Δ
+  const buckets = [
+    { lbl: '< -60', min: -Infinity, max: -60, type: 'negative' },
+    { lbl: '-60 a -30', min: -60, max: -30, type: 'negative' },
+    { lbl: '-30 a -10', min: -30, max: -10, type: 'negative' },
+    { lbl: '±10', min: -10, max: 10, type: 'zero' },
+    { lbl: '+10 a +30', min: 10, max: 30, type: 'positive' },
+    { lbl: '+30 a +60', min: 30, max: 60, type: 'positive' },
+    { lbl: '> +60', min: 60, max: Infinity, type: 'positive' }
+  ];
+  buckets.forEach(b => { b.count = 0; });
+  rows.forEach(r => {
+    const b = buckets.find(b => r.diff > b.min && r.diff <= b.max);
+    if (b) b.count++;
+  });
+
+  agg = { total, totalPlanH, totalRealH, diffH, avgDiffMin, aderPct, mlpAgg, modalAgg, catAgg, topAtrasos, topAdiantamentos, buckets, rows };
+}
+
 function render() {
   if (!agg) return;
-  const { total, matchCount, dgCount, ugCount, deviationCount, aderPct, desvPct, matrix, mlpStats, vehiclePlan, dgMLP, ugMLP, vehicleDeviation } = agg;
+  const { total, totalPlanH, totalRealH, diffH, avgDiffMin, aderPct, mlpAgg, modalAgg, catAgg, topAtrasos, topAdiantamentos, buckets, rows } = agg;
 
   // KPIs
-  document.getElementById('kpiTotal').textContent = fmt(total);
-  document.getElementById('kpiMatch').textContent = fmt(matchCount);
-  document.getElementById('kpiDG').textContent = fmt(dgCount);
-  document.getElementById('kpiUG').textContent = fmt(ugCount);
-  document.getElementById('kpiAder').textContent = aderPct.toFixed(1).replace('.',',') + '%';
-  document.getElementById('kpiDesv').textContent = desvPct.toFixed(1).replace('.',',') + '%';
+  document.getElementById('kpiTotal').textContent = fmtN(total);
+  document.getElementById('kpiPlanH').textContent = fmtH(totalPlanH);
+  document.getElementById('kpiRealH').textContent = fmtH(totalRealH);
+  document.getElementById('kpiVar').textContent = (diffH >= 0 ? '+' : '') + diffH.toFixed(1).replace('.',',') + 'h';
+  document.getElementById('kpiVar').style.color = diffH > 0 ? 'var(--red)' : diffH < 0 ? 'var(--green)' : 'var(--navy)';
+  document.getElementById('kpiAder').textContent = fmtPct(aderPct);
+  document.getElementById('kpiAvgDiff').textContent = (avgDiffMin >= 0 ? '+' : '') + avgDiffMin.toFixed(0) + ' min';
 
-  const heat = (i) => i === 0 ? '1' : i === 1 ? '2' : i === 2 ? '3' : i === 3 ? '4' : '';
-
-  // Tabela 1: Plan → Real (top 15 combinações)
-  const tblPlanReal = `
-    <div class="table-card">
-      <div class="table-card-title">Plan → Real (Top 15)</div>
-      <div class="tbl-head cols-mot"><span>Planejado</span><span>Real</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
-      ${matrix.slice(0,15).map(([p,r,v],i) => `
-        <div class="tbl-row cols-mot" data-heat="${heat(i)}"><span class="cell-ellipsis" title="${p}">${p}</span><span class="cell-ellipsis" title="${r}">${r}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,total)}</span></div>
-      `).join('')}
+  // === Comparativo Plan vs Real ===
+  const topMlp = mlpAgg.slice(0, 10);
+  const maxH = Math.max(...topMlp.map(m => Math.max(m.planAvgH, m.realAvgH)), 0.1);
+  document.getElementById('compareBars').innerHTML = topMlp.map(m => {
+    const planW = (m.planAvgH/maxH*100).toFixed(1);
+    const realW = (m.realAvgH/maxH*100).toFixed(1);
+    const diffCls = m.diffAvgMin > 5 ? 'up' : m.diffAvgMin < -5 ? 'down' : 'zero';
+    return `<div class="compare-row">
+      <span class="compare-row-label" title="${m.mlp}">${m.mlp}</span>
+      <div class="compare-row-bars">
+        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${planW}%">${m.planAvgH.toFixed(1)}h</div></div>
+        <div class="compare-bar-track"><div class="compare-bar real" style="width:${realW}%">${m.realAvgH.toFixed(1)}h</div></div>
+      </div>
+      <span class="compare-row-diff ${diffCls}">${(m.diffAvgMin >= 0 ? '+' : '')}${m.diffAvgMin.toFixed(0)}m</span>
     </div>`;
+  }).join('');
 
-  // Tabela 2: Plan x Real por Contrato (MLP — todos)
-  const tblContrato = `
-    <div class="table-card">
-      <div class="table-card-title">Por Contrato (MLP)</div>
-      <div class="tbl-head cols-3"><span>MLP</span><span>Match·DG·UG</span><span style="text-align:right">TOT</span><span style="text-align:right">% Desv</span></div>
-      ${mlpStats.slice(0,15).map((s,i) => `
-        <div class="tbl-row cols-3" data-heat="${heat(i)}">
-          <span class="cell-ellipsis" title="${s.mlp}">${s.mlp}</span>
-          <span class="cell-ellipsis" style="font-size:10.5px;color:var(--muted);">${s.match}·${s.dg}·${s.ug}</span>
-          <span class="num">${fmt(s.total)}</span>
-          <span class="pct">${s.devPct.toFixed(1).replace('.',',')}%</span>
-        </div>
-      `).join('')}
+  // === Histograma ===
+  const maxCount = Math.max(...buckets.map(b => b.count), 1);
+  document.getElementById('histoBars').innerHTML = buckets.map(b => {
+    const h = (b.count/maxCount*100).toFixed(1);
+    return `<div class="histo-bar-wrap">
+      <div class="histo-bar ${b.type}" style="height:${h}%">
+        ${b.count > 0 ? `<div class="histo-bar-val">${b.count}</div>` : ''}
+      </div>
+      <div class="histo-bar-lbl">${b.lbl}</div>
     </div>`;
+  }).join('');
 
-  // Tabela 3: Desvios — combinação Plan → Real (excluindo match)
-  const desvOnly = vehicleDeviation;
-  const tblDesvios = `
-    <div class="table-card">
-      <div class="table-card-title">Top Desvios (Plan → Real)</div>
-      <div class="tbl-head cols-2"><span>Plan → Real</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
-      ${desvOnly.slice(0,15).map(([k,v],i) => `
-        <div class="tbl-row cols-2" data-heat="${heat(i)}"><span class="cell-ellipsis" title="${k}">${k}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,deviationCount)}</span></div>
-      `).join('')}
+  // === Scatter Plan x Real (em horas) ===
+  const W = 400, H = 220, PAD = 30;
+  const allH = rows.flatMap(r => [r.planH, r.realH]);
+  const maxScatterH = Math.max(...allH, 1);
+  const xScale = v => PAD + (v/maxScatterH) * (W - 2*PAD);
+  const yScale = v => H - PAD - (v/maxScatterH) * (H - 2*PAD);
+  const sampleSize = Math.min(rows.length, 800); // cap p/ performance visual
+  const sample = rows.length > sampleSize ? rows.filter((_,i) => i % Math.ceil(rows.length/sampleSize) === 0) : rows;
+  const dots = sample.map(r => `<circle cx="${xScale(r.planH).toFixed(1)}" cy="${yScale(r.realH).toFixed(1)}" r="2.2" class="scatter-dot"/>`).join('');
+  document.getElementById('scatterSvg').innerHTML = `
+    <line class="scatter-axis" x1="${PAD}" y1="${H-PAD}" x2="${W-PAD}" y2="${H-PAD}"/>
+    <line class="scatter-axis" x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${H-PAD}"/>
+    <line class="scatter-diagonal" x1="${xScale(0)}" y1="${yScale(0)}" x2="${xScale(maxScatterH)}" y2="${yScale(maxScatterH)}"/>
+    ${dots}
+    <text class="scatter-axis-lbl" x="${W/2}" y="${H-6}" text-anchor="middle">Plan (h) →</text>
+    <text class="scatter-axis-lbl" x="6" y="${H/2}" text-anchor="middle" transform="rotate(-90 6 ${H/2})">← Real (h)</text>
+    <text class="scatter-axis-lbl" x="${W-PAD-2}" y="${H-PAD-4}" text-anchor="end">${maxScatterH.toFixed(1)}h</text>
+  `;
+
+  // === Tabela MLP ===
+  document.getElementById('tblMLP').innerHTML = mlpAgg.slice(0,15).map(m => {
+    const diffCls = m.diffAvgMin > 5 ? 'up' : m.diffAvgMin < -5 ? 'down' : 'zero';
+    const aderCls = m.aderPct > 80 ? 'down' : m.aderPct > 60 ? 'zero' : 'up';
+    return `<div class="data-table-row cols-mlp">
+      <span class="cell-ellipsis" title="${m.mlp}">${m.mlp}</span>
+      <span class="num">${fmtN(m.rows)}</span>
+      <span class="num">${m.planAvgH.toFixed(1)}</span>
+      <span class="num">${m.realAvgH.toFixed(1)}</span>
+      <span class="num ${diffCls}">${m.diffAvgMin >= 0 ? '+' : ''}${m.diffAvgMin.toFixed(0)}</span>
+      <span class="num ${aderCls}">${fmtPct(m.aderPct)}</span>
     </div>`;
+  }).join('');
 
-  // Tabela 4: Veículos com maior desvio (% sobre seu total)
-  const tblVeicDesv = `
-    <div class="table-card">
-      <div class="table-card-title">Veículos com maior desvio</div>
-      <div class="tbl-head cols-3"><span>Veículo Plan</span><span>DG·UG</span><span style="text-align:right">DESV</span><span style="text-align:right">%</span></div>
-      ${vehiclePlan.filter(v => (v.dg+v.ug) > 0).slice(0,15).map((v,i) => `
-        <div class="tbl-row cols-3" data-heat="${heat(i)}">
-          <span class="cell-ellipsis" title="${v.plan}">${v.plan}</span>
-          <span class="cell-ellipsis" style="font-size:10.5px;color:var(--muted);">${v.dg}·${v.ug}</span>
-          <span class="num">${fmt(v.dg+v.ug)}</span>
-          <span class="pct">${v.devPct.toFixed(1).replace('.',',')}%</span>
-        </div>
-      `).join('')}
+  // === Tabela Modal ===
+  document.getElementById('tblModal').innerHTML = modalAgg.map(m => {
+    const diffCls = m.diffAvgMin > 5 ? 'up' : m.diffAvgMin < -5 ? 'down' : 'zero';
+    return `<div class="data-table-row cols-modal">
+      <span class="cell-ellipsis" title="${m.modal}">${m.modal}</span>
+      <span class="num">${fmtN(m.rows)}</span>
+      <span class="num">${m.planAvgH.toFixed(1)}</span>
+      <span class="num">${m.realAvgH.toFixed(1)}</span>
+      <span class="num ${diffCls}">${m.diffAvgMin >= 0 ? '+' : ''}${m.diffAvgMin.toFixed(0)}</span>
     </div>`;
+  }).join('');
 
-  document.getElementById('tableGrid').innerHTML = tblPlanReal + tblContrato + tblDesvios + tblVeicDesv;
-
-  // Charts: Downgrades por MLP + Upgrades por MLP (top 8)
-  const renderBars = (data, color) => {
-    if (data.length === 0) return '<div style="text-align:center;padding:20px;color:var(--muted);font-size:11px;">Sem dados</div>';
-    const max = Math.max(...data.map(d => d[1]));
-    return data.map(([lbl, v]) => {
-      const h = Math.max(8, (v / max) * 110);
-      const short = lbl.length > 10 ? lbl.substring(0,9) + '…' : lbl;
-      return `<div class="chart-bar-wrap"><div class="chart-bar" style="height:${h}px;background:${color};"><div class="chart-bar-val">${fmt(v)}</div></div><div class="chart-bar-lbl" title="${lbl}">${short}</div></div>`;
-    }).join('');
-  };
-
-  document.getElementById('chartsGrid').innerHTML = `
-    <div class="chart-card">
-      <div class="chart-card-title">Downgrades por MLP <span style="font-size:10px;color:var(--red);font-weight:600;">▼ Veículo menor</span></div>
-      <div class="chart-bars">${renderBars(dgMLP.slice(0,8), 'var(--red)')}</div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-title">Upgrades por MLP <span style="font-size:10px;color:var(--green);font-weight:600;">▲ Veículo maior</span></div>
-      <div class="chart-bars">${renderBars(ugMLP.slice(0,8), 'var(--green)')}</div>
+  // === Tabela DG/UG ===
+  const catNames = { match: 'Match (Plan = Real)', dg: 'Downgrade (veículo menor)', ug: 'Upgrade (veículo maior)', other: 'Lateral (mesma classe)' };
+  const catColors = { match: 'var(--green)', dg: 'var(--red)', ug: 'var(--blue)', other: 'var(--muted)' };
+  document.getElementById('tblDgUg').innerHTML = catAgg.map(c => {
+    const diffCls = c.diffAvgMin > 5 ? 'up' : c.diffAvgMin < -5 ? 'down' : 'zero';
+    return `<div class="data-table-row cols-dg">
+      <span style="color:${catColors[c.cat]};font-weight:800;">${catNames[c.cat]}</span>
+      <span class="num">${fmtN(c.rows)}</span>
+      <span class="num">${(c.planAvgMin/60).toFixed(1)}h <span style="color:var(--muted);font-weight:600;font-size:10.5px;">(${c.planAvgMin.toFixed(0)}m)</span></span>
+      <span class="num">${(c.realAvgMin/60).toFixed(1)}h <span style="color:var(--muted);font-weight:600;font-size:10.5px;">(${c.realAvgMin.toFixed(0)}m)</span></span>
+      <span class="num ${diffCls}">${c.diffAvgMin >= 0 ? '+' : ''}${c.diffAvgMin.toFixed(0)} min</span>
     </div>`;
+  }).join('');
 
-  // Narrative stats
-  document.getElementById('hdrDG').textContent = fmt(dgCount) + ' rotas';
-  document.getElementById('hdrPctDG').textContent = '(' + pct(dgCount, total) + ')';
-  document.getElementById('hdrUG').textContent = fmt(ugCount) + ' rotas';
-  document.getElementById('hdrPctUG').textContent = '(' + pct(ugCount, total) + ')';
-  document.getElementById('hdrAder').textContent = aderPct.toFixed(1).replace('.',',') + '%';
+  // === Top Atrasos & Adiantamentos ===
+  const renderTopRoute = r => `
+    <div class="data-table-row cols-rota">
+      <span class="num" style="text-align:left;">${r.route}</span>
+      <span class="cell-ellipsis" style="font-size:10.5px;color:var(--muted);">${r.mlp}</span>
+      <span class="num">${r.planH.toFixed(1)}h</span>
+      <span class="num">${r.realH.toFixed(1)}h</span>
+      <span class="num ${r.diff > 0 ? 'up' : 'down'}">${r.diff >= 0 ? '+' : ''}${r.diff.toFixed(0)}m</span>
+    </div>`;
+  document.getElementById('tblAtrasos').innerHTML = topAtrasos.map(renderTopRoute).join('');
+  document.getElementById('tblAdiantamentos').innerHTML = topAdiantamentos.map(renderTopRoute).join('');
+
+  // Narrative headers
+  document.getElementById('hdrAder').textContent = `${fmtPct(aderPct)} aderência · Δ médio ${(avgDiffMin >= 0 ? '+' : '')}${avgDiffMin.toFixed(0)}m`;
+  const atrasoCount = rows.filter(r => r.diff > 10).length;
+  document.getElementById('hdrAtraso').textContent = `${fmtN(atrasoCount)} rotas (${fmtPct(atrasoCount/total*100)})`;
+  const dgInfo = catAgg.find(c => c.cat === 'dg');
+  const ugInfo = catAgg.find(c => c.cat === 'ug');
+  document.getElementById('hdrDgUg').textContent = `DG: ${dgInfo?fmtN(dgInfo.rows):'0'} · UG: ${ugInfo?fmtN(ugInfo.rows):'0'}`;
 }
 
 function generateReport() {
-  if (!agg) { alert('Importe o CSV primeiro'); return; }
-  const { total, matchCount, dgCount, ugCount, aderPct, desvPct, matrix, mlpStats, vehiclePlan, dgMLP, ugMLP, vehicleDeviation } = agg;
-
+  if (!agg) return;
+  const { total, totalPlanH, totalRealH, diffH, avgDiffMin, aderPct, mlpAgg, modalAgg, catAgg, topAtrasos, topAdiantamentos } = agg;
   const dateStr = (() => {
     const d = document.getElementById('reportDate').value;
     if (!d) return new Date().toLocaleDateString('pt-BR');
     const [y,m,day] = d.split('-');
     return `${day}/${m}/${y}`;
   })();
-
-  const txtDG = document.getElementById('txtDG').value.trim();
-  const txtUG = document.getElementById('txtUG').value.trim();
+  const filterLbl = currentFilter === 'all' ? 'Todas' : currentFilter === 'match' ? 'Apenas Match' : currentFilter === 'dg' ? 'Apenas Downgrades' : 'Apenas Upgrades';
   const txtAder = document.getElementById('txtAder').value.trim();
+  const txtAtraso = document.getElementById('txtAtraso').value.trim();
+  const txtDgUg = document.getElementById('txtDgUg').value.trim();
 
-  const report = `ORH LM SSP20 | ${dateStr}
+  const report = `ORH LM SSP20 | ${dateStr} | Filtro: ${filterLbl}
 ═══════════════════════════════════════════════════════════
 INDICADORES GERAIS
-  Total rotas: ${fmt(total)}
-  Plan = Real (Aderência): ${fmt(matchCount)} (${aderPct.toFixed(1).replace('.',',')}%)
-  Downgrades: ${fmt(dgCount)} (${pct(dgCount,total)})
-  Upgrades: ${fmt(ugCount)} (${pct(ugCount,total)})
-  Total desvios: ${fmt(dgCount + ugCount)} (${desvPct.toFixed(1).replace('.',',')}%)
+  Total rotas: ${fmtN(total)}
+  ORH Plan total: ${fmtH(totalPlanH)}
+  ORH Real total: ${fmtH(totalRealH)}
+  Variação: ${(diffH >= 0 ? '+' : '')}${diffH.toFixed(1)} h
+  Aderência (±10%): ${fmtPct(aderPct)}
+  Δ médio por rota: ${(avgDiffMin >= 0 ? '+' : '')}${avgDiffMin.toFixed(0)} min
 
-PLAN → REAL (top 10)
-${matrix.slice(0,10).map(([p,r,v]) => `  ${p} → ${r}: ${fmt(v)} (${pct(v,total)})`).join('\n')}
+POR MLP (top 10)
+${mlpAgg.slice(0,10).map(m => `  ${m.mlp}: ${m.rows} rotas | plan ${m.planAvgH.toFixed(1)}h | real ${m.realAvgH.toFixed(1)}h | Δ ${(m.diffAvgMin >= 0 ? '+' : '')}${m.diffAvgMin.toFixed(0)}m | ader ${fmtPct(m.aderPct)}`).join('\n')}
 
-POR CONTRATO (MLP — top 10)
-${mlpStats.slice(0,10).map(s => `  ${s.mlp}: tot ${fmt(s.total)} | match ${s.match} | DG ${s.dg} | UG ${s.ug} | desv ${s.devPct.toFixed(1).replace('.',',')}%`).join('\n')}
+POR MODAL
+${modalAgg.map(m => `  ${m.modal}: ${m.rows} rotas | plan ${m.planAvgH.toFixed(1)}h | real ${m.realAvgH.toFixed(1)}h | Δ ${(m.diffAvgMin >= 0 ? '+' : '')}${m.diffAvgMin.toFixed(0)}m`).join('\n')}
 
-VEÍCULOS COM MAIOR DESVIO
-${vehiclePlan.filter(v => (v.dg+v.ug) > 0).slice(0,10).map(v => `  ${v.plan}: ${fmt(v.dg+v.ug)} desvios (DG ${v.dg} · UG ${v.ug}) — ${v.devPct.toFixed(1).replace('.',',')}% do plano`).join('\n')}
+ORH × DG/UG
+${catAgg.map(c => {
+  const name = c.cat === 'match' ? 'Match' : c.cat === 'dg' ? 'Downgrade' : c.cat === 'ug' ? 'Upgrade' : 'Lateral';
+  return `  ${name}: ${c.rows} rotas | plan médio ${c.planAvgMin.toFixed(0)}m | real médio ${c.realAvgMin.toFixed(0)}m | Δ ${(c.diffAvgMin >= 0 ? '+' : '')}${c.diffAvgMin.toFixed(0)}m`;
+}).join('\n')}
 
-DOWNGRADES POR MLP
-${dgMLP.slice(0,10).map(([m,v]) => `  ${m}: ${fmt(v)}`).join('\n')}
+TOP 5 ATRASOS
+${topAtrasos.slice(0,5).map(r => `  Rota ${r.route} (${r.mlp}): plan ${r.planH.toFixed(1)}h | real ${r.realH.toFixed(1)}h | Δ +${r.diff.toFixed(0)}m`).join('\n')}
 
-UPGRADES POR MLP
-${ugMLP.slice(0,10).map(([m,v]) => `  ${m}: ${fmt(v)}`).join('\n')}
-${txtDG ? '\nDOWNGRADES — contexto:\n' + txtDG : ''}
-${txtUG ? '\nUPGRADES — contexto:\n' + txtUG : ''}
-${txtAder ? '\nADERÊNCIA — contexto:\n' + txtAder : ''}`;
+TOP 5 ADIANTAMENTOS
+${topAdiantamentos.slice(0,5).map(r => `  Rota ${r.route} (${r.mlp}): plan ${r.planH.toFixed(1)}h | real ${r.realH.toFixed(1)}h | Δ ${r.diff.toFixed(0)}m`).join('\n')}
+${txtAder ? '\nANÁLISE GERAL:\n' + txtAder : ''}
+${txtAtraso ? '\nATRASOS:\n' + txtAtraso : ''}
+${txtDgUg ? '\nDG/UG vs ORH:\n' + txtDgUg : ''}`;
 
   document.getElementById('reportOutput').textContent = report;
   document.getElementById('outputSection').style.display = 'block';
@@ -774,17 +1086,41 @@ function copyReport() {
 
 function clearAll() {
   if (!confirm('Limpar tudo?')) return;
-  csvData = null; agg = null;
+  csvRows = null; rowsFiltered = null; agg = null;
   document.getElementById('zoneCSV').classList.remove('loaded-csv');
   document.getElementById('csvLabel').innerHTML = 'Importar CSV BQ Routing';
-  ['kpiTotal','kpiMatch','kpiDG','kpiUG','kpiAder','kpiDesv'].forEach(id => document.getElementById(id).textContent = '—');
-  ['txtDG','txtUG','txtAder'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('tableGrid').innerHTML = '<div class="dash-empty" style="grid-column:1/-1;">Importe o CSV BQ Routing para visualizar a análise de Plan x Real, desvios e contratos.</div>';
-  document.getElementById('chartsGrid').innerHTML = '';
+  ['kpiTotal','kpiPlanH','kpiRealH','kpiVar','kpiAder','kpiAvgDiff'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = '—';
+    el.style.color = '';
+  });
+  ['txtAder','txtAtraso','txtDgUg'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('analysisArea').style.display = 'none';
+  document.getElementById('filterBar').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'block';
   document.getElementById('outputSection').style.display = 'none';
   document.getElementById('genBtn').disabled = true;
   document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 }
+
+
+// === Topbar clock ===
+function tickClock() {
+  const n = new Date();
+  const lc = document.getElementById('live-clock');
+  const cd = document.getElementById('clock-date');
+  if (lc) {
+    lc.textContent = String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+  }
+  if (cd) {
+    const DAYS_SHORT = ['DOM','SEG','TER','QUA','QUI','SEX','SAB'];
+    const MONTHS_SHORT = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    cd.textContent = DAYS_SHORT[n.getDay()] + ' ' + String(n.getDate()).padStart(2,'0') + ' ' + MONTHS_SHORT[n.getMonth()];
+  }
+}
+tickClock();
+setInterval(tickClock, 1000);
+
 </script>
 </body>
 </html>
