@@ -257,46 +257,35 @@
     .primordial-footer { margin-top: 8px; }
 
     /* ── TASK TABLE ── */
-    /* ── TASK TIMELINE — sequencial com prazo claro ── */
-    .task-timeline {
-      position: relative;
-      padding-left: 40px;
-      margin-bottom: 2rem;
-    }
-    .task-timeline::before {
-      content: '';
-      position: absolute;
-      left: 17px; top: 14px; bottom: 14px;
-      width: 2px;
-      background: var(--border);
-      z-index: 0;
-    }
+    /* ── TASK TIMELINE — agrupada por horário + sequência interna ── */
+    .task-timeline { display: flex; flex-direction: column; gap: 6px; margin-bottom: 2rem; }
 
-    /* Step marker — numeração circular */
-    .task-step {
-      position: absolute;
-      left: -32px; top: 14px;
-      width: 32px; height: 32px;
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800;
-      color: var(--muted);
+    .time-group { display: flex; flex-direction: column; gap: 8px; padding: 10px 0 16px; border-top: 1px solid var(--border); }
+    .time-group:first-child { border-top: none; padding-top: 0; }
+
+    .time-group-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+    .time-group-marker {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--navy); color: var(--yellow);
+      padding: 6px 14px; border-radius: 10px;
+      font-size: 13px; font-weight: 800;
       font-variant-numeric: tabular-nums;
-      z-index: 2;
-      transition: all .2s;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      letter-spacing: -.1px;
+      box-shadow: 0 2px 8px rgba(26,26,46,.15);
     }
-    .task-card.done .task-step { background: var(--green); color: #fff; border-color: var(--green); }
-    .task-card.done .task-step::before { content: '✓'; font-size: 16px; }
-    .task-card.done .task-step .step-num { display: none; }
-    .task-card.next-up .task-step { background: var(--yellow); color: var(--navy); border-color: var(--yellow); box-shadow: 0 0 0 0 rgba(255,230,0,.5); animation: stepPulse 1.8s infinite; }
-    @keyframes stepPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,230,0,.5); } 50% { box-shadow: 0 0 0 8px rgba(255,230,0,0); } }
+    [data-theme="dark"] .time-group-marker { background: var(--yellow); color: var(--navy); }
+    .time-group-marker.now { animation: tgmPulse 1.8s infinite; }
+    @keyframes tgmPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,230,0,.5); } 50% { box-shadow: 0 0 0 6px rgba(255,230,0,0); } }
+    .time-group-marker::before { content: '⏱'; font-size: 13px; }
+    .time-group-count { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+    .time-group-count b { color: var(--text); font-weight: 800; }
+    .time-group-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
 
-    /* Card */
+    /* Task card */
     .task-card {
       position: relative;
-      display: grid; grid-template-columns: 4px 28px 1fr auto;
+      display: grid; grid-template-columns: 4px 28px 28px 1fr auto;
       gap: 12px; align-items: center;
       padding: 13px 16px 13px 0;
       background: var(--surface);
@@ -304,13 +293,12 @@
       border-radius: var(--radius-lg);
       cursor: pointer;
       transition: all .2s cubic-bezier(.4,0,.2,1);
-      margin-bottom: 10px;
-      overflow: visible;
+      overflow: hidden;
     }
     .task-card::before {
       content: '';
       position: absolute; left: 0; top: 0; bottom: 0;
-      width: 4px; border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      width: 4px;
       background: var(--blue);
       transition: background .2s;
     }
@@ -324,8 +312,29 @@
     .task-card.done::before { background: var(--green); }
     [data-theme="dark"] .task-card.done { background: rgba(0,166,80,.08); }
     .task-card.next-up { border-color: rgba(255,230,0,.5); box-shadow: 0 0 0 1px rgba(255,230,0,.3), 0 4px 18px rgba(255,230,0,.18); }
+    .task-card.late:not(.done) { border-color: rgba(227,38,47,.25); background: rgba(227,38,47,.025); }
+    [data-theme="dark"] .task-card.late:not(.done) { background: rgba(227,38,47,.05); }
 
     .task-card .spacer-1 { width: 4px; }
+
+    .task-step {
+      width: 28px; height: 28px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10.5px; font-weight: 800;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+    .task-card.done .task-step { background: var(--green); color: #fff; border-color: var(--green); }
+    .task-card.done .task-step::before { content: '✓'; font-size: 14px; }
+    .task-card.done .task-step .step-num { display: none; }
+    .task-card.next-up .task-step { background: var(--yellow); color: var(--navy); border-color: var(--yellow); animation: stepPulse 1.8s infinite; }
+    @keyframes stepPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,230,0,.5); } 50% { box-shadow: 0 0 0 6px rgba(255,230,0,0); } }
+
     .task-check-area { display: flex; align-items: center; justify-content: center; }
     .task-check-box { width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 7px; cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; background: var(--bg); flex-shrink: 0; }
     .task-check-box:hover { border-color: var(--text); transform: scale(1.05); }
@@ -343,7 +352,6 @@
     .task-card:hover .task-link-arrow { opacity: 1; transform: translate(2px, -2px); }
     .task-desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.42; }
 
-    /* Meta: prio + deadline */
     .task-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
     .task-prio-pill {
       display: inline-flex; align-items: center; gap: 4px;
@@ -356,7 +364,6 @@
     .task-prio-pill.baixa { background: rgba(107,115,148,.12); color: var(--muted); }
     .task-prio-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-    /* Deadline badge — duas linhas: label + horário */
     .task-deadline {
       display: inline-flex; flex-direction: column; align-items: center;
       padding: 4px 11px;
@@ -365,76 +372,61 @@
       gap: 1px;
       white-space: nowrap;
       border: 1px solid transparent;
-      transition: all .15s;
     }
-    .task-deadline-label {
-      font-size: 8px; font-weight: 800; letter-spacing: .14em;
-      text-transform: uppercase; opacity: .8;
-    }
-    .task-deadline-time {
-      font-size: 12px; font-weight: 800; letter-spacing: -.1px;
-      font-variant-numeric: tabular-nums;
-      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-    }
-    .task-deadline.ok    { background: rgba(0,166,80,.08); color: var(--green); border-color: rgba(0,166,80,.2); }
-    .task-deadline.warn  { background: rgba(245,158,11,.1); color: #D97706; border-color: rgba(245,158,11,.25); }
-    .task-deadline.late  { background: rgba(227,38,47,.1); color: var(--red); border-color: rgba(227,38,47,.25); }
-    .task-deadline.done  { background: rgba(0,166,80,.08); color: var(--green); border-color: rgba(0,166,80,.18); opacity: .7; }
-    .task-deadline-status {
-      font-size: 8.5px; font-weight: 700; opacity: .7; margin-top: 1px;
-    }
+    .task-deadline-label { font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+    .task-deadline-time { font-size: 12px; font-weight: 800; letter-spacing: -.1px; font-variant-numeric: tabular-nums; font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+    .task-deadline.ok    { background: rgba(52,131,250,.08); color: var(--blue); border-color: rgba(52,131,250,.18); }
+    .task-deadline.done  { background: rgba(0,166,80,.1); color: var(--green); border-color: rgba(0,166,80,.22); }
 
-    /* AGORA marker */
+    /* Atrasada badge — separate pill */
+    .task-late-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(227,38,47,.1); color: var(--red);
+      border: 1px solid rgba(227,38,47,.25);
+      padding: 5px 10px; border-radius: 7px;
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      animation: lateAlert 2s infinite;
+    }
+    @keyframes lateAlert { 0%,100% { background: rgba(227,38,47,.1); } 50% { background: rgba(227,38,47,.18); } }
+    .task-late-badge::before { content: '⏰'; font-size: 11px; }
+
+    /* AGORA marker entre grupos */
     .now-marker {
-      position: relative;
       display: flex; align-items: center; gap: 12px;
-      padding: 18px 0 18px 0;
+      padding: 6px 0;
       margin: 4px 0;
     }
-    .now-marker::before {
-      content: '';
-      position: absolute; left: -24px; top: 50%; transform: translateY(-50%);
-      width: 16px; height: 16px;
-      background: var(--red);
-      border: 3px solid var(--bg);
-      border-radius: 50%;
-      box-shadow: 0 0 0 2px var(--red), 0 0 12px rgba(227,38,47,.6);
-      z-index: 3;
-      animation: nowPulse 1.4s infinite;
-    }
-    @keyframes nowPulse {
-      0%,100% { box-shadow: 0 0 0 2px var(--red), 0 0 12px rgba(227,38,47,.6); }
-      50% { box-shadow: 0 0 0 2px var(--red), 0 0 18px rgba(227,38,47,.9), 0 0 0 6px rgba(227,38,47,.18); }
-    }
     .now-marker-label {
-      font-size: 11px; font-weight: 800; letter-spacing: .16em;
+      font-size: 11px; font-weight: 800; letter-spacing: .14em;
       color: var(--red); text-transform: uppercase;
-      display: flex; align-items: center; gap: 8px;
-      background: var(--bg);
-      padding: 4px 11px;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(227,38,47,.06);
+      padding: 5px 11px;
       border-radius: 14px;
       border: 1px solid rgba(227,38,47,.25);
     }
+    .now-marker-label::before {
+      content: ''; width: 8px; height: 8px;
+      border-radius: 50%; background: var(--red);
+      animation: nowDotPulse 1.2s infinite;
+    }
+    @keyframes nowDotPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(227,38,47,.5); } 50% { box-shadow: 0 0 0 5px rgba(227,38,47,0); } }
     .now-marker-time {
       font-variant-numeric: tabular-nums;
       font-family: ui-monospace, 'SF Mono', Menlo, monospace;
       font-size: 12px;
     }
-    .now-marker-line {
-      flex: 1; height: 1px;
-      background: linear-gradient(to right, rgba(227,38,47,.3) 0%, transparent 100%);
-    }
+    .now-marker-line { flex: 1; height: 1px; background: linear-gradient(to right, rgba(227,38,47,.3), transparent); }
 
     @media (max-width: 768px) {
-      .task-timeline { padding-left: 32px; }
-      .task-timeline::before { left: 11px; }
-      .task-step { left: -28px; width: 26px; height: 26px; font-size: 10px; }
-      .task-card { grid-template-columns: 4px 26px 1fr; padding: 11px 14px 11px 0; }
-      .task-meta { grid-column: 2 / -1; margin-top: 8px; justify-content: flex-start; }
+      .task-card { grid-template-columns: 4px 24px 24px 1fr; padding: 11px 14px 11px 0; }
+      .task-meta { grid-column: 3 / -1; margin-top: 8px; justify-content: flex-start; }
       .task-name-link { font-size: 13px; }
       .task-desc { font-size: 11.5px; }
-      .now-marker::before { left: -20px; width: 13px; height: 13px; }
-      .now-marker-label { font-size: 10px; padding: 3px 9px; }
+      .time-group-marker { font-size: 12px; padding: 5px 12px; }
+      .time-group-count { font-size: 9.5px; }
     }
     .th { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
     .task-row { display: grid; grid-template-columns: 32px 1fr 90px 85px 36px; padding: 11px 16px; border-bottom: 1px solid var(--border); gap: 8px; align-items: center; cursor: pointer; transition: background .1s; }
@@ -619,6 +611,10 @@
           <a href="dit-report.html" class="topbar-dropdown-item">
             <span class="item-dot" style="background:#f0b429;"></span>
             <span>DIT Report</span>
+          </a>
+          <a href="orh.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#a78bfa;"></span>
+            <span>ORH</span>
           </a>
         </div>
       </div>
@@ -1022,39 +1018,62 @@ function renderAll() {
   const now = new Date();
   const nowMin = now.getHours()*60 + now.getMinutes();
 
-  // Determinar "próxima" tarefa pendente (primeira da sequência que ainda não está done)
+  // Próxima pendente — primeira da sequência que ainda não está done
   let nextTaskId = null;
   for (const t of tasks) {
     if (!state[t.id]) { nextTaskId = t.id; break; }
   }
 
-  // Encontrar onde inserir o marcador "AGORA" — entre a última tarefa cujo deadline já passou
-  // e a próxima cujo deadline ainda não chegou
-  let nowInsertIdx = -1;
-  for (let i = 0; i < tasks.length; i++) {
-    const [h,m] = tasks[i].deadline.split(':').map(Number);
-    const tMin = h*60 + m;
-    if (tMin >= nowMin) {
-      nowInsertIdx = i;
-      break;
-    }
-  }
-  // Se nowMin já passou todos os deadlines, não mostra marker (ou mostra no fim)
-  // Se nowMin é antes de todos, mostra no topo (idx=0)
-
-  // Render
+  // Agrupar por deadline mantendo a sequência interna do array
+  const groupsMap = new Map();
   tasks.forEach((t, idx) => {
-    if (idx === nowInsertIdx) {
-      // Inserir marcador AGORA antes dessa task
+    if (!groupsMap.has(t.deadline)) groupsMap.set(t.deadline, []);
+    groupsMap.get(t.deadline).push({ task: t, stepNum: idx + 1 });
+  });
+  // Ordenar grupos por horário
+  const sortedDeadlines = Array.from(groupsMap.keys()).sort();
+
+  // Decidir onde inserir o marker AGORA — antes do primeiro grupo cujo deadline >= agora
+  let nowInsertedBefore = null;
+  for (const dl of sortedDeadlines) {
+    const [h,m] = dl.split(':').map(Number);
+    const dMin = h*60 + m;
+    if (dMin >= nowMin) { nowInsertedBefore = dl; break; }
+  }
+
+  sortedDeadlines.forEach(dl => {
+    if (dl === nowInsertedBefore) {
       const nm = document.createElement('div');
       nm.className = 'now-marker';
       nm.innerHTML = `
-        <span class="now-marker-label">⏱ AGORA <span class="now-marker-time" id="now-marker-time">${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}</span></span>
+        <span class="now-marker-label">AGORA <span class="now-marker-time">${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}</span></span>
         <div class="now-marker-line"></div>
       `;
       container.appendChild(nm);
     }
-    container.appendChild(buildCard(t, idx + 1, t.id === nextTaskId, nowMin));
+
+    const items = groupsMap.get(dl);
+    const doneInGroup = items.filter(it => state[it.task.id]).length;
+    const total = items.length;
+    const [h,m] = dl.split(':').map(Number);
+    const dMin = h*60 + m;
+    const isNow = Math.abs(nowMin - dMin) <= 30 && dl === nowInsertedBefore;
+
+    const group = document.createElement('div');
+    group.className = 'time-group';
+    const header = document.createElement('div');
+    header.className = 'time-group-header';
+    header.innerHTML = `
+      <div class="time-group-marker ${isNow ? 'now' : ''}">${dl}</div>
+      <span class="time-group-count"><b>${total}</b> ${total === 1 ? 'tarefa' : 'tarefas'} · <b>${doneInGroup}</b> concluída${doneInGroup === 1 ? '' : 's'}</span>
+      <div class="time-group-line"></div>
+    `;
+    group.appendChild(header);
+
+    items.forEach(it => {
+      group.appendChild(buildCard(it.task, it.stepNum, it.task.id === nextTaskId, nowMin));
+    });
+    container.appendChild(group);
   });
 
   updateStats();
@@ -1064,18 +1083,28 @@ function buildCard(t, stepNum, isNext, nowMin) {
   const done = !!state[t.id];
   const [h,m] = t.deadline.split(':').map(Number);
   const dMin = h*60 + m;
-  const diff = dMin - nowMin;
-  // status do prazo (sem texto, só cor)
-  let statusCls;
-  if (done) statusCls = 'done';
-  else if (diff < 0) statusCls = 'late';
-  else if (diff <= 30) statusCls = 'warn';
-  else statusCls = 'ok';
+  const delayMin = nowMin - dMin; // minutos passados depois do prazo (positivo se atrasada)
+  const isLate = !done && delayMin > 0;
 
   const card = document.createElement('div');
-  card.className = 'task-card prio-' + t.priority + (done ? ' done' : '') + (isNext && !done ? ' next-up' : '');
+  card.className = 'task-card prio-' + t.priority +
+    (done ? ' done' : '') +
+    (isNext && !done ? ' next-up' : '') +
+    (isLate ? ' late' : '');
+
   const hasLink = t.link && t.link !== '#';
   const linkArrow = hasLink ? '<span class="task-link-arrow">↗</span>' : '';
+
+  // Formatador de tempo atraso
+  const fmtDelay = (m) => {
+    if (m < 60) return `${m} min atrasada`;
+    const h = Math.floor(m/60), mm = m % 60;
+    return mm ? `${h}h ${mm}min atrasada` : `${h}h atrasada`;
+  };
+
+  // Badge prazo: só ok ou done
+  const dlCls = done ? 'done' : 'ok';
+
   card.innerHTML = `
     <div class="task-step"><span class="step-num">${String(stepNum).padStart(2,'0')}</span></div>
     <div class="spacer-1"></div>
@@ -1095,10 +1124,11 @@ function buildCard(t, stepNum, isNext, nowMin) {
     </div>
     <div class="task-meta">
       <span class="task-prio-pill ${t.priority}">${t.priority}</span>
-      <div class="task-deadline ${statusCls}">
+      <div class="task-deadline ${dlCls}">
         <span class="task-deadline-label">PRAZO ATÉ</span>
         <span class="task-deadline-time">${t.deadline}</span>
       </div>
+      ${isLate ? `<span class="task-late-badge">${fmtDelay(delayMin)}</span>` : ''}
     </div>
   `;
 

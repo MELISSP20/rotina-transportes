@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/rotina-transportes/favicon.png"/>
   <link rel="apple-touch-icon" href="icon-192.png"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DIT Report – SSP20</title>
+<title>ORH – SSP20</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -309,11 +309,11 @@
             <span class="item-dot" style="background:#60a5fa;"></span>
             <span>Descont.</span>
           </a>
-          <a href="dit-report.html" class="topbar-dropdown-item" style="color:var(--yellow);background:rgba(255,230,0,.08);">
+          <a href="dit-report.html" class="topbar-dropdown-item">
             <span class="item-dot" style="background:#f0b429;"></span>
             <span>DIT Report</span>
           </a>
-          <a href="orh.html" class="topbar-dropdown-item">
+          <a href="orh.html" class="topbar-dropdown-item" style="color:var(--yellow);background:rgba(255,230,0,.08);">
             <span class="item-dot" style="background:#a78bfa;"></span>
             <span>ORH</span>
           </a>
@@ -339,17 +339,17 @@
   <div class="header-inner">
     <div class="brand-block">
       <div>
-        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> RELATÓRIO OPERACIONAL</div>
-        <div class="header-title">DIT Report</div>
-        <div class="header-sub">Indicadores diários de transporte · Histórico completo</div>
+        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> ROTEIRIZAÇÃO</div>
+        <div class="header-title">ORH</div>
+        <div class="header-sub">Otimização de Rotas · Plan x Real · Análise de desvios e contratos</div>
       </div>
     </div>
     <div class="dit-info-card">
-      <span class="dit-info-emoji">📋</span>
+      <span class="dit-info-emoji">🚛</span>
       <span class="dit-info-text">
-        <span class="dit-info-eyebrow">REPORT</span>
-        <span class="dit-info-name">Novo Registro</span>
-        <span class="dit-info-hint">FORMULÁRIO → ABAIXO</span>
+        <span class="dit-info-eyebrow">FONTE</span>
+        <span class="dit-info-name">BQ Routing</span>
+        <span class="dit-info-hint">CSV → MODAL_PLAN · MODAL_REAL</span>
       </span>
     </div>
   </div>
@@ -359,10 +359,10 @@
   <!-- Upload + Date -->
   <div class="upload-row">
     <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()" style="cursor:pointer;">
-      <div class="upload-icon">📋</div>
+      <div class="upload-icon">🚛</div>
       <div class="upload-info">
-        <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV de DIT</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Analise_DIT_LM_SSP20_-_D1.csv</div>
+        <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV BQ Routing</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">bq-results-*.csv (mesmo arquivo da Análise OPS)</div>
       </div>
       <input type="file" id="fileCSV" accept=".csv" style="display:none"/>
     </div>
@@ -372,64 +372,64 @@
     </div>
   </div>
 
-  <!-- KPI Strip amarelo (igual ao dashboard) -->
+  <!-- KPI Strip amarelo -->
   <div class="kpi-strip">
     <div class="kpi-card">
-      <div class="kpi-card-label">DIT Total</div>
-      <div class="kpi-card-value editable" id="kpiTotal" contenteditable="true" data-placeholder="0">—</div>
+      <div class="kpi-card-label">Total Rotas</div>
+      <div class="kpi-card-value" id="kpiTotal">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">DIT D1</div>
-      <div class="kpi-card-value" id="kpiD1">—</div>
+      <div class="kpi-card-label">Plan = Real</div>
+      <div class="kpi-card-value" id="kpiMatch">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">DIT Antigo</div>
-      <div class="kpi-card-value editable" id="kpiAntigo" contenteditable="true" data-placeholder="0">—</div>
+      <div class="kpi-card-label">Downgrades</div>
+      <div class="kpi-card-value" id="kpiDG">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">DIT > 7 dias</div>
-      <div class="kpi-card-value editable" id="kpi7d" contenteditable="true" data-placeholder="0">—</div>
+      <div class="kpi-card-label">Upgrades</div>
+      <div class="kpi-card-value" id="kpiUG">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">Em rota</div>
-      <div class="kpi-card-value" id="kpiRota">—</div>
+      <div class="kpi-card-label">% Aderência</div>
+      <div class="kpi-card-value" id="kpiAder">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">POC LP</div>
-      <div class="kpi-card-value editable" id="kpiPocLp" contenteditable="true" data-placeholder="0">—</div>
+      <div class="kpi-card-label">% Desvio</div>
+      <div class="kpi-card-value" id="kpiDesv">—</div>
     </div>
   </div>
 
-  <!-- 4 tabelas em grid -->
+  <!-- Tabelas em grid -->
   <div class="table-grid" id="tableGrid">
-    <div class="dash-empty" style="grid-column:1/-1;">Importe o CSV para visualizar as tabelas Abertura, Ofensores, Insucessos e Descontainerizado.</div>
+    <div class="dash-empty" style="grid-column:1/-1;">Importe o CSV BQ Routing para visualizar a análise de Plan x Real, desvios e contratos.</div>
   </div>
 
-  <!-- 2 gráficos de ciclo -->
+  <!-- Charts -->
   <div class="charts-grid" id="chartsGrid"></div>
 
   <!-- Contexto narrativo -->
   <div class="section-label">Contexto narrativo (opcional)</div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#e24b4a"></span> Insucessos
-      <span class="stats"><span id="hdrIns">—</span> <span class="pct-badge" id="hdrPctIns"></span></span>
+      <span class="dot" style="background:#e24b4a"></span> Downgrades
+      <span class="stats"><span id="hdrDG">—</span> <span class="pct-badge" id="hdrPctDG"></span></span>
     </div>
-    <textarea id="txtIns" placeholder="Ex: Envios Extra lidera com 683 IDs (81,7% dos insucessos), seguido por JM Transportes com 86..."></textarea>
+    <textarea id="txtDG" placeholder="Ex: Envios Extra com 124 downgrades (54% do total). Principal causa: indisponibilidade de veículo maior no ato da partida..."></textarea>
   </div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#ba7517"></span> Descontainerizados
-      <span class="stats"><span id="hdrDesc">—</span> <span class="pct-badge" id="hdrPctDesc"></span></span>
+      <span class="dot" style="background:#16a34a"></span> Upgrades
+      <span class="stats"><span id="hdrUG">—</span> <span class="pct-badge" id="hdrPctUG"></span></span>
     </div>
-    <textarea id="txtDesc" placeholder="Ex: AM1 com 144 (66,7%) lidera o ciclo de descontainerização. Envios Extra é o MLP mais impactado..."></textarea>
+    <textarea id="txtUG" placeholder="Ex: 1.783 upgrades — substituição de moto/passeio por utilitário/van. JM Transportes liderou com 412..."></textarea>
   </div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#534ab7"></span> Não Carregado
-      <span class="stats"><span id="hdrNC">—</span> <span class="pct-badge" id="hdrPctNC"></span></span>
+      <span class="dot" style="background:#3483FA"></span> Aderência geral
+      <span class="stats"><span id="hdrAder">—</span></span>
     </div>
-    <textarea id="txtNC" placeholder="Ex: 107 IDs (8,98%) não foram carregados..."></textarea>
+    <textarea id="txtAder" placeholder="Ex: Aderência geral de 88,2%. Principal fonte de desvio é o modal Passeio sendo substituído..."></textarea>
   </div>
 
   <!-- Botões + Output -->
@@ -476,7 +476,6 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// Default date
 document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 
 // State
@@ -485,10 +484,21 @@ let agg = null;
 
 // Helpers
 const fmt = n => Number(n).toLocaleString('pt-BR');
-const pct = (v, t) => t ? ((v/t)*100).toFixed(2).replace('.',',') + ' %' : '—';
-const safe = s => (s == null || s === '' || s === 'nan') ? '-' : String(s);
+const pct = (v, t) => t ? ((v/t)*100).toFixed(2).replace('.',',') + '%' : '—';
+const safe = s => (s == null || s === '' || String(s).toLowerCase() === 'nan') ? '-' : String(s);
 
-// CSV parser (robust to quoted fields with commas)
+// Vehicle ranking (smaller → bigger)
+function vrank(v) {
+  v = (v || '').toLowerCase();
+  if (v.includes('walker')) return 1;
+  if (v.includes('moto')) return 2;
+  if (v.includes('passeio')) return 3;
+  if (v.includes('utilit') && v.includes('sdd')) return 6;
+  if (v.includes('utilit')) return 5;
+  if (v.includes('van')) return 7;
+  return 4;
+}
+
 function parseCSVLine(line) {
   const out = []; let cur = ''; let q = false;
   for (let i = 0; i < line.length; i++) {
@@ -513,7 +523,6 @@ function parseCSV(text) {
   });
 }
 
-// CSV file handlers
 document.getElementById('fileCSV').addEventListener('change', e => handleCSV(e.target.files[0]));
 const zCSV = document.getElementById('zoneCSV');
 zCSV.addEventListener('dragover', e => { e.preventDefault(); zCSV.style.borderColor='var(--yellow)'; });
@@ -526,7 +535,7 @@ function handleCSV(file) {
   reader.onload = e => {
     csvData = parseCSV(e.target.result);
     document.getElementById('zoneCSV').classList.add('loaded-csv');
-    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmt(csvData.length)} linhas</span>`;
+    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmt(csvData.length)} rotas</span>`;
     aggregate();
     render();
     document.getElementById('genBtn').disabled = false;
@@ -534,168 +543,183 @@ function handleCSV(file) {
   reader.readAsText(file, 'utf-8');
 }
 
-// === Aggregation matching the dashboard ===
+// === Aggregation ===
 function aggregate() {
   if (!csvData || csvData.length === 0) return;
 
   const total = csvData.length;
+  let matchCount = 0, dgCount = 0, ugCount = 0;
 
-  // Abertura D1 — por MOTIVO_DELAY_CAUSE
-  const abertura = {};
+  // Matriz plan x real
+  const matrix = {};
+  // Por MLP (contrato)
+  const mlpStats = {};
+  // Por veículo planejado — desvios
+  const vehiclePlan = {};
+  // Downgrades/Upgrades por MLP
+  const dgMLP = {}, ugMLP = {};
+  // Por veículo plano — quem mais virou outro
+  const vehicleDeviation = {};
+
   csvData.forEach(r => {
-    const m = r['MOTIVO_DELAY_CAUSE'] || '-';
-    abertura[m] = (abertura[m] || 0) + 1;
+    const plan = (r['MODAL_PLAN'] || '').trim() || '—';
+    const real = (r['MODAL_REAL'] || '').trim() || '—';
+    const mlp  = (r['MLP'] || '').trim() || '—';
+
+    // matriz
+    const k = plan + '||' + real;
+    matrix[k] = (matrix[k] || 0) + 1;
+
+    // MLP — stats
+    if (!mlpStats[mlp]) mlpStats[mlp] = { total:0, match:0, dg:0, ug:0 };
+    mlpStats[mlp].total++;
+
+    // Veículo plano — total + desvios
+    if (!vehiclePlan[plan]) vehiclePlan[plan] = { total:0, match:0, dg:0, ug:0 };
+    vehiclePlan[plan].total++;
+
+    if (plan === real || (plan && real && plan.toLowerCase() === real.toLowerCase())) {
+      matchCount++;
+      mlpStats[mlp].match++;
+      vehiclePlan[plan].match++;
+    } else if (vrank(plan) > vrank(real)) {
+      dgCount++;
+      mlpStats[mlp].dg++;
+      vehiclePlan[plan].dg++;
+      dgMLP[mlp] = (dgMLP[mlp] || 0) + 1;
+      // Desvio: planejado → real (downgrade)
+      const dk = plan + ' → ' + real;
+      vehicleDeviation[dk] = (vehicleDeviation[dk] || 0) + 1;
+    } else if (vrank(plan) < vrank(real)) {
+      ugCount++;
+      mlpStats[mlp].ug++;
+      vehiclePlan[plan].ug++;
+      ugMLP[mlp] = (ugMLP[mlp] || 0) + 1;
+      const dk = plan + ' → ' + real;
+      vehicleDeviation[dk] = (vehicleDeviation[dk] || 0) + 1;
+    } else {
+      // rank igual mas valores diferentes — desvio lateral
+      const dk = plan + ' → ' + real;
+      vehicleDeviation[dk] = (vehicleDeviation[dk] || 0) + 1;
+    }
   });
 
-  // Ofensores D1 — por (motivo, ofensor)
-  const ofensores = {};
-  csvData.forEach(r => {
-    const m = r['MOTIVO_DELAY_CAUSE'] || '-';
-    const o = (r['Ofensor'] && r['Ofensor'].toLowerCase() !== 'nan' && r['Ofensor'] !== '') ? r['Ofensor'] : '-';
-    const key = m + '||' + o;
-    ofensores[key] = (ofensores[key] || 0) + 1;
-  });
-
-  // Insucessos D1 — só insucessos, por (rota, MLP)
-  const insRows = csvData.filter(r => {
-    const m = r['MOTIVO_DELAY_CAUSE'] || '';
-    return m === 'Insucesso (nao visitado)' || m === 'Insucesso (outros)';
-  });
-  const insucessos = {};
-  insRows.forEach(r => {
-    const rota = r['SHP_LG_ROUTE_ID'] || '-';
-    const mlp  = (r['MLP Corrigido'] && r['MLP Corrigido'].toLowerCase() !== 'nan' && r['MLP Corrigido'] !== '') ? r['MLP Corrigido'] : (r['MLP'] || '-');
-    const key = rota + '||' + mlp;
-    insucessos[key] = (insucessos[key] || 0) + 1;
-  });
-
-  // Descontainerizado D1 — só descon, por MLP
-  const descRows = csvData.filter(r => (r['MOTIVO_DELAY_CAUSE'] || '') === 'Descontainerizado');
-  const descon = {};
-  descRows.forEach(r => {
-    const mlp = (r['MLP Corrigido'] && r['MLP Corrigido'].toLowerCase() !== 'nan' && r['MLP Corrigido'] !== '') ? r['MLP Corrigido'] : (r['MLP'] || '-');
-    descon[mlp] = (descon[mlp] || 0) + 1;
-  });
-
-  // Ciclos — por SHP_CYCLE_NAME_PLANNED
-  const cycleIns = {};
-  insRows.forEach(r => {
-    const c = (r['SHP_CYCLE_NAME_PLANNED'] && r['SHP_CYCLE_NAME_PLANNED'] !== '') ? r['SHP_CYCLE_NAME_PLANNED'] : '-';
-    cycleIns[c] = (cycleIns[c] || 0) + 1;
-  });
-  const cycleDesc = {};
-  descRows.forEach(r => {
-    const c = (r['SHP_CYCLE_NAME_PLANNED'] && r['SHP_CYCLE_NAME_PLANNED'] !== '') ? r['SHP_CYCLE_NAME_PLANNED'] : '-';
-    cycleDesc[c] = (cycleDesc[c] || 0) + 1;
-  });
-
-  // Em rota — soma de "Em Rota" == 1
-  const emRota = csvData.filter(r => String(r['Em Rota']).trim() === '1').length;
+  const deviationCount = dgCount + ugCount;
 
   agg = {
     total,
-    abertura: Object.entries(abertura).sort((a,b) => b[1]-a[1]),
-    ofensores: Object.entries(ofensores).map(([k,v]) => { const [m,o] = k.split('||'); return [m,o,v]; }).sort((a,b) => b[2]-a[2]),
-    insucessos: Object.entries(insucessos).map(([k,v]) => { const [r,m] = k.split('||'); return [r,m,v]; }).sort((a,b) => b[2]-a[2]),
-    descon: Object.entries(descon).sort((a,b) => b[1]-a[1]),
-    cycleIns: Object.entries(cycleIns).sort((a,b) => b[1]-a[1]),
-    cycleDesc: Object.entries(cycleDesc).sort((a,b) => b[1]-a[1]),
-    emRota,
-    insTotal: insRows.length,
-    descTotal: descRows.length,
+    matchCount, dgCount, ugCount, deviationCount,
+    aderPct: total ? ((matchCount/total)*100) : 0,
+    desvPct: total ? ((deviationCount/total)*100) : 0,
+    matrix: Object.entries(matrix).map(([k,v]) => { const [p,r] = k.split('||'); return [p,r,v]; }).sort((a,b) => b[2]-a[2]),
+    mlpStats: Object.entries(mlpStats).map(([mlp,s]) => ({mlp, ...s, devPct: s.total ? ((s.dg+s.ug)/s.total)*100 : 0})).sort((a,b) => b.total - a.total),
+    vehiclePlan: Object.entries(vehiclePlan).map(([v,s]) => ({plan:v, ...s, devPct: s.total ? ((s.dg+s.ug)/s.total)*100 : 0})).sort((a,b) => (b.dg+b.ug) - (a.dg+a.ug)),
+    dgMLP: Object.entries(dgMLP).sort((a,b) => b[1]-a[1]),
+    ugMLP: Object.entries(ugMLP).sort((a,b) => b[1]-a[1]),
+    vehicleDeviation: Object.entries(vehicleDeviation).sort((a,b) => b[1]-a[1]),
   };
 }
 
-// === Render dashboard ===
+// === Render ===
 function render() {
   if (!agg) return;
-  const { total, abertura, ofensores, insucessos, descon, cycleIns, cycleDesc, emRota, insTotal, descTotal } = agg;
+  const { total, matchCount, dgCount, ugCount, deviationCount, aderPct, desvPct, matrix, mlpStats, vehiclePlan, dgMLP, ugMLP, vehicleDeviation } = agg;
 
-  // KPIs automáticos
-  document.getElementById('kpiD1').textContent = fmt(total);
-  document.getElementById('kpiRota').textContent = fmt(emRota);
+  // KPIs
+  document.getElementById('kpiTotal').textContent = fmt(total);
+  document.getElementById('kpiMatch').textContent = fmt(matchCount);
+  document.getElementById('kpiDG').textContent = fmt(dgCount);
+  document.getElementById('kpiUG').textContent = fmt(ugCount);
+  document.getElementById('kpiAder').textContent = aderPct.toFixed(1).replace('.',',') + '%';
+  document.getElementById('kpiDesv').textContent = desvPct.toFixed(1).replace('.',',') + '%';
 
-  // Tabelas
   const heat = (i) => i === 0 ? '1' : i === 1 ? '2' : i === 2 ? '3' : i === 3 ? '4' : '';
 
-  const tblAbertura = `
+  // Tabela 1: Plan → Real (top 15 combinações)
+  const tblPlanReal = `
     <div class="table-card">
-      <div class="table-card-title">Abertura D1</div>
-      <div class="tbl-head cols-2"><span>Motivo Delay</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
-      ${abertura.map(([m,v],i) => `
-        <div class="tbl-row cols-2" data-heat="${heat(i)}"><span class="cell-ellipsis" title="${m}">${m}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,total)}</span></div>
+      <div class="table-card-title">Plan → Real (Top 15)</div>
+      <div class="tbl-head cols-mot"><span>Planejado</span><span>Real</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
+      ${matrix.slice(0,15).map(([p,r,v],i) => `
+        <div class="tbl-row cols-mot" data-heat="${heat(i)}"><span class="cell-ellipsis" title="${p}">${p}</span><span class="cell-ellipsis" title="${r}">${r}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,total)}</span></div>
       `).join('')}
     </div>`;
 
-  const tblOfensores = `
+  // Tabela 2: Plan x Real por Contrato (MLP — todos)
+  const tblContrato = `
     <div class="table-card">
-      <div class="table-card-title">Ofensores D1</div>
-      <div class="tbl-head cols-mot"><span>Motivo</span><span>Ofensor</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
-      ${ofensores.slice(0,15).map(([m,o,v],i) => `
-        <div class="tbl-row cols-mot" data-heat="${heat(i)}"><span class="cell-ellipsis" title="${m}">${m}</span><span class="cell-ellipsis" title="${o}">${o}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,total)}</span></div>
+      <div class="table-card-title">Por Contrato (MLP)</div>
+      <div class="tbl-head cols-3"><span>MLP</span><span>Match·DG·UG</span><span style="text-align:right">TOT</span><span style="text-align:right">% Desv</span></div>
+      ${mlpStats.slice(0,15).map((s,i) => `
+        <div class="tbl-row cols-3" data-heat="${heat(i)}">
+          <span class="cell-ellipsis" title="${s.mlp}">${s.mlp}</span>
+          <span class="cell-ellipsis" style="font-size:10.5px;color:var(--muted);">${s.match}·${s.dg}·${s.ug}</span>
+          <span class="num">${fmt(s.total)}</span>
+          <span class="pct">${s.devPct.toFixed(1).replace('.',',')}%</span>
+        </div>
       `).join('')}
     </div>`;
 
-  const tblInsucessos = `
+  // Tabela 3: Desvios — combinação Plan → Real (excluindo match)
+  const desvOnly = vehicleDeviation;
+  const tblDesvios = `
     <div class="table-card">
-      <div class="table-card-title">Insucessos D1</div>
-      <div class="tbl-head cols-3"><span>Rota</span><span>MLP</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
-      ${insucessos.slice(0,15).map(([rota,mlp,v],i) => `
-        <div class="tbl-row cols-3" data-heat="${heat(i)}"><span style="font-variant-numeric:tabular-nums;">${rota}</span><span class="cell-ellipsis" title="${mlp}">${mlp}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,insTotal)}</span></div>
+      <div class="table-card-title">Top Desvios (Plan → Real)</div>
+      <div class="tbl-head cols-2"><span>Plan → Real</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
+      ${desvOnly.slice(0,15).map(([k,v],i) => `
+        <div class="tbl-row cols-2" data-heat="${heat(i)}"><span class="cell-ellipsis" title="${k}">${k}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,deviationCount)}</span></div>
       `).join('')}
     </div>`;
 
-  const tblDescon = `
+  // Tabela 4: Veículos com maior desvio (% sobre seu total)
+  const tblVeicDesv = `
     <div class="table-card">
-      <div class="table-card-title">Descontainerizado D1</div>
-      <div class="tbl-head cols-2"><span>MLP</span><span style="text-align:right">QTD</span><span style="text-align:right">%</span></div>
-      ${descon.map(([m,v],i) => `
-        <div class="tbl-row cols-2" data-heat="${heat(i)}"><span class="cell-ellipsis" title="${m}">${m}</span><span class="num">${fmt(v)}</span><span class="pct">${pct(v,descTotal)}</span></div>
+      <div class="table-card-title">Veículos com maior desvio</div>
+      <div class="tbl-head cols-3"><span>Veículo Plan</span><span>DG·UG</span><span style="text-align:right">DESV</span><span style="text-align:right">%</span></div>
+      ${vehiclePlan.filter(v => (v.dg+v.ug) > 0).slice(0,15).map((v,i) => `
+        <div class="tbl-row cols-3" data-heat="${heat(i)}">
+          <span class="cell-ellipsis" title="${v.plan}">${v.plan}</span>
+          <span class="cell-ellipsis" style="font-size:10.5px;color:var(--muted);">${v.dg}·${v.ug}</span>
+          <span class="num">${fmt(v.dg+v.ug)}</span>
+          <span class="pct">${v.devPct.toFixed(1).replace('.',',')}%</span>
+        </div>
       `).join('')}
     </div>`;
 
-  document.getElementById('tableGrid').innerHTML = tblAbertura + tblOfensores + tblInsucessos + tblDescon;
+  document.getElementById('tableGrid').innerHTML = tblPlanReal + tblContrato + tblDesvios + tblVeicDesv;
 
-  // Charts
-  const renderBars = (data) => {
+  // Charts: Downgrades por MLP + Upgrades por MLP (top 8)
+  const renderBars = (data, color) => {
+    if (data.length === 0) return '<div style="text-align:center;padding:20px;color:var(--muted);font-size:11px;">Sem dados</div>';
     const max = Math.max(...data.map(d => d[1]));
     return data.map(([lbl, v]) => {
       const h = Math.max(8, (v / max) * 110);
-      return `<div class="chart-bar-wrap"><div class="chart-bar" style="height:${h}px"><div class="chart-bar-val">${fmt(v)}</div></div><div class="chart-bar-lbl">${lbl}</div></div>`;
+      const short = lbl.length > 10 ? lbl.substring(0,9) + '…' : lbl;
+      return `<div class="chart-bar-wrap"><div class="chart-bar" style="height:${h}px;background:${color};"><div class="chart-bar-val">${fmt(v)}</div></div><div class="chart-bar-lbl" title="${lbl}">${short}</div></div>`;
     }).join('');
   };
 
   document.getElementById('chartsGrid').innerHTML = `
     <div class="chart-card">
-      <div class="chart-card-title">Ciclo Ofensor Insucesso</div>
-      <div class="chart-bars">${renderBars(cycleIns)}</div>
+      <div class="chart-card-title">Downgrades por MLP <span style="font-size:10px;color:var(--red);font-weight:600;">▼ Veículo menor</span></div>
+      <div class="chart-bars">${renderBars(dgMLP.slice(0,8), 'var(--red)')}</div>
     </div>
     <div class="chart-card">
-      <div class="chart-card-title">Ciclo Ofensor Descon</div>
-      <div class="chart-bars">${renderBars(cycleDesc)}</div>
+      <div class="chart-card-title">Upgrades por MLP <span style="font-size:10px;color:var(--green);font-weight:600;">▲ Veículo maior</span></div>
+      <div class="chart-bars">${renderBars(ugMLP.slice(0,8), 'var(--green)')}</div>
     </div>`;
 
   // Narrative stats
-  const ins = abertura.find(([m]) => m && m.startsWith('Insucesso'));
-  const allIns = abertura.filter(([m]) => m && m.startsWith('Insucesso')).reduce((s,[,v]) => s+v, 0);
-  const desc = abertura.find(([m]) => m === 'Descontainerizado');
-  const nc = abertura.find(([m]) => m === 'Nao carregado');
-  document.getElementById('hdrIns').textContent = fmt(allIns) + ' IDs';
-  document.getElementById('hdrPctIns').textContent = '(' + pct(allIns, total) + ')';
-  if (desc) {
-    document.getElementById('hdrDesc').textContent = fmt(desc[1]) + ' IDs';
-    document.getElementById('hdrPctDesc').textContent = '(' + pct(desc[1], total) + ')';
-  }
-  if (nc) {
-    document.getElementById('hdrNC').textContent = fmt(nc[1]) + ' IDs';
-    document.getElementById('hdrPctNC').textContent = '(' + pct(nc[1], total) + ')';
-  }
+  document.getElementById('hdrDG').textContent = fmt(dgCount) + ' rotas';
+  document.getElementById('hdrPctDG').textContent = '(' + pct(dgCount, total) + ')';
+  document.getElementById('hdrUG').textContent = fmt(ugCount) + ' rotas';
+  document.getElementById('hdrPctUG').textContent = '(' + pct(ugCount, total) + ')';
+  document.getElementById('hdrAder').textContent = aderPct.toFixed(1).replace('.',',') + '%';
 }
 
-// === Generate report text ===
 function generateReport() {
   if (!agg) { alert('Importe o CSV primeiro'); return; }
-  const { total, abertura, ofensores, insucessos, descon, cycleIns, cycleDesc, emRota, insTotal, descTotal } = agg;
+  const { total, matchCount, dgCount, ugCount, aderPct, desvPct, matrix, mlpStats, vehiclePlan, dgMLP, ugMLP, vehicleDeviation } = agg;
 
   const dateStr = (() => {
     const d = document.getElementById('reportDate').value;
@@ -704,41 +728,36 @@ function generateReport() {
     return `${day}/${m}/${y}`;
   })();
 
-  const ditTotal = document.getElementById('kpiTotal').textContent.trim();
-  const ditAntigo = document.getElementById('kpiAntigo').textContent.trim();
-  const dit7d = document.getElementById('kpi7d').textContent.trim();
-  const pocLp = document.getElementById('kpiPocLp').textContent.trim();
-  const txtIns = document.getElementById('txtIns').value.trim();
-  const txtDesc = document.getElementById('txtDesc').value.trim();
-  const txtNC = document.getElementById('txtNC').value.trim();
+  const txtDG = document.getElementById('txtDG').value.trim();
+  const txtUG = document.getElementById('txtUG').value.trim();
+  const txtAder = document.getElementById('txtAder').value.trim();
 
-  const fmtVal = v => (v === '—' || v === '' || v === '0') ? '—' : v;
-
-  const tbl = (rows) => rows.map(([a,b,c]) => `  ${a} | ${b} | ${fmt(c)}`).join('\n');
-
-  const report = `DIT LM SSP20 | ${dateStr}
+  const report = `ORH LM SSP20 | ${dateStr}
 ═══════════════════════════════════════════════════════════
-KPIs
-  DIT Total: ${fmtVal(ditTotal)} | D1: ${fmt(total)} | Antigo: ${fmtVal(ditAntigo)}
-  > 7 dias: ${fmtVal(dit7d)} | Em rota: ${fmt(emRota)} | POC LP: ${fmtVal(pocLp)}
+INDICADORES GERAIS
+  Total rotas: ${fmt(total)}
+  Plan = Real (Aderência): ${fmt(matchCount)} (${aderPct.toFixed(1).replace('.',',')}%)
+  Downgrades: ${fmt(dgCount)} (${pct(dgCount,total)})
+  Upgrades: ${fmt(ugCount)} (${pct(ugCount,total)})
+  Total desvios: ${fmt(dgCount + ugCount)} (${desvPct.toFixed(1).replace('.',',')}%)
 
-ABERTURA D1
-${abertura.map(([m,v]) => `  ${m}: ${fmt(v)} (${pct(v,total)})`).join('\n')}
+PLAN → REAL (top 10)
+${matrix.slice(0,10).map(([p,r,v]) => `  ${p} → ${r}: ${fmt(v)} (${pct(v,total)})`).join('\n')}
 
-TOP 10 OFENSORES (Motivo · Ofensor · Qtd · %)
-${ofensores.slice(0,10).map(([m,o,v]) => `  ${m} | ${o} | ${fmt(v)} (${pct(v,total)})`).join('\n')}
+POR CONTRATO (MLP — top 10)
+${mlpStats.slice(0,10).map(s => `  ${s.mlp}: tot ${fmt(s.total)} | match ${s.match} | DG ${s.dg} | UG ${s.ug} | desv ${s.devPct.toFixed(1).replace('.',',')}%`).join('\n')}
 
-TOP 10 ROTAS COM INSUCESSO
-${insucessos.slice(0,10).map(([r,m,v]) => `  ${r} | ${m} | ${fmt(v)} (${pct(v,insTotal)})`).join('\n')}
+VEÍCULOS COM MAIOR DESVIO
+${vehiclePlan.filter(v => (v.dg+v.ug) > 0).slice(0,10).map(v => `  ${v.plan}: ${fmt(v.dg+v.ug)} desvios (DG ${v.dg} · UG ${v.ug}) — ${v.devPct.toFixed(1).replace('.',',')}% do plano`).join('\n')}
 
-DESCONTAINERIZADO POR MLP
-${descon.map(([m,v]) => `  ${m}: ${fmt(v)} (${pct(v,descTotal)})`).join('\n')}
+DOWNGRADES POR MLP
+${dgMLP.slice(0,10).map(([m,v]) => `  ${m}: ${fmt(v)}`).join('\n')}
 
-CICLO INSUCESSO: ${cycleIns.map(([c,v]) => `${c}=${fmt(v)}`).join(' | ')}
-CICLO DESCON:    ${cycleDesc.map(([c,v]) => `${c}=${fmt(v)}`).join(' | ')}
-${txtIns ? '\nINSUCESSOS — contexto:\n' + txtIns : ''}
-${txtDesc ? '\nDESCONTAINERIZADOS — contexto:\n' + txtDesc : ''}
-${txtNC ? '\nNÃO CARREGADO — contexto:\n' + txtNC : ''}`;
+UPGRADES POR MLP
+${ugMLP.slice(0,10).map(([m,v]) => `  ${m}: ${fmt(v)}`).join('\n')}
+${txtDG ? '\nDOWNGRADES — contexto:\n' + txtDG : ''}
+${txtUG ? '\nUPGRADES — contexto:\n' + txtUG : ''}
+${txtAder ? '\nADERÊNCIA — contexto:\n' + txtAder : ''}`;
 
   document.getElementById('reportOutput').textContent = report;
   document.getElementById('outputSection').style.display = 'block';
@@ -757,12 +776,10 @@ function clearAll() {
   if (!confirm('Limpar tudo?')) return;
   csvData = null; agg = null;
   document.getElementById('zoneCSV').classList.remove('loaded-csv');
-  document.getElementById('csvLabel').innerHTML = 'Importar CSV de DIT';
-  document.getElementById('kpiD1').textContent = '—';
-  document.getElementById('kpiRota').textContent = '—';
-  ['kpiTotal','kpiAntigo','kpi7d','kpiPocLp'].forEach(id => document.getElementById(id).textContent = '');
-  ['txtIns','txtDesc','txtNC'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('tableGrid').innerHTML = '<div class="dash-empty" style="grid-column:1/-1;">Importe o CSV para visualizar as tabelas Abertura, Ofensores, Insucessos e Descontainerizado.</div>';
+  document.getElementById('csvLabel').innerHTML = 'Importar CSV BQ Routing';
+  ['kpiTotal','kpiMatch','kpiDG','kpiUG','kpiAder','kpiDesv'].forEach(id => document.getElementById(id).textContent = '—');
+  ['txtDG','txtUG','txtAder'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('tableGrid').innerHTML = '<div class="dash-empty" style="grid-column:1/-1;">Importe o CSV BQ Routing para visualizar a análise de Plan x Real, desvios e contratos.</div>';
   document.getElementById('chartsGrid').innerHTML = '';
   document.getElementById('outputSection').style.display = 'none';
   document.getElementById('genBtn').disabled = true;
