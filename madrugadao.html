@@ -1525,15 +1525,26 @@ function openPwd() {
   setTimeout(() => document.getElementById('pwd-input').focus(), 100);
 }
 function closePwd() { document.getElementById('pwd-overlay').classList.remove('open'); }
-// Password (validação por hash SHA-256 — não armazena texto puro)
+// Password (validação por hash SHA-256 — múltiplos TLs)
 async function _sha256(t){const d=new TextEncoder().encode(t);const b=await crypto.subtle.digest('SHA-256',d);return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-const _PWD_HASH = '974b6b5b2ffede03a262f3474c95445f51e9eb0967591e0c07485054d550973c';
+
+// Hash → identidade do TL (não armazena senha em texto puro)
+const _PWD_TLS = {
+  '974b6b5b2ffede03a262f3474c95445f51e9eb0967591e0c07485054d550973c': 'Matheus Logan',
+  'f31ba5b7d4e3345fd9b66d121e51d910e0999199f8e4166d461a6616d7b18c5b': 'Juliana Godinho',
+};
 
 async function checkPwd() {
   const v = document.getElementById('pwd-input').value;
-  let ok = false;
-  try { ok = (await _sha256(v)) === _PWD_HASH; } catch(_) {}
-  if (ok) {
+  let tl = null;
+  try {
+    const hash = await _sha256(v);
+    tl = _PWD_TLS[hash] || null;
+  } catch(_) {}
+
+  if (tl) {
+    // Passa a identidade do TL via sessionStorage (vale só pra essa aba/sessão)
+    try { sessionStorage.setItem('perf-tl', tl); } catch(_){}
     closePwd();
     window.open('performance.html', '_blank');
   } else {

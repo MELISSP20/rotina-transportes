@@ -122,6 +122,46 @@
     }
     .clear-btn:hover { background: rgba(227,38,47,.18); border-color: rgba(227,38,47,.35); transform: translateY(-1px); }
 
+    /* TL Badge — quem está logado */
+    .tl-badge {
+      background: rgba(255,230,0,.08);
+      border: 1px solid rgba(255,230,0,.25);
+      border-radius: 11px;
+      padding: 9px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      flex-shrink: 0;
+    }
+    .tl-badge-eyebrow {
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      color: rgba(255,230,0,.55);
+      text-transform: uppercase;
+    }
+    .tl-badge-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--yellow);
+      line-height: 1.1;
+      letter-spacing: -.2px;
+    }
+    .tl-badge-meta {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,.4);
+      margin-top: 1px;
+      letter-spacing: .04em;
+    }
+
+    @media (max-width: 768px) {
+      .tl-badge { padding: 7px 12px; }
+      .tl-badge-name { font-size: 12px; }
+      .tl-badge-meta { display: none; }
+    }
+
     /* WRAPPER */
     .wrapper { max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem; }
 
@@ -882,7 +922,13 @@
       </div>
     </div>
     <div class="header-actions">
+      <div class="tl-badge">
+        <div class="tl-badge-eyebrow">LOGADO COMO</div>
+        <div class="tl-badge-name" id="tl-badge-name">—</div>
+        <div class="tl-badge-meta" id="tl-badge-meta">—</div>
+      </div>
       <button class="clear-btn" onclick="clearAll()">🗑 Limpar avaliações</button>
+      <button class="clear-btn" onclick="logoutTL()" style="background:rgba(227,38,47,.08);border-color:rgba(227,38,47,.3);color:var(--red);">🚪 Sair</button>
     </div>
   </div>
 </div>
@@ -959,6 +1005,26 @@ tbtn.addEventListener('click', () => {
   localStorage.setItem('theme', next);
 });
 
+// ── IDENTIDADE DO TL LOGADO ──
+const CURRENT_TL = (() => {
+  try { return sessionStorage.getItem('perf-tl') || null; } catch { return null; }
+})();
+
+// Sem TL no sessionStorage → bloqueia acesso
+if (!CURRENT_TL) {
+  document.body.innerHTML = `
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;background:#0F1117;color:#fff;padding:24px;font-family:Inter,sans-serif;">
+      <div style="font-size:48px;">🔐</div>
+      <div style="font-size:20px;font-weight:900;letter-spacing:-.4px;">Acesso restrito</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);text-align:center;max-width:400px;line-height:1.5;">
+        Esta página deve ser acessada via Organograma → botão Performance OPS.<br/>
+        Digite sua senha para entrar.
+      </div>
+      <a href="madrugadao.html" style="background:#FFE600;color:#1A1A2E;padding:11px 22px;border-radius:10px;font-weight:800;text-decoration:none;font-size:13px;">← Voltar ao Organograma</a>
+    </div>`;
+  throw new Error('No TL identity in sessionStorage');
+}
+
 const ANALYSTS = [
   // Time Matheus Logan · SSP·20
   { id: 'matheus-campos',  name: 'Matheus Campos', initials: 'MC', role: 'Madrugada · OPS III', tl: 'Matheus Logan', shift: 'Madrugada' },
@@ -970,7 +1036,7 @@ const ANALYSTS = [
   { id: 'everton-adriano', name: 'Everton Adriano',initials: 'EA', role: 'Madrugada · SSP·51',  tl: 'Juliana Godinho', shift: 'Madrugada' },
   { id: 'caio-leme',       name: 'Caio Leme',      initials: 'CL', role: 'SD · OPS III',        tl: 'Juliana Godinho', shift: 'SD' },
   { id: 'gislene-gomes',   name: 'Gislene Gomes',  initials: 'GG', role: 'SD · OPS III',        tl: 'Juliana Godinho', shift: 'SD' },
-];
+].filter(a => a.tl === CURRENT_TL);  // ← FILTRA somente OPS do TL logado
 
 const CRITERIA_OPS = [
   { id: 'pontualidade', label: 'Pontualidade' },
@@ -1264,6 +1330,23 @@ function renderAll() {
   perfData = loadPerf();
   document.getElementById('analyst-grid').innerHTML = ANALYSTS.map(buildMiniCard).join('');
   updateSummary();
+  // Atualizar badge do TL
+  const badgeName = document.getElementById('tl-badge-name');
+  const badgeMeta = document.getElementById('tl-badge-meta');
+  if (badgeName) badgeName.textContent = CURRENT_TL;
+  if (badgeMeta) {
+    const n = ANALYSTS.length;
+    badgeMeta.textContent = `${n} OPS III sob liderança`;
+  }
+  // Atualiza subtitle do header com filtro
+  const sub = document.querySelector('.header-sub');
+  if (sub) sub.textContent = `Avaliação de OPS III · Critérios operacionais + DNAs ML · Visão restrita a ${CURRENT_TL}`;
+}
+
+function logoutTL() {
+  if (!confirm('Sair e voltar para o Organograma?')) return;
+  try { sessionStorage.removeItem('perf-tl'); } catch(_){}
+  window.location.href = 'madrugadao.html';
 }
 
 
