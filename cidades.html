@@ -835,10 +835,28 @@
   <!-- Filtros -->
   <div class="filter-bar" id="filterBar" style="display:none;">
     <div class="filter-group">
+      <span class="filter-bar-label">📋 Coluna rota</span>
+      <select class="field-input col-select" id="selRoute" onchange="onColumnChange()" style="min-width:160px;padding:6px 10px;font-size:11.5px;"></select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-bar-label">📍 Coluna cidade</span>
+      <select class="field-input col-select" id="selCity" onchange="onColumnChange()" style="min-width:160px;padding:6px 10px;font-size:11.5px;"></select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-bar-label">🔄 Coluna ciclo</span>
+      <select class="field-input col-select" id="selCycle" onchange="onColumnChange()" style="min-width:160px;padding:6px 10px;font-size:11.5px;">
+        <option value="">— sem filtro —</option>
+      </select>
+    </div>
+    <div class="filter-info" id="filterInfo"></div>
+  </div>
+
+  <!-- Cycle pills (separado, quando coluna ciclo selecionada) -->
+  <div class="filter-bar" id="cycleBar" style="display:none;">
+    <div class="filter-group">
       <span class="filter-bar-label">🔄 Ciclo</span>
       <div class="filter-pills" id="cyclePills"></div>
     </div>
-    <div class="filter-info" id="filterInfo"></div>
   </div>
 
   <!-- Empty state -->
@@ -918,7 +936,7 @@ function detectColumns(sample) {
     return null;
   };
   return {
-    colRoute: findCol(['SHP_LG_ROUTE_ID','ROUTE_ID','rota','ROTA','route','Rota']),
+    colRoute: findCol(['SHP_LG_ROUTE_ID','route_name','rota_nome','wave_route','rota','ROTA','route','Rota','ROUTE_ID','route_id']),
     colCity: findCol(['cidade','CIDADE','city','CITY','municipio','MUNICIPIO','município','SHP_BUYER_ADDRESS_CITY','BUYER_CITY']),
     colCycle: findCol(['SHP_CYCLE_NAME_PLANNED','SHP_CYCLE_NAME','CYCLE','ciclo','CICLO','cycle','WAVE','wave'])
   };
@@ -959,31 +977,56 @@ function handleCSV(file) {
   reader.onload = e => {
     const parsed = parseCSV(e.target.result);
     if (parsed.length === 0) { alert('CSV vazio.'); return; }
-    detected = detectColumns(parsed[0]);
-    if (!detected.colRoute || !detected.colCity) {
-      alert('Não consegui detectar colunas de ROTA e CIDADE no CSV.\n\nColunas encontradas:\n' + Object.keys(parsed[0]).join(', '));
-      return;
-    }
-    csvRows = parsed.filter(r => norm(r[detected.colRoute]));
+    csvRows = parsed;
+    const headers = Object.keys(parsed[0]);
+    const auto = detectColumns(parsed[0]);
 
-    cycles = detected.colCycle ? [...new Set(csvRows.map(r => norm(r[detected.colCycle])).filter(Boolean))].sort() : [];
-
-    const pillsHTML = ['<button class="filter-pill active" data-c="all" onclick="setCycle(\'all\')">Todos</button>']
-      .concat(cycles.map(c => `<button class="filter-pill" data-c="${c}" onclick="setCycle('${c}')">${c}</button>`))
-      .join('');
-    document.getElementById('cyclePills').innerHTML = pillsHTML;
+    // Popular dropdowns com todas as colunas
+    const selRoute = document.getElementById('selRoute');
+    const selCity = document.getElementById('selCity');
+    const selCycle = document.getElementById('selCycle');
+    const optsAll = headers.map(h => `<option value="${h}">${h}</option>`).join('');
+    selRoute.innerHTML = optsAll;
+    selCity.innerHTML = optsAll;
+    selCycle.innerHTML = '<option value="">— sem filtro —</option>' + optsAll;
+    if (auto.colRoute) selRoute.value = auto.colRoute;
+    if (auto.colCity) selCity.value = auto.colCity;
+    if (auto.colCycle) selCycle.value = auto.colCycle;
 
     document.getElementById('zoneCSV').classList.add('loaded-csv');
-    const colsTxt = `${detected.colRoute} → ${detected.colCity}` + (detected.colCycle ? ` · ${detected.colCycle}` : '');
-    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(csvRows.length)} linhas · ${colsTxt}</span>`;
+    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(parsed.length)} linhas · ${headers.length} colunas</span>`;
     document.getElementById('filterBar').style.display = 'flex';
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('resultArea').style.display = 'block';
 
-    currentCycle = 'all';
-    process();
+    onColumnChange();
   };
   reader.readAsText(file, 'utf-8');
+}
+
+function onColumnChange() {
+  if (!csvRows) return;
+  detected = {
+    colRoute: document.getElementById('selRoute').value,
+    colCity: document.getElementById('selCity').value,
+    colCycle: document.getElementById('selCycle').value || null
+  };
+  if (!detected.colRoute || !detected.colCity) return;
+
+  // Pílulas de ciclo (se coluna ciclo selecionada)
+  if (detected.colCycle) {
+    cycles = [...new Set(csvRows.map(r => norm(r[detected.colCycle])).filter(Boolean))].sort();
+    const pillsHTML = ['<button class="filter-pill active" data-c="all" onclick="setCycle(\'all\')">Todos</button>']
+      .concat(cycles.map(c => `<button class="filter-pill" data-c="${c}" onclick="setCycle('${c}')">${c}</button>`))
+      .join('');
+    document.getElementById('cyclePills').innerHTML = pillsHTML;
+    document.getElementById('cycleBar').style.display = cycles.length > 0 ? 'flex' : 'none';
+  } else {
+    document.getElementById('cycleBar').style.display = 'none';
+    cycles = [];
+  }
+  currentCycle = 'all';
+  process();
 }
 
 function setCycle(c) {
