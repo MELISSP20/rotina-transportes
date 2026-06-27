@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/rotina-transportes/favicon.png"/>
   <link rel="apple-touch-icon" href="icon-192.png"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ORH – SSP20</title>
+<title>Cidades por Rota – SSP20</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -689,6 +689,7 @@
   /* Specific columns */
   .cols-mlp-full { grid-template-columns: 1fr 60px 80px 80px 90px 70px 70px; }
   .cols-rota-full { grid-template-columns: 1fr 90px 60px 60px 60px; }
+  .cols-cidade { grid-template-columns: 110px 1fr 80px 100px; }
 
   @media (max-width: 900px) {
     .dit-grid { grid-template-columns: 1fr; }
@@ -762,11 +763,11 @@
             <span class="item-dot" style="background:#f0b429;"></span>
             <span>DIT Report</span>
           </a>
-          <a href="orh.html" class="topbar-dropdown-item" style="color:var(--yellow);background:rgba(255,230,0,.08);">
+          <a href="orh.html" class="topbar-dropdown-item">
             <span class="item-dot" style="background:#a78bfa;"></span>
             <span>ORH</span>
           </a>
-          <a href="cidades.html" class="topbar-dropdown-item">
+          <a href="cidades.html" class="topbar-dropdown-item" style="color:var(--yellow);background:rgba(255,230,0,.08);">
             <span class="item-dot" style="background:#16a34a;"></span>
             <span>Cidades por Rota</span>
           </a>
@@ -792,306 +793,124 @@
   <div class="header-inner">
     <div class="brand-block">
       <div>
-        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> TEMPO DE ROTA</div>
-        <div class="header-title">ORH</div>
-        <div class="header-sub">Outbound Route Hours · Comparativo plan x real · Análise de aderência</div>
+        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> GEOGRAFIA</div>
+        <div class="header-title">Cidades por Rota</div>
+        <div class="header-sub">Cidade dominante de cada rota · Auto-detecção do CSV · Filtro por ciclo</div>
       </div>
     </div>
     <div class="dit-info-card">
-      <span class="dit-info-emoji">⏱</span>
+      <span class="dit-info-emoji">📍</span>
       <span class="dit-info-text">
         <span class="dit-info-eyebrow">FONTE</span>
-        <span class="dit-info-name">BQ Routing</span>
-        <span class="dit-info-hint">ORH_PLAN · ORH_REAL (min)</span>
+        <span class="dit-info-name">CSV roteirização</span>
+        <span class="dit-info-hint">rota · cidade · ciclo</span>
       </span>
     </div>
   </div>
 </div>
 
 <div class="wrapper">
-  <!-- Upload + Data -->
+  <!-- Upload -->
   <div class="upload-row">
     <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()" style="cursor:pointer;">
-      <div class="upload-icon">⏱</div>
+      <div class="upload-icon">📍</div>
       <div class="upload-info">
-        <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV BQ Routing</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Colunas: DATA, ORH_PLAN, ORH_REAL, ORH_CONTRATO, MODAL_PLAN, MODAL_REAL, MLP</div>
+        <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV de roteirização</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Auto-detecta colunas: rota (SHP_LG_ROUTE_ID / rota), cidade (cidade / city / municipio), ciclo (SHP_CYCLE_NAME_PLANNED / cycle)</div>
       </div>
       <input type="file" id="fileCSV" accept=".csv" style="display:none"/>
     </div>
     <div class="date-field">
-      <label>DATA DO REPORT</label>
+      <label>DATA</label>
       <input type="date" id="reportDate" class="field-input"/>
     </div>
   </div>
 
-  <!-- FILTROS — período + categoria -->
+  <!-- Filtros -->
   <div class="filter-bar" id="filterBar" style="display:none;">
     <div class="filter-group">
-      <span class="filter-bar-label">📅 Período</span>
-      <div class="filter-pills">
-        <button class="filter-pill active" data-p="all" onclick="setPeriod('all')">Tudo do arquivo</button>
-        <button class="filter-pill" data-p="today" onclick="setPeriod('today')">Hoje</button>
-        <button class="filter-pill" data-p="yesterday" onclick="setPeriod('yesterday')">Ontem</button>
-        <button class="filter-pill" data-p="7d" onclick="setPeriod('7d')">7 dias</button>
-        <button class="filter-pill" data-p="30d" onclick="setPeriod('30d')">30 dias</button>
-      </div>
-      <div class="date-range">
-        <input type="date" class="field-input" id="dateFrom" style="width:135px;padding:6px 10px;font-size:11.5px;"/>
-        <span style="font-size:11px;color:var(--muted);">→</span>
-        <input type="date" class="field-input" id="dateTo" style="width:135px;padding:6px 10px;font-size:11.5px;"/>
-      </div>
+      <span class="filter-bar-label">🔄 Ciclo</span>
+      <div class="filter-pills" id="cyclePills"></div>
     </div>
     <div class="filter-group">
-      <span class="filter-bar-label">🚛 Categoria</span>
-      <div class="filter-pills">
-        <button class="filter-pill active" data-c="all" onclick="setCategory('all')">Todas</button>
-        <button class="filter-pill" data-c="match" onclick="setCategory('match')">Match</button>
-        <button class="filter-pill" data-c="dg" onclick="setCategory('dg')">DG</button>
-        <button class="filter-pill" data-c="ug" onclick="setCategory('ug')">UG</button>
-        <button class="filter-pill" data-c="exceeded" onclick="setCategory('exceeded')">Excederam Plan</button>
-      </div>
+      <span class="filter-bar-label">📍 Cidade</span>
+      <select class="field-input" id="cityFilter" style="min-width:180px;padding:6px 10px;font-size:11.5px;" onchange="applyFilters()">
+        <option value="">Todas</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-bar-label">🔍 Buscar rota</span>
+      <input type="text" class="field-input" id="searchRoute" placeholder="ex: AM1_47" style="width:140px;padding:6px 10px;font-size:11.5px;" oninput="applyFilters()"/>
     </div>
     <div class="filter-info" id="filterInfo"></div>
   </div>
 
-  <!-- KPI Strip principal -->
+  <!-- KPI Strip -->
   <div class="kpi-strip">
     <div class="kpi-card">
-      <div class="kpi-card-label">Rotas analisadas</div>
-      <div class="kpi-card-value" id="kpiTotal">—</div>
-      <div class="kpi-card-foot" id="kpiTotalFoot"></div>
+      <div class="kpi-card-label">Rotas</div>
+      <div class="kpi-card-value" id="kpiRotas">—</div>
+      <div class="kpi-card-foot" id="kpiRotasFoot"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">ORH Plan médio</div>
-      <div class="kpi-card-value" id="kpiPlan">—</div>
-      <div class="kpi-card-foot" id="kpiPlanFoot"></div>
+      <div class="kpi-card-label">Cidades únicas</div>
+      <div class="kpi-card-value" id="kpiCidades">—</div>
+      <div class="kpi-card-foot" id="kpiCidadesFoot"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">ORH Real médio</div>
-      <div class="kpi-card-value" id="kpiReal">—</div>
-      <div class="kpi-card-foot" id="kpiRealFoot"></div>
+      <div class="kpi-card-label">Cidade dominante</div>
+      <div class="kpi-card-value" id="kpiTopCidade">—</div>
+      <div class="kpi-card-foot" id="kpiTopCidadeFoot"></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-card-label">ORH Contrato</div>
-      <div class="kpi-card-value" id="kpiContrato">—</div>
-      <div class="kpi-card-foot" id="kpiContratoFoot"></div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card-label">Excedentes do Plan</div>
-      <div class="kpi-card-value" id="kpiExc">—</div>
-      <div class="kpi-card-foot" id="kpiExcFoot"></div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card-label">Aderência (±10%)</div>
-      <div class="kpi-card-value" id="kpiAder">—</div>
-      <div class="kpi-card-foot" id="kpiAderFoot"></div>
+      <div class="kpi-card-label">Sem cidade</div>
+      <div class="kpi-card-value" id="kpiSemCidade">—</div>
+      <div class="kpi-card-foot" id="kpiSemCidadeFoot"></div>
     </div>
   </div>
 
   <!-- Empty state -->
-  <div class="dash-empty" id="emptyState">Importe o CSV BQ Routing para visualizar o comparativo de ORH Plan × Real × Contrato.</div>
+  <div class="dash-empty" id="emptyState">Importe o CSV de roteirização (ex: extração BQ por rota/cidade) para visualizar a cidade dominante de cada rota.</div>
 
-  <!-- ANÁLISE PRINCIPAL -->
+  <!-- ANÁLISE -->
   <div id="analysisArea" style="display:none;">
 
-    <!-- HERO GIGANTE: variação Real - Plan como protagonista -->
-    <div class="orh-hero" id="orhHero">
-      <div class="orh-hero-grid">
-        <div class="orh-hero-left">
-          <div class="orh-hero-eyebrow"><span id="orhHeroDot" class="orh-hero-dot"></span>VARIAÇÃO MÉDIA REAL − PLAN</div>
-          <div class="orh-hero-number" id="orhHeroNumber">—</div>
-          <div class="orh-hero-label" id="orhHeroLabel">por rota</div>
-        </div>
-        <div class="orh-hero-right">
-          <div class="orh-hero-stat">
-            <div class="orh-hero-stat-val" id="orhHeroPlan">—</div>
-            <div class="orh-hero-stat-lbl">ORH PLAN médio</div>
-          </div>
-          <div class="orh-hero-stat-arrow" id="orhHeroArrow">→</div>
-          <div class="orh-hero-stat">
-            <div class="orh-hero-stat-val" id="orhHeroReal">—</div>
-            <div class="orh-hero-stat-lbl">ORH REAL médio</div>
-          </div>
-        </div>
-      </div>
-      <div class="orh-hero-summary" id="orhHeroSummary"></div>
-    </div>
-
-    <!-- BATTLE: Plan vs Real (com variação em destaque) -->
-    <div class="battle-card">
-      <div class="battle-header">
-        <span class="battle-title">⏱ Tempo médio de rota</span>
-        <span class="battle-sub">Plan vs Real · Cada rota</span>
-      </div>
-      <div class="battle-arena">
-        <div class="battle-side plan">
-          <div class="battle-side-eyebrow">📘 PLANEJADO</div>
-          <div class="battle-side-val" id="battlePlanH">—</div>
-          <div class="battle-side-sub" id="battlePlanMin">—</div>
-        </div>
-        <div class="battle-vs" id="battleVs">
-          <div class="battle-vs-arrow" id="battleVsArrow">→</div>
-          <div class="battle-vs-delta" id="battleVsDelta">—</div>
-          <div class="battle-vs-lbl" id="battleVsLabel">vs planejado</div>
-        </div>
-        <div class="battle-side real">
-          <div class="battle-side-eyebrow">📕 REAL</div>
-          <div class="battle-side-val" id="battleRealH">—</div>
-          <div class="battle-side-sub" id="battleRealMin">—</div>
-        </div>
-      </div>
-      <!-- Barra comparativa visual -->
-      <div class="battle-bar-wrap">
-        <div class="battle-bar-track">
-          <div class="battle-bar-plan" id="battleBarPlan"></div>
-          <div class="battle-bar-real" id="battleBarReal"></div>
-        </div>
-        <div class="battle-bar-marks">
-          <span><span class="bm-dot plan"></span>Plan</span>
-          <span><span class="bm-dot real"></span>Real</span>
-          <span id="battleContratoLbl" style="display:none;"><span class="bm-dot contrato"></span>Contrato: <b id="battleContratoVal">—</b></span>
-        </div>
-      </div>
-      <div class="battle-summary" id="battleSummary"></div>
-    </div>
-
-    <!-- Excedentes breakdown -->
-    <div class="two-col-grid">
-      <div class="exc-card">
-        <div class="exc-card-title">⚠ Rotas que excederam o Plan</div>
-        <div class="exc-card-sub">Quantas e quanto excederam · Categoria predominante</div>
-        <div class="exc-stats">
-          <div class="exc-stat">
-            <div class="exc-stat-val" id="excPctVal">—</div>
-            <div class="exc-stat-lbl">% das rotas excederam</div>
-          </div>
-          <div class="exc-stat">
-            <div class="exc-stat-val" id="excAvgVal">—</div>
-            <div class="exc-stat-lbl">Excesso médio (min)</div>
-          </div>
-        </div>
-        <div class="exc-breakdown" id="excBreakdown"></div>
-      </div>
-
-      <div class="exc-card">
-        <div class="exc-card-title">📊 Distribuição da variação (Real − Plan)</div>
-        <div class="exc-card-sub">Negativo = adiantou · Positivo = atrasou</div>
-        <div class="histo-bars" id="histoBars" style="margin-top:16px;"></div>
-      </div>
-    </div>
-
-    <!-- Comparativo Plan vs Real vs Contrato por MLP -->
+    <!-- Distribuição por cidade (barras horizontais) -->
     <div class="compare-chart">
-      <div class="compare-title">Plan × Real × Contrato por MLP</div>
-      <div class="compare-subtitle">Médias em horas por contrato · Excedentes destacados</div>
-      <div class="compare-legend">
-        <span class="compare-legend-item"><span class="compare-legend-dot plan"></span> Plan</span>
-        <span class="compare-legend-item"><span class="compare-legend-dot real"></span> Real</span>
-        <span class="compare-legend-item"><span class="compare-legend-dot contrato"></span> Contrato</span>
-        <span class="compare-legend-item" style="margin-left:auto;color:var(--text);"><span style="font-weight:800;">Δ</span> Real − Plan</span>
-      </div>
-      <div class="compare-bars" id="compareBars"></div>
+      <div class="compare-title">📊 Distribuição de rotas por cidade</div>
+      <div class="compare-subtitle">Quantas rotas estão em cada cidade dominante</div>
+      <div class="compare-bars" id="cityBars"></div>
     </div>
 
-    <!-- Scatter + DG/UG impact -->
-    <div class="two-col-grid">
-      <div class="scatter-card">
-        <div class="compare-title">Plan × Real (dispersão)</div>
-        <div class="compare-subtitle">Acima da diagonal = atrasou · Cores por categoria</div>
-        <svg class="scatter-svg" id="scatterSvg" viewBox="0 0 400 220" preserveAspectRatio="none"></svg>
-        <div class="scatter-legend">
-          <span><span class="cmp-dot" style="background:var(--green);"></span> Match</span>
-          <span><span class="cmp-dot" style="background:var(--red);"></span> Downgrade</span>
-          <span><span class="cmp-dot" style="background:var(--blue);"></span> Upgrade</span>
-        </div>
-      </div>
-      <div class="dgug-card">
-        <div class="compare-title">Impacto de DG / UG no ORH</div>
-        <div class="compare-subtitle">Tempo médio por categoria — minutos</div>
-        <div id="dgugBars" style="margin-top:14px;"></div>
-      </div>
-    </div>
-
-    <!-- Tabela por MLP -->
+    <!-- Tabela Rota | Cidade -->
     <div class="data-table">
       <div class="data-table-title">
-        <span>📦 Análise por MLP</span>
-        <span class="tbl-subtitle">Rotas · Médias Plan/Real/Contrato · Excedentes</span>
+        <span>📋 Cidade dominante por rota</span>
+        <span class="tbl-subtitle" id="tableSubtitle"></span>
       </div>
-      <div class="data-table-head cols-mlp-full">
-        <span>MLP</span>
-        <span class="num">Rotas</span>
-        <span class="num">Plan (h)</span>
-        <span class="num">Real (h)</span>
-        <span class="num">Contrato (h)</span>
-        <span class="num">Δ (min)</span>
-        <span class="num">% Exced</span>
+      <div class="data-table-head cols-cidade">
+        <span>Rota</span>
+        <span>Cidade dominante</span>
+        <span class="num">Paradas</span>
+        <span class="num">% dominância</span>
       </div>
-      <div id="tblMLP"></div>
-    </div>
-
-    <!-- Top rotas com maior atraso/adiantamento -->
-    <div class="two-col-grid">
-      <div class="data-table" style="margin-bottom:0;">
-        <div class="data-table-title">
-          <span>⏰ Top 10 Atrasos</span>
-          <span class="tbl-subtitle">Maior excesso sobre o Plan</span>
-        </div>
-        <div class="data-table-head cols-rota-full">
-          <span>Data · Rota</span>
-          <span>Categoria</span>
-          <span class="num">Plan</span>
-          <span class="num">Real</span>
-          <span class="num">Δ</span>
-        </div>
-        <div id="tblAtrasos"></div>
-      </div>
-      <div class="data-table" style="margin-bottom:0;">
-        <div class="data-table-title">
-          <span>⚡ Top 10 Adiantamentos</span>
-          <span class="tbl-subtitle">Maior tempo poupado vs Plan</span>
-        </div>
-        <div class="data-table-head cols-rota-full">
-          <span>Data · Rota</span>
-          <span>Categoria</span>
-          <span class="num">Plan</span>
-          <span class="num">Real</span>
-          <span class="num">Δ</span>
-        </div>
-        <div id="tblAdiantamentos"></div>
-      </div>
+      <div id="tblCidades"></div>
     </div>
 
   </div>
 
-  <!-- Narrativas -->
-  <div class="section-label">Contexto narrativo (opcional)</div>
+  <!-- Notas + Botões -->
+  <div class="section-label">Notas opcionais</div>
   <div class="narrative-block">
     <div class="narrative-header">
-      <span class="dot" style="background:#3483FA"></span> Análise geral
-      <span class="stats"><span id="hdrAder">—</span></span>
+      <span class="dot" style="background:#16a34a"></span> Observações
     </div>
-    <textarea id="txtAder" placeholder="Ex: 88% das rotas dentro do plano, mas 12% excederam — com média de +32 min..."></textarea>
-  </div>
-  <div class="narrative-block">
-    <div class="narrative-header">
-      <span class="dot" style="background:#e24b4a"></span> Excedentes
-      <span class="stats"><span id="hdrExc">—</span></span>
-    </div>
-    <textarea id="txtExc" placeholder="Ex: Dos excedentes, 60% foram downgrades. MLP Envios Extra lidera..."></textarea>
-  </div>
-  <div class="narrative-block">
-    <div class="narrative-header">
-      <span class="dot" style="background:#16a34a"></span> DG / UG
-      <span class="stats"><span id="hdrDgUg">—</span></span>
-    </div>
-    <textarea id="txtDgUg" placeholder="Ex: Downgrades resultaram em ORH médio 18 min maior que match..."></textarea>
+    <textarea id="txtNotas" placeholder="Ex: Rota AM1_185 sem cidade preenchida — verificar dados na origem..."></textarea>
   </div>
 
-  <!-- Botões -->
   <div class="btn-row" style="margin-top:1rem;">
     <button class="btn btn-primary" onclick="generateReport()" id="genBtn" disabled>⚡ Gerar report</button>
+    <button class="btn btn-secondary" onclick="exportCSV()" id="exportBtn" disabled>⬇ Exportar CSV</button>
     <button class="btn btn-secondary" onclick="clearAll()">🗑 Limpar tudo</button>
   </div>
 
@@ -1135,49 +954,40 @@ document.addEventListener('click', function(e) {
 document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 
 // ── State ──
-let csvRows = null;            // rows brutos
-let agg = null;                // dados agregados
-let currentPeriod = 'all';     // filtro período
-let currentCategory = 'all';   // filtro categoria
-let availableDates = [];       // datas únicas do CSV
+let csvRows = null;          // rows brutos
+let detected = null;         // { colRoute, colCity, colCycle }
+let cycles = [];             // ciclos únicos do CSV
+let currentCycle = 'all';
+let aggregated = null;       // resultado de aggregate()
 
 // ── Helpers ──
 const fmtN = n => Number(n).toLocaleString('pt-BR');
-const fmtH = (h, decimals=1) => h.toLocaleString('pt-BR', {minimumFractionDigits:decimals, maximumFractionDigits:decimals}) + 'h';
-const fmtMin = m => (m >= 0 ? '+' : '') + Math.round(m) + 'm';
 const fmtPct = p => p.toFixed(1).replace('.',',') + '%';
-const toNum = s => {
-  if (s == null) return NaN;
-  const n = parseFloat(String(s).replace(',','.').trim());
-  return isNaN(n) ? NaN : n;
-};
+const norm = s => (s||'').toString().trim();
 
-function vrank(v) {
-  v = (v || '').toLowerCase();
-  if (v.includes('walker')) return 1;
-  if (v.includes('moto')) return 2;
-  if (v.includes('passeio')) return 3;
-  if (v.includes('utilit') && v.includes('sdd')) return 6;
-  if (v.includes('utilit')) return 5;
-  if (v.includes('van')) return 7;
-  return 4;
-}
+// Auto-detect das colunas
+function detectColumns(sample) {
+  const headers = Object.keys(sample);
+  const lower = headers.map(h => h.toLowerCase());
 
-// Parse data — tenta dd/mm/yyyy, yyyy-mm-dd, etc.
-function parseDate(s) {
-  if (!s) return null;
-  s = String(s).trim();
-  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
-  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (m) return new Date(parseInt(m[3]), parseInt(m[2])-1, parseInt(m[1]));
-  m = s.match(/^(\d{1,2})\/(\d{1,2})/);
-  if (m) return new Date(new Date().getFullYear(), parseInt(m[2])-1, parseInt(m[1]));
-  const d = new Date(s);
-  return isNaN(d) ? null : d;
+  const findCol = (candidates) => {
+    for (const cand of candidates) {
+      const i = lower.findIndex(h => h === cand.toLowerCase());
+      if (i >= 0) return headers[i];
+    }
+    for (const cand of candidates) {
+      const i = lower.findIndex(h => h.includes(cand.toLowerCase()));
+      if (i >= 0) return headers[i];
+    }
+    return null;
+  };
+
+  return {
+    colRoute: findCol(['SHP_LG_ROUTE_ID','ROUTE_ID','rota','ROTA','route','Rota']),
+    colCity: findCol(['cidade','CIDADE','city','CITY','municipio','MUNICIPIO','município','SHP_BUYER_ADDRESS_CITY','BUYER_CITY']),
+    colCycle: findCol(['SHP_CYCLE_NAME_PLANNED','SHP_CYCLE_NAME','CYCLE','ciclo','CICLO','cycle','WAVE','wave'])
+  };
 }
-const isoDate = d => d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` : '';
-const fmtDateBR = d => d ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}` : '—';
 
 function parseCSVLine(line) {
   const out = []; let cur = ''; let q = false;
@@ -1208,8 +1018,6 @@ const zCSV = document.getElementById('zoneCSV');
 zCSV.addEventListener('dragover', e => { e.preventDefault(); zCSV.style.borderColor='var(--yellow)'; });
 zCSV.addEventListener('dragleave', () => zCSV.style.borderColor='');
 zCSV.addEventListener('drop', e => { e.preventDefault(); zCSV.style.borderColor=''; handleCSV(e.dataTransfer.files[0]); });
-document.getElementById('dateFrom').addEventListener('change', () => { currentPeriod = 'custom'; updatePeriodActive(); applyFilters(); });
-document.getElementById('dateTo').addEventListener('change', () => { currentPeriod = 'custom'; updatePeriodActive(); applyFilters(); });
 
 function handleCSV(file) {
   if (!file) return;
@@ -1217,518 +1025,229 @@ function handleCSV(file) {
   reader.onload = e => {
     const parsed = parseCSV(e.target.result);
     if (parsed.length === 0) { alert('CSV vazio.'); return; }
-    const sample = parsed[0];
-    const need = ['ORH_PLAN','ORH_REAL'];
-    const missing = need.filter(c => !(c in sample));
-    if (missing.length) {
-      alert('CSV não contém: ' + missing.join(', '));
+
+    detected = detectColumns(parsed[0]);
+    if (!detected.colRoute || !detected.colCity) {
+      const cols = Object.keys(parsed[0]).join(', ');
+      alert('Não foi possível detectar as colunas de ROTA e CIDADE.\n\nColunas encontradas no CSV:\n' + cols + '\n\nA rota deve ter um header como "SHP_LG_ROUTE_ID", "rota" ou "route_id".\nA cidade deve ter um header como "cidade", "city" ou "municipio".');
       return;
     }
-    // Normaliza: parse num + parse date + categoria
-    csvRows = parsed.map(r => {
-      const plan = toNum(r['ORH_PLAN']);
-      const real = toNum(r['ORH_REAL']);
-      const contr = toNum(r['ORH_CONTRATO']);
-      const date = parseDate(r['DATA']);
-      const modal = (r['MODAL_PLAN'] || '').trim();
-      const realModal = (r['MODAL_REAL'] || '').trim();
-      let category = 'match';
-      if (vrank(modal) > vrank(realModal)) category = 'dg';
-      else if (vrank(modal) < vrank(realModal)) category = 'ug';
-      else if (modal.toLowerCase() !== realModal.toLowerCase()) category = 'lateral';
-      return {
-        raw: r,
-        plan, real, contr, date,
-        diff: !isNaN(plan) && !isNaN(real) ? real - plan : NaN,
-        excessOverContrato: !isNaN(real) && !isNaN(contr) ? real - contr : NaN,
-        category,
-        mlp: (r['MLP'] || '').trim() || '—',
-        modal: modal || '—',
-        realModal: realModal || '—',
-        route: r['SHP_LG_ROUTE_ID'] || r['ROUTE_ID'] || r['ROTA'] || '—',
-        valid: !isNaN(plan) && !isNaN(real) && plan > 0 && real > 0
-      };
-    });
-    const validRows = csvRows.filter(r => r.valid);
-    availableDates = [...new Set(validRows.filter(r => r.date).map(r => isoDate(r.date)))].sort();
+
+    csvRows = parsed.filter(r => norm(r[detected.colRoute]));
+
+    // Ciclos únicos
+    if (detected.colCycle) {
+      cycles = [...new Set(csvRows.map(r => norm(r[detected.colCycle])).filter(Boolean))].sort();
+    } else {
+      cycles = [];
+    }
+
+    // Cidades únicas (pra dropdown)
+    const cidades = [...new Set(csvRows.map(r => norm(r[detected.colCity])).filter(Boolean))].sort();
+    const sel = document.getElementById('cityFilter');
+    sel.innerHTML = '<option value="">Todas (' + cidades.length + ')</option>' + cidades.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    // Cycle pills
+    const pillsHTML = ['<button class="filter-pill active" data-c="all" onclick="setCycle(\'all\')">Todos</button>']
+      .concat(cycles.map(c => `<button class="filter-pill" data-c="${c}" onclick="setCycle('${c}')">${c}</button>`))
+      .join('');
+    document.getElementById('cyclePills').innerHTML = pillsHTML;
 
     document.getElementById('zoneCSV').classList.add('loaded-csv');
-    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(validRows.length)} rotas válidas · ${availableDates.length} dia(s)</span>`;
+    const colsDetectedTxt = `📋 ${detected.colRoute} / ${detected.colCity}` + (detected.colCycle ? ` / ${detected.colCycle}` : ' (sem ciclo)');
+    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(csvRows.length)} linhas · ${colsDetectedTxt}</span>`;
     document.getElementById('filterBar').style.display = 'flex';
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('analysisArea').style.display = 'block';
     document.getElementById('genBtn').disabled = false;
+    document.getElementById('exportBtn').disabled = false;
 
-    // Pré-popular date range
-    if (availableDates.length > 0) {
-      document.getElementById('dateFrom').value = availableDates[0];
-      document.getElementById('dateTo').value = availableDates[availableDates.length-1];
-      document.getElementById('dateFrom').min = availableDates[0];
-      document.getElementById('dateFrom').max = availableDates[availableDates.length-1];
-      document.getElementById('dateTo').min = availableDates[0];
-      document.getElementById('dateTo').max = availableDates[availableDates.length-1];
-    }
+    currentCycle = 'all';
     applyFilters();
   };
   reader.readAsText(file, 'utf-8');
 }
 
-function setPeriod(p) {
-  currentPeriod = p;
-  updatePeriodActive();
-  // Ajustar inputs DE/ATÉ
-  if (availableDates.length === 0) { applyFilters(); return; }
-  const today = new Date(); today.setHours(0,0,0,0);
-  const minD = new Date(availableDates[0]);
-  const maxD = new Date(availableDates[availableDates.length-1]);
-  let from, to;
-  if (p === 'all') { from = minD; to = maxD; }
-  else if (p === 'today') { from = today; to = today; }
-  else if (p === 'yesterday') { from = new Date(today.getTime() - 86400000); to = new Date(today.getTime() - 86400000); }
-  else if (p === '7d') { from = new Date(today.getTime() - 6*86400000); to = today; }
-  else if (p === '30d') { from = new Date(today.getTime() - 29*86400000); to = today; }
-  if (from && to) {
-    document.getElementById('dateFrom').value = isoDate(from);
-    document.getElementById('dateTo').value = isoDate(to);
-  }
-  applyFilters();
-}
-
-function updatePeriodActive() {
-  document.querySelectorAll('.filter-pill[data-p]').forEach(p => p.classList.toggle('active', p.dataset.p === currentPeriod));
-}
-
-function setCategory(c) {
-  currentCategory = c;
+function setCycle(c) {
+  currentCycle = c;
   document.querySelectorAll('.filter-pill[data-c]').forEach(p => p.classList.toggle('active', p.dataset.c === c));
   applyFilters();
 }
 
 function applyFilters() {
-  if (!csvRows) return;
-  let rows = csvRows.filter(r => r.valid);
+  if (!csvRows || !detected) return;
+  let rows = csvRows;
 
-  // Período
-  const from = document.getElementById('dateFrom').value;
-  const to = document.getElementById('dateTo').value;
-  if (from && to) {
-    const fd = new Date(from); fd.setHours(0,0,0,0);
-    const td = new Date(to); td.setHours(23,59,59,999);
-    rows = rows.filter(r => r.date && r.date >= fd && r.date <= td);
+  // Filtro de ciclo
+  if (currentCycle !== 'all' && detected.colCycle) {
+    rows = rows.filter(r => norm(r[detected.colCycle]) === currentCycle);
   }
 
-  // Categoria
-  if (currentCategory === 'match') rows = rows.filter(r => r.category === 'match');
-  else if (currentCategory === 'dg') rows = rows.filter(r => r.category === 'dg');
-  else if (currentCategory === 'ug') rows = rows.filter(r => r.category === 'ug');
-  else if (currentCategory === 'exceeded') rows = rows.filter(r => r.diff > 0);
+  // Agregar por rota
+  const byRoute = {};
+  rows.forEach(r => {
+    const route = norm(r[detected.colRoute]);
+    if (!route) return;
+    const city = norm(r[detected.colCity]);
+    if (!byRoute[route]) byRoute[route] = { route, count: 0, cities: {} };
+    byRoute[route].count++;
+    if (city) byRoute[route].cities[city] = (byRoute[route].cities[city] || 0) + 1;
+  });
 
-  const total = rows.length;
-  const periodLbl = from && to ? `${fmtDateBR(new Date(from))} → ${fmtDateBR(new Date(to))}` : '—';
-  document.getElementById('filterInfo').innerHTML = `<b>${fmtN(total)}</b> rotas · <span style="opacity:.7;">${periodLbl}</span>`;
+  // Para cada rota, pegar cidade dominante
+  const routesAll = Object.values(byRoute).map(r => {
+    const entries = Object.entries(r.cities).sort((a,b) => b[1]-a[1]);
+    const top = entries[0];
+    const topCount = top ? top[1] : 0;
+    return {
+      route: r.route,
+      city: top ? top[0] : '—',
+      cityCount: topCount,
+      totalStops: r.count,
+      pctDominance: r.count > 0 ? (topCount/r.count*100) : 0,
+      hasCity: !!top
+    };
+  });
 
-  aggregate(rows);
+  // Filtros pós-agregação
+  const cityFilter = document.getElementById('cityFilter').value;
+  const searchFilter = norm(document.getElementById('searchRoute').value).toUpperCase();
+
+  let routes = routesAll;
+  if (cityFilter) routes = routes.filter(r => r.city === cityFilter);
+  if (searchFilter) routes = routes.filter(r => r.route.toUpperCase().includes(searchFilter));
+
+  // Ordenar rotas pelo natural sort (AM1_1, AM1_2, ..., AM1_10, AM1_11)
+  routes.sort((a,b) => {
+    return a.route.localeCompare(b.route, undefined, {numeric: true, sensitivity: 'base'});
+  });
+
+  // Cidades agg (pra distribuição)
+  const cityAgg = {};
+  routesAll.forEach(r => {
+    if (r.hasCity) cityAgg[r.city] = (cityAgg[r.city] || 0) + 1;
+  });
+  const cityList = Object.entries(cityAgg).sort((a,b) => b[1]-a[1]);
+
+  // Sem cidade
+  const semCidade = routesAll.filter(r => !r.hasCity);
+
+  aggregated = {
+    routes, routesAll, cityList, semCidade,
+    totalRoutes: routesAll.length, filteredRoutes: routes.length
+  };
+
+  // Filter info
+  document.getElementById('filterInfo').innerHTML = `<b>${fmtN(routes.length)}</b> de ${fmtN(routesAll.length)} rotas`;
+  document.getElementById('tableSubtitle').textContent = currentCycle !== 'all' ? `Ciclo: ${currentCycle}` : 'Todos os ciclos';
+
   render();
 }
 
-function aggregate(rows) {
-  if (rows.length === 0) { agg = null; return; }
-
-  const sum = (arr, k) => arr.reduce((s,r) => s + (isNaN(r[k]) ? 0 : r[k]), 0);
-  const count = arr => arr.length;
-  const validForKey = (arr, k) => arr.filter(r => !isNaN(r[k]) && r[k] > 0);
-
-  const planValid = validForKey(rows, 'plan');
-  const realValid = validForKey(rows, 'real');
-  const contrValid = validForKey(rows, 'contr');
-
-  const total = rows.length;
-  const planTotal = sum(planValid, 'plan');
-  const realTotal = sum(realValid, 'real');
-  const contrTotal = sum(contrValid, 'contr');
-  const planAvg = planValid.length ? planTotal/planValid.length : 0;
-  const realAvg = realValid.length ? realTotal/realValid.length : 0;
-  const contrAvg = contrValid.length ? contrTotal/contrValid.length : 0;
-
-  // Excedentes do Plan
-  const exceeded = rows.filter(r => r.diff > 0);
-  const excPct = total ? (exceeded.length/total)*100 : 0;
-  const excAvgMin = exceeded.length ? (exceeded.reduce((s,r) => s+r.diff, 0)/exceeded.length)*60 : 0; // converte horas → min
-
-  // Aderência (±10% do plan)
-  const adherent = rows.filter(r => !isNaN(r.diff) && Math.abs(r.diff) <= (r.plan * 0.10));
-  const aderPct = total ? (adherent.length/total)*100 : 0;
-
-  // Por categoria
-  const cats = ['match', 'dg', 'ug', 'lateral'];
-  const catData = cats.map(c => {
-    const arr = rows.filter(r => r.category === c);
-    if (arr.length === 0) return null;
-    const exceeded = arr.filter(r => r.diff > 0);
-    return {
-      cat: c,
-      count: arr.length,
-      planAvg: arr.reduce((s,r) => s+r.plan, 0) / arr.length,
-      realAvg: arr.reduce((s,r) => s+r.real, 0) / arr.length,
-      diffAvg: arr.reduce((s,r) => s+r.diff, 0) / arr.length,
-      excPct: arr.length ? (exceeded.length/arr.length)*100 : 0
-    };
-  }).filter(Boolean);
-
-  // Breakdown dos excedentes — por categoria
-  const excByCat = cats.map(c => {
-    const inCat = exceeded.filter(r => r.category === c);
-    return { cat: c, count: inCat.length, pct: exceeded.length ? (inCat.length/exceeded.length)*100 : 0 };
-  }).filter(d => d.count > 0);
-
-  // Por MLP
-  const byMLP = {};
-  rows.forEach(r => {
-    if (!byMLP[r.mlp]) byMLP[r.mlp] = { rows: [], planSum: 0, realSum: 0, contrSum: 0 };
-    const m = byMLP[r.mlp];
-    m.rows.push(r);
-    m.planSum += r.plan;
-    m.realSum += r.real;
-    if (!isNaN(r.contr)) m.contrSum += r.contr;
-  });
-  const mlpAgg = Object.entries(byMLP).map(([mlp, s]) => {
-    const n = s.rows.length;
-    const exc = s.rows.filter(r => r.diff > 0).length;
-    return {
-      mlp,
-      rows: n,
-      planAvg: s.planSum/n,
-      realAvg: s.realSum/n,
-      contrAvg: s.contrSum/n,
-      diffAvg: (s.realSum - s.planSum)/n,
-      excPct: (exc/n)*100
-    };
-  }).sort((a,b) => b.rows - a.rows);
-
-  // Histograma — buckets em min
-  const buckets = [
-    { lbl: '< -60', min: -Infinity, max: -1, type: 'negative' },
-    { lbl: '-60→-30', min: -1, max: -0.5, type: 'negative' },
-    { lbl: '-30→-10', min: -0.5, max: -10/60, type: 'negative' },
-    { lbl: '±10', min: -10/60, max: 10/60, type: 'zero' },
-    { lbl: '+10→+30', min: 10/60, max: 0.5, type: 'positive' },
-    { lbl: '+30→+60', min: 0.5, max: 1, type: 'positive' },
-    { lbl: '> +60', min: 1, max: Infinity, type: 'positive' }
-  ];
-  buckets.forEach(b => { b.count = 0; });
-  rows.forEach(r => {
-    if (isNaN(r.diff)) return;
-    const b = buckets.find(b => r.diff > b.min && r.diff <= b.max);
-    if (b) b.count++;
-  });
-
-  // Top atrasos / adiantamentos
-  const sorted = [...rows].filter(r => !isNaN(r.diff)).sort((a,b) => b.diff - a.diff);
-  const topAtrasos = sorted.slice(0, 10);
-  const topAdiantamentos = sorted.slice(-10).reverse();
-
-  agg = {
-    total, planAvg, realAvg, contrAvg, planTotal, realTotal, contrTotal,
-    excCount: exceeded.length, excPct, excAvgMin,
-    aderPct,
-    catData, excByCat,
-    mlpAgg, buckets,
-    topAtrasos, topAdiantamentos,
-    rows
-  };
-}
-
 function render() {
-  if (!agg) {
-    document.getElementById('emptyState').style.display = 'block';
-    document.getElementById('analysisArea').style.display = 'none';
-    return;
-  }
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('analysisArea').style.display = 'block';
+  if (!aggregated) return;
+  const { routes, routesAll, cityList, semCidade, totalRoutes } = aggregated;
 
-  const { total, planAvg, realAvg, contrAvg, planTotal, realTotal, contrTotal,
-          excCount, excPct, excAvgMin, aderPct, catData, excByCat, mlpAgg, buckets,
-          topAtrasos, topAdiantamentos, rows } = agg;
+  // === KPIs ===
+  document.getElementById('kpiRotas').textContent = fmtN(routes.length);
+  document.getElementById('kpiRotasFoot').textContent = routes.length !== totalRoutes ? `de ${fmtN(totalRoutes)} totais` : 'no filtro atual';
 
-  // === KPI Strip ===
-  document.getElementById('kpiTotal').textContent = fmtN(total);
-  document.getElementById('kpiTotalFoot').textContent = `total ${fmtH(planTotal,0)} plan · ${fmtH(realTotal,0)} real`;
+  document.getElementById('kpiCidades').textContent = fmtN(cityList.length);
+  document.getElementById('kpiCidadesFoot').textContent = cityList.length > 0 ? `mais comum: ${cityList[0][0]}` : 'sem cidades';
 
-  document.getElementById('kpiPlan').textContent = fmtH(planAvg, 2);
-  document.getElementById('kpiPlanFoot').textContent = `por rota · ${(planAvg*60).toFixed(0)} min`;
-
-  document.getElementById('kpiReal').textContent = fmtH(realAvg, 2);
-  const realDiff = realAvg - planAvg;
-  document.getElementById('kpiRealFoot').innerHTML = `por rota · <span style="color:${realDiff > 0 ? 'var(--red)' : 'var(--green)'};font-weight:800;">${realDiff >= 0 ? '+' : ''}${(realDiff*60).toFixed(0)} min vs plan</span>`;
-
-  document.getElementById('kpiContrato').textContent = contrAvg > 0 ? fmtH(contrAvg, 2) : '—';
-  document.getElementById('kpiContratoFoot').textContent = contrAvg > 0 ? `por rota · ${(contrAvg*60).toFixed(0)} min` : 'Sem dados';
-
-  document.getElementById('kpiExc').textContent = fmtN(excCount);
-  document.getElementById('kpiExc').style.color = excPct > 30 ? 'var(--red)' : excPct > 10 ? '#D97706' : 'var(--green)';
-  document.getElementById('kpiExcFoot').textContent = `${fmtPct(excPct)} · média +${Math.round(excAvgMin)} min`;
-
-  document.getElementById('kpiAder').textContent = fmtPct(aderPct);
-  document.getElementById('kpiAder').style.color = aderPct > 80 ? 'var(--green)' : aderPct > 60 ? '#D97706' : 'var(--red)';
-  document.getElementById('kpiAderFoot').textContent = 'rotas dentro de ±10% do plan';
-
-  // === ORH HERO — variação Real-Plan protagonista ===
-  const orhHero = document.getElementById('orhHero');
-  const realDiffMinHero = realDiff * 60;
-  const planPctHero = planAvg > 0 ? Math.abs(realDiff/planAvg*100) : 0;
-  orhHero.classList.remove('is-bad','is-good');
-  const sigDiffHero = Math.abs(realDiffMinHero) > 5;
-  if (sigDiffHero && realDiffMinHero > 0) orhHero.classList.add('is-bad');
-  else if (sigDiffHero && realDiffMinHero < 0) orhHero.classList.add('is-good');
-
-  const heroNum = document.getElementById('orhHeroNumber');
-  if (realDiffMinHero > 0.5) heroNum.textContent = '+' + Math.round(realDiffMinHero) + ' min';
-  else if (realDiffMinHero < -0.5) heroNum.textContent = Math.round(realDiffMinHero) + ' min';
-  else heroNum.textContent = '≈ 0 min';
-
-  document.getElementById('orhHeroLabel').innerHTML = sigDiffHero
-    ? (realDiffMinHero > 0 ? `cada rota gastou em média a <b>MAIS</b> que o planejado (${planPctHero.toFixed(1).replace('.',',')}% acima)` : `cada rota gastou em média a <b>MENOS</b> que o planejado (${planPctHero.toFixed(1).replace('.',',')}% abaixo)`)
-    : `Tempo real <b>aderente</b> ao planejado (variação dentro de ±5 min)`;
-
-  document.getElementById('orhHeroPlan').textContent = fmtH(planAvg, 2);
-  document.getElementById('orhHeroReal').textContent = fmtH(realAvg, 2);
-  document.getElementById('orhHeroArrow').textContent = realDiffMinHero > 5 ? '→' : realDiffMinHero < -5 ? '←' : '≈';
-
-  const tagCls = realDiffMinHero > 5 ? 'bad' : realDiffMinHero < -5 ? 'good' : '';
-  const tagTxt = realDiffMinHero > 5 ? 'ATRASOU' : realDiffMinHero < -5 ? 'ADIANTOU' : 'NO ALVO';
-  document.getElementById('orhHeroSummary').innerHTML =
-    `Análise de <b>${fmtN(total)}</b> rotas · <span class="hero-tag ${tagCls}">${tagTxt}</span> · <b>${fmtN(agg.excCount)}</b> rotas excederam o Plan (${fmtPct(agg.excPct)}) · Aderência ±10%: <b>${fmtPct(aderPct)}</b>${contrAvg>0?` · vs <b>Contrato</b> (${fmtH(contrAvg,2)}): ${((realAvg-contrAvg)*60 >= 0 ? '+' : '')}${Math.round((realAvg-contrAvg)*60)} min`:''}`;
-
-  // === Battle Plan x Real ===
-  document.getElementById('battlePlanH').textContent = fmtH(planAvg, 2);
-  document.getElementById('battlePlanMin').textContent = Math.round(planAvg*60) + ' min · ' + fmtN(total) + ' rotas';
-  document.getElementById('battleRealH').textContent = fmtH(realAvg, 2);
-  document.getElementById('battleRealMin').textContent = Math.round(realAvg*60) + ' min · média executada';
-
-  const realSide = document.querySelector('.battle-side.real');
-  realSide.classList.remove('is-worse','is-better');
-  const realDiffMin = realDiff * 60;
-  const sigDiff = Math.abs(realDiffMin) > 5;
-  if (sigDiff && realDiffMin > 0) realSide.classList.add('is-worse');
-  else if (sigDiff && realDiffMin < 0) realSide.classList.add('is-better');
-
-  // VS arrow + delta
-  const arr = document.getElementById('battleVsArrow');
-  const delta = document.getElementById('battleVsDelta');
-  const dLbl = document.getElementById('battleVsLabel');
-  arr.classList.remove('up','down','zero');
-  delta.classList.remove('up','down','zero');
-  if (realDiffMin > 5) {
-    arr.textContent = '⬆';
-    arr.classList.add('up');
-    delta.classList.add('up');
-    delta.textContent = '+' + Math.round(realDiffMin) + ' min';
-    dLbl.textContent = 'A MAIS QUE PLAN';
-  } else if (realDiffMin < -5) {
-    arr.textContent = '⬇';
-    arr.classList.add('down');
-    delta.classList.add('down');
-    delta.textContent = Math.round(realDiffMin) + ' min';
-    dLbl.textContent = 'A MENOS QUE PLAN';
+  if (cityList.length > 0) {
+    document.getElementById('kpiTopCidade').textContent = cityList[0][0];
+    document.getElementById('kpiTopCidade').style.fontSize = '18px';
+    document.getElementById('kpiTopCidadeFoot').innerHTML = `<b>${fmtN(cityList[0][1])}</b> rotas (${fmtPct(cityList[0][1]/totalRoutes*100)})`;
   } else {
-    arr.textContent = '≈';
-    arr.classList.add('zero');
-    delta.classList.add('zero');
-    delta.textContent = (realDiffMin >= 0 ? '+' : '') + Math.round(realDiffMin) + ' min';
-    dLbl.textContent = 'NO ALVO (±5 min)';
+    document.getElementById('kpiTopCidade').textContent = '—';
+    document.getElementById('kpiTopCidadeFoot').textContent = '';
   }
 
-  // Barra dupla
-  const maxBarV = Math.max(planAvg, realAvg, contrAvg || 0, 0.1);
-  document.getElementById('battleBarPlan').style.width = (planAvg/maxBarV*100).toFixed(1) + '%';
-  document.getElementById('battleBarReal').style.width = (realAvg/maxBarV*100).toFixed(1) + '%';
+  document.getElementById('kpiSemCidade').textContent = fmtN(semCidade.length);
+  document.getElementById('kpiSemCidade').style.color = semCidade.length > 0 ? 'var(--red)' : 'var(--green)';
+  document.getElementById('kpiSemCidadeFoot').textContent = semCidade.length > 0
+    ? `rotas sem cidade preenchida`
+    : 'todas com cidade ✓';
 
-  if (contrAvg > 0) {
-    document.getElementById('battleContratoLbl').style.display = 'inline-flex';
-    document.getElementById('battleContratoVal').textContent = fmtH(contrAvg, 2);
-  } else {
-    document.getElementById('battleContratoLbl').style.display = 'none';
-  }
-
-  // Summary textual
-  const planPct = planAvg > 0 ? Math.abs(realDiff/planAvg*100) : 0;
-  const summary = realDiffMin > 5
-    ? `Cada rota gastou em média <b class="acc-bad">+${Math.round(realDiffMin)} min a mais</b> que o planejado (${planPct.toFixed(1).replace('.',',')}% acima)${contrAvg>0?` · vs contrato: <b>${((realAvg-contrAvg)*60 >= 0 ? '+' : '')}${Math.round((realAvg-contrAvg)*60)} min</b>`:''}.`
-    : realDiffMin < -5
-      ? `Cada rota gastou em média <b class="acc-good">${Math.round(realDiffMin)} min a menos</b> que o planejado (${planPct.toFixed(1).replace('.',',')}% abaixo)${contrAvg>0?` · vs contrato: <b>${((realAvg-contrAvg)*60 >= 0 ? '+' : '')}${Math.round((realAvg-contrAvg)*60)} min</b>`:''}.`
-      : `Tempo real <b class="acc-good">aderente ao planejado</b> (variação dentro de ±5 min)${contrAvg>0?` · vs contrato: <b>${((realAvg-contrAvg)*60 >= 0 ? '+' : '')}${Math.round((realAvg-contrAvg)*60)} min</b>`:''}.`;
-  document.getElementById('battleSummary').innerHTML = summary;
-
-  // === Excedentes ===
-  document.getElementById('excPctVal').textContent = fmtPct(excPct);
-  document.getElementById('excPctVal').style.color = excPct > 30 ? 'var(--red)' : excPct > 10 ? '#D97706' : 'var(--green)';
-  document.getElementById('excAvgVal').textContent = '+' + Math.round(excAvgMin) + ' min';
-  document.getElementById('excAvgVal').style.color = 'var(--red)';
-
-  const catLabels = { match: 'Match', dg: 'Downgrade', ug: 'Upgrade', lateral: 'Lateral' };
-  const catColors = { match: 'var(--green)', dg: 'var(--red)', ug: 'var(--blue)', lateral: 'var(--muted)' };
-  document.getElementById('excBreakdown').innerHTML = excByCat.length ? excByCat.map(c => `
-    <div class="exc-bd-row">
-      <span class="exc-bd-lbl">${catLabels[c.cat]}</span>
-      <div class="exc-bd-bar-track"><div class="exc-bd-bar" style="width:${c.pct.toFixed(1)}%;background:${catColors[c.cat]};"></div></div>
-      <span class="exc-bd-val">${fmtN(c.count)} <span style="color:var(--muted);font-weight:600;">(${fmtPct(c.pct)})</span></span>
-    </div>
-  `).join('') : '<div style="color:var(--muted);font-size:11.5px;padding:8px 0;">Nenhuma rota excedeu o plan no período.</div>';
-
-  // === Histograma ===
-  const maxCount = Math.max(...buckets.map(b => b.count), 1);
-  document.getElementById('histoBars').innerHTML = buckets.map(b => {
-    const h = (b.count/maxCount*100).toFixed(1);
-    return `<div class="histo-bar-wrap">
-      <div class="histo-bar ${b.type}" style="height:${h}%">${b.count > 0 ? `<div class="histo-bar-val">${b.count}</div>` : ''}</div>
-      <div class="histo-bar-lbl">${b.lbl}</div>
-    </div>`;
-  }).join('');
-
-  // === Compare bars por MLP ===
-  const topMlp = mlpAgg.slice(0, 10);
-  const mlpMaxH = Math.max(...topMlp.flatMap(m => [m.planAvg, m.realAvg, m.contrAvg || 0]), 0.1);
-  document.getElementById('compareBars').innerHTML = topMlp.map(m => {
-    const planW = (m.planAvg/mlpMaxH*100).toFixed(1);
-    const realW = (m.realAvg/mlpMaxH*100).toFixed(1);
-    const contrW = m.contrAvg ? (m.contrAvg/mlpMaxH*100).toFixed(1) : 0;
-    const diffMin = m.diffAvg * 60;
-    const diffCls = diffMin > 5 ? 'up' : diffMin < -5 ? 'down' : 'zero';
-    return `<div class="compare-row triple">
-      <span class="compare-row-label" title="${m.mlp}">${m.mlp} <span style="color:var(--muted);font-weight:600;font-size:10.5px;">(${fmtN(m.rows)})</span></span>
+  // === Distribuição (barras) ===
+  const maxCount = cityList.length > 0 ? cityList[0][1] : 1;
+  document.getElementById('cityBars').innerHTML = cityList.map(([city, count]) => {
+    const w = (count/maxCount*100).toFixed(1);
+    const pct = (count/totalRoutes*100).toFixed(1).replace('.',',');
+    return `<div class="compare-row" style="grid-template-columns: 150px 1fr 90px;">
+      <span class="compare-row-label" title="${city}">${city}</span>
       <div class="compare-row-bars">
-        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${planW}%">${m.planAvg.toFixed(2)}h</div></div>
-        <div class="compare-bar-track"><div class="compare-bar real" style="width:${realW}%">${m.realAvg.toFixed(2)}h</div></div>
-        ${m.contrAvg ? `<div class="compare-bar-track"><div class="compare-bar contrato" style="width:${contrW}%">${m.contrAvg.toFixed(2)}h</div></div>` : ''}
+        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${w}%;background:var(--green);">${count} rotas</div></div>
       </div>
-      <span class="compare-row-diff ${diffCls}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}m</span>
+      <span class="compare-row-diff" style="color:var(--muted);">${pct}%</span>
     </div>`;
   }).join('');
 
-  // === Scatter ===
-  renderScatter(rows);
-
-  // === DG/UG bars ===
-  const dgUgRows = catData.filter(c => c.cat !== 'lateral');
-  const maxCatH = Math.max(...dgUgRows.flatMap(c => [c.planAvg, c.realAvg]), 0.1);
-  document.getElementById('dgugBars').innerHTML = dgUgRows.map(c => {
-    const planW = (c.planAvg/maxCatH*100).toFixed(1);
-    const realW = (c.realAvg/maxCatH*100).toFixed(1);
-    const diffMin = c.diffAvg * 60;
-    return `<div class="compare-row" style="grid-template-columns:120px 1fr 70px;">
-      <span class="compare-row-label" style="color:${catColors[c.cat]};font-weight:800;">${catLabels[c.cat]} (${fmtN(c.count)})</span>
-      <div class="compare-row-bars">
-        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${planW}%">${c.planAvg.toFixed(2)}h</div></div>
-        <div class="compare-bar-track"><div class="compare-bar real" style="width:${realW}%">${c.realAvg.toFixed(2)}h</div></div>
-      </div>
-      <span class="compare-row-diff ${diffMin > 5 ? 'up' : diffMin < -5 ? 'down' : 'zero'}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}m</span>
+  // === Tabela ===
+  document.getElementById('tblCidades').innerHTML = routes.map(r => {
+    const cityClass = r.hasCity ? '' : 'style="color:var(--red);font-style:italic;"';
+    const cityTxt = r.hasCity ? r.city : '— sem cidade';
+    const domClass = r.pctDominance >= 90 ? 'down' : r.pctDominance >= 60 ? 'zero' : 'up';
+    return `<div class="data-table-row cols-cidade">
+      <span style="font-variant-numeric:tabular-nums;font-weight:700;">${r.route}</span>
+      <span class="cell-ellipsis" ${cityClass} title="${cityTxt}">${cityTxt}</span>
+      <span class="num">${fmtN(r.totalStops)}</span>
+      <span class="num ${domClass}">${r.hasCity ? fmtPct(r.pctDominance) : '—'}</span>
     </div>`;
-  }).join('');
-
-  // === Tabela MLP ===
-  document.getElementById('tblMLP').innerHTML = mlpAgg.slice(0, 15).map(m => {
-    const diffMin = m.diffAvg * 60;
-    const diffCls = diffMin > 5 ? 'up' : diffMin < -5 ? 'down' : 'zero';
-    const excCls = m.excPct > 30 ? 'up' : m.excPct > 10 ? 'zero' : 'down';
-    return `<div class="data-table-row cols-mlp-full">
-      <span class="cell-ellipsis" title="${m.mlp}">${m.mlp}</span>
-      <span class="num">${fmtN(m.rows)}</span>
-      <span class="num">${m.planAvg.toFixed(2)}</span>
-      <span class="num">${m.realAvg.toFixed(2)}</span>
-      <span class="num">${m.contrAvg ? m.contrAvg.toFixed(2) : '—'}</span>
-      <span class="num ${diffCls}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}</span>
-      <span class="num ${excCls}">${fmtPct(m.excPct)}</span>
-    </div>`;
-  }).join('');
-
-  // === Top atrasos & adiantamentos ===
-  const renderRoute = r => {
-    const diffMin = r.diff * 60;
-    return `<div class="data-table-row cols-rota-full">
-      <span><span style="color:var(--muted);font-weight:600;font-size:10.5px;">${fmtDateBR(r.date)}</span> <span style="font-variant-numeric:tabular-nums;">${r.route}</span></span>
-      <span><span class="cat-pill cat-${r.category}">${catLabels[r.category]||'—'}</span></span>
-      <span class="num">${r.plan.toFixed(2)}h</span>
-      <span class="num">${r.real.toFixed(2)}h</span>
-      <span class="num ${diffMin > 0 ? 'up' : 'down'}">${diffMin >= 0 ? '+' : ''}${Math.round(diffMin)}m</span>
-    </div>`;
-  };
-  document.getElementById('tblAtrasos').innerHTML = topAtrasos.map(renderRoute).join('') || '<div style="padding:14px 18px;color:var(--muted);font-size:12px;">Nenhum atraso no período.</div>';
-  document.getElementById('tblAdiantamentos').innerHTML = topAdiantamentos.map(renderRoute).join('') || '<div style="padding:14px 18px;color:var(--muted);font-size:12px;">Nenhum adiantamento no período.</div>';
-
-  // Narrativas headers
-  document.getElementById('hdrAder').textContent = `${fmtPct(aderPct)} aderência · Δ médio ${realDiff >= 0 ? '+' : ''}${Math.round(realDiff*60)}m`;
-  document.getElementById('hdrExc').textContent = `${fmtN(excCount)} rotas (${fmtPct(excPct)})`;
-  const dgInfo = catData.find(c => c.cat === 'dg');
-  const ugInfo = catData.find(c => c.cat === 'ug');
-  document.getElementById('hdrDgUg').textContent = `DG: ${dgInfo?fmtN(dgInfo.count):'0'} · UG: ${ugInfo?fmtN(ugInfo.count):'0'}`;
-}
-
-function renderScatter(rows) {
-  const W = 400, H = 220, PAD = 30;
-  const allH = rows.flatMap(r => [r.plan, r.real]).filter(v => !isNaN(v));
-  const maxH = Math.max(...allH, 1);
-  const xScale = v => PAD + (v/maxH) * (W - 2*PAD);
-  const yScale = v => H - PAD - (v/maxH) * (H - 2*PAD);
-  // Sample
-  const sampleSize = Math.min(rows.length, 600);
-  const sample = rows.length > sampleSize ? rows.filter((_,i) => i % Math.ceil(rows.length/sampleSize) === 0) : rows;
-  const catColors = { match: '#16a34a', dg: '#E3262F', ug: '#3483FA', lateral: '#6B7394' };
-  const dots = sample.map(r => `<circle cx="${xScale(r.plan).toFixed(1)}" cy="${yScale(r.real).toFixed(1)}" r="2.3" fill="${catColors[r.category]||'#6B7394'}" opacity=".55"/>`).join('');
-  document.getElementById('scatterSvg').innerHTML = `
-    <line class="scatter-axis" x1="${PAD}" y1="${H-PAD}" x2="${W-PAD}" y2="${H-PAD}"/>
-    <line class="scatter-axis" x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${H-PAD}"/>
-    <line class="scatter-diagonal" x1="${xScale(0)}" y1="${yScale(0)}" x2="${xScale(maxH)}" y2="${yScale(maxH)}"/>
-    ${dots}
-    <text class="scatter-axis-lbl" x="${W/2}" y="${H-6}" text-anchor="middle">Plan (h) →</text>
-    <text class="scatter-axis-lbl" x="6" y="${H/2}" text-anchor="middle" transform="rotate(-90 6 ${H/2})">← Real (h)</text>
-    <text class="scatter-axis-lbl" x="${W-PAD-2}" y="${H-PAD-4}" text-anchor="end">${maxH.toFixed(1)}h</text>
-  `;
+  }).join('') || '<div style="padding:18px 18px;color:var(--muted);font-size:12px;">Nenhuma rota corresponde aos filtros aplicados.</div>';
 }
 
 function generateReport() {
-  if (!agg) return;
+  if (!aggregated) return;
+  const { routes, cityList, semCidade, totalRoutes } = aggregated;
+
   const dateStr = (() => {
     const d = document.getElementById('reportDate').value;
-    if (!d) return new Date().toLocaleDateString('pt-BR');
+    if (!d) return new Date().toLocaleDateString('pt-BR').slice(0,5);
     const [y,m,day] = d.split('-');
-    return `${day}/${m}/${y}`;
+    return `${day}/${m}`;
   })();
-  const from = document.getElementById('dateFrom').value;
-  const to = document.getElementById('dateTo').value;
-  const periodLbl = from && to ? `${fmtDateBR(new Date(from))} → ${fmtDateBR(new Date(to))}` : 'todo o arquivo';
-  const catLabels = { match: 'Match', dg: 'Downgrade', ug: 'Upgrade', lateral: 'Lateral' };
 
-  const txt = id => document.getElementById(id).value.trim();
-  const txtAder = txt('txtAder'), txtExc = txt('txtExc'), txtDgUg = txt('txtDgUg');
+  const cycleLbl = currentCycle === 'all' ? 'Todos os ciclos' : `Ciclo ${currentCycle}`;
+  const txtNotas = document.getElementById('txtNotas').value.trim();
 
-  const r = `ORH LM SSP20 | ${dateStr} | Período: ${periodLbl} | Categoria: ${currentCategory}
+  // Top 5 cidades
+  const topCidades = cityList.slice(0, 5).map(([c, n]) => `  ${c}: ${n} rotas (${fmtPct(n/totalRoutes*100)})`).join('\n');
+
+  // Listar rotas (todas, agrupadas por cidade)
+  const byCity = {};
+  routes.forEach(r => {
+    if (!r.hasCity) return;
+    if (!byCity[r.city]) byCity[r.city] = [];
+    byCity[r.city].push(r.route);
+  });
+  const cityBlocks = Object.entries(byCity)
+    .sort((a,b) => b[1].length - a[1].length)
+    .map(([city, list]) => `▪️ ${city} (${list.length} rotas):\n   ${list.join(', ')}`)
+    .join('\n\n');
+
+  const semCidadeStr = semCidade.length > 0
+    ? `\n⚠️ ROTAS SEM CIDADE (${semCidade.length}):\n   ${semCidade.map(r => r.route).join(', ')}`
+    : '';
+
+  const report = `CIDADES POR ROTA – SSP20 | ${dateStr} | ${cycleLbl}
 ═══════════════════════════════════════════════════════════
-INDICADORES
-  Rotas analisadas: ${fmtN(agg.total)}
-  ORH Plan médio: ${fmtH(agg.planAvg, 2)} (${Math.round(agg.planAvg*60)} min/rota)
-  ORH Real médio: ${fmtH(agg.realAvg, 2)} (${Math.round(agg.realAvg*60)} min/rota)
-  ORH Contrato médio: ${agg.contrAvg ? fmtH(agg.contrAvg, 2)+' ('+Math.round(agg.contrAvg*60)+' min/rota)' : 'sem dados'}
-  Δ Real vs Plan: ${Math.round((agg.realAvg - agg.planAvg)*60)} min/rota
-  Excedentes do Plan: ${fmtN(agg.excCount)} rotas (${fmtPct(agg.excPct)}) · excesso médio +${Math.round(agg.excAvgMin)} min
-  Aderência (±10%): ${fmtPct(agg.aderPct)}
+RESUMO
+  Total de rotas: ${fmtN(totalRoutes)}
+  Cidades únicas: ${cityList.length}
+  Cidade dominante: ${cityList.length > 0 ? `${cityList[0][0]} (${fmtN(cityList[0][1])} rotas)` : '—'}
+  Sem cidade: ${semCidade.length}
 
-POR CATEGORIA (Plan/Real médios em horas · Δ em min)
-${agg.catData.map(c => `  ${catLabels[c.cat]}: ${fmtN(c.count)} rotas | plan ${c.planAvg.toFixed(2)}h | real ${c.realAvg.toFixed(2)}h | Δ ${(c.diffAvg*60 >= 0 ? '+' : '')}${Math.round(c.diffAvg*60)}m | exced ${fmtPct(c.excPct)}`).join('\n')}
+TOP 5 CIDADES
+${topCidades}
 
-POR MLP (top 10)
-${agg.mlpAgg.slice(0,10).map(m => `  ${m.mlp}: ${fmtN(m.rows)} rotas | plan ${m.planAvg.toFixed(2)}h | real ${m.realAvg.toFixed(2)}h${m.contrAvg ? ' | contrato '+m.contrAvg.toFixed(2)+'h' : ''} | Δ ${(m.diffAvg*60 >= 0 ? '+' : '')}${Math.round(m.diffAvg*60)}m | exced ${fmtPct(m.excPct)}`).join('\n')}
+DETALHAMENTO POR CIDADE
+${cityBlocks}
+${semCidadeStr}
+${txtNotas ? '\nOBSERVAÇÕES:\n' + txtNotas : ''}`;
 
-TOP 5 ATRASOS
-${agg.topAtrasos.slice(0,5).map(r => `  ${fmtDateBR(r.date)} · Rota ${r.route} (${r.mlp}, ${catLabels[r.category]||'—'}): plan ${r.plan.toFixed(2)}h | real ${r.real.toFixed(2)}h | Δ +${Math.round(r.diff*60)}m`).join('\n')}
-
-TOP 5 ADIANTAMENTOS
-${agg.topAdiantamentos.slice(0,5).map(r => `  ${fmtDateBR(r.date)} · Rota ${r.route} (${r.mlp}, ${catLabels[r.category]||'—'}): plan ${r.plan.toFixed(2)}h | real ${r.real.toFixed(2)}h | Δ ${Math.round(r.diff*60)}m`).join('\n')}
-${txtAder ? '\nANÁLISE GERAL:\n' + txtAder : ''}
-${txtExc ? '\nEXCEDENTES:\n' + txtExc : ''}
-${txtDgUg ? '\nDG/UG:\n' + txtDgUg : ''}`;
-
-  document.getElementById('reportOutput').textContent = r;
+  document.getElementById('reportOutput').textContent = report;
   document.getElementById('outputSection').style.display = 'block';
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth', block:'start'});
 }
@@ -1736,28 +1255,50 @@ ${txtDgUg ? '\nDG/UG:\n' + txtDgUg : ''}`;
 function copyReport() {
   const text = document.getElementById('reportOutput').textContent;
   navigator.clipboard.writeText(text).then(() => {
-    document.getElementById('copyStatus').textContent = '✓ Copiado para área de transferência';
+    document.getElementById('copyStatus').textContent = '✓ Copiado';
     setTimeout(() => document.getElementById('copyStatus').textContent = '', 3000);
   });
 }
 
+function exportCSV() {
+  if (!aggregated) return;
+  const { routes } = aggregated;
+  const header = 'rota,cidade,paradas,pct_dominancia';
+  const lines = routes.map(r => [
+    r.route,
+    r.hasCity ? r.city : 'SEM CIDADE',
+    r.totalStops,
+    r.hasCity ? r.pctDominance.toFixed(1).replace('.',',') + '%' : '-'
+  ].join(','));
+  const blob = new Blob([header + '\n' + lines.join('\n')], {type: 'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cidades_por_rota_${currentCycle === 'all' ? 'todos' : currentCycle}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function clearAll() {
   if (!confirm('Limpar tudo?')) return;
-  csvRows = null; agg = null;
-  currentPeriod = 'all'; currentCategory = 'all';
+  csvRows = null; detected = null; cycles = []; aggregated = null;
+  currentCycle = 'all';
   document.getElementById('zoneCSV').classList.remove('loaded-csv');
-  document.getElementById('csvLabel').innerHTML = 'Importar CSV BQ Routing';
-  ['kpiTotal','kpiPlan','kpiReal','kpiContrato','kpiExc','kpiAder'].forEach(id => {
+  document.getElementById('csvLabel').innerHTML = 'Importar CSV de roteirização';
+  ['kpiRotas','kpiCidades','kpiTopCidade','kpiSemCidade'].forEach(id => {
     const el = document.getElementById(id);
     el.textContent = '—';
     el.style.color = '';
+    el.style.fontSize = '';
   });
-  ['txtAder','txtExc','txtDgUg'].forEach(id => document.getElementById(id).value = '');
+  ['txtNotas','searchRoute'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cityFilter').innerHTML = '<option value="">Todas</option>';
   document.getElementById('analysisArea').style.display = 'none';
   document.getElementById('filterBar').style.display = 'none';
   document.getElementById('emptyState').style.display = 'block';
   document.getElementById('outputSection').style.display = 'none';
   document.getElementById('genBtn').disabled = true;
+  document.getElementById('exportBtn').disabled = true;
   document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
 }
 
