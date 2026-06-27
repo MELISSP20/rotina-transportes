@@ -1657,7 +1657,8 @@ function enableDragAndDrop(container) {
 }
 
 function updateStats() {
-  const all = Object.values(TASKS).flat();
+  // Usa getOrderedTasks() pra respeitar o filtro excludeSSP51 quando SSP·51 está ativo
+  const all = getOrderedTasks();
   const total = all.length;
   const done = all.filter(t => state[t.id]).length;
   const pending = total - done;
