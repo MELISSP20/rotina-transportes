@@ -352,6 +352,33 @@
       .diario-info-emoji { font-size: 28px; }
       .diario-info-name { font-size: 15px; }
     }
+  .diary-tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: -.1px;
+    border: 1px solid;
+    margin: 0 2px;
+    line-height: 1.4;
+  }
+  .btn-export-md {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    transition: all .15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-export-md:hover { border-color: var(--text); transform: translateY(-1px); }
   </style>
 <script src="keyboard.js" defer></script>
 <script src="toast.js" defer></script>
@@ -474,6 +501,7 @@
       <option value="30">Últimos 30 dias</option>
       <option value="90">Últimos 90 dias</option>
     </select>
+    <button class="btn-export-md" onclick="exportMarkdown()" title="Exportar todo o diário em Markdown">📄 Export MD</button>
   </div>
 
   <div id="stats-bar" class="stats-bar" style="display:none">
@@ -521,6 +549,49 @@ function formatDate(dateStr) {
 }
 
 let allEntries = {};
+
+// ── Highlight tags (#XPT, #DIT, etc) ──
+const TAG_COLORS = {
+  'dit': '#F0B429', 'mee': '#3483FA', 'orh': '#a78bfa', 'xpt': '#E3262F',
+  'rout': '#E3262F', 'nodos': '#7C3AED', 'telemetria': '#16A34A',
+  'ssp51': '#1A1A2E', 'ssp20': '#FFE600', 'pnr': '#EC4899',
+  'ff': '#06B6D4', 'mlp': '#0EA5E9', 'descon': '#F59E0B',
+  'madrugada': '#1A1A2E', 'sd': '#16A34A', 'am': '#F59E0B', 'pm': '#a78bfa'
+};
+
+function highlightTags(text) {
+  return text.replace(/#([a-zA-Z0-9_-]+)/g, (match, tag) => {
+    const key = tag.toLowerCase().replace(/[_-]/g, '');
+    const color = TAG_COLORS[key] || '#666';
+    return `<span class="diary-tag" style="background:${color}1f;color:${color};border-color:${color}40;">#${tag}</span>`;
+  });
+}
+
+function exportMarkdown() {
+  const entries = Object.entries(allEntries).sort((a,b) => b[0].localeCompare(a[0]));
+  if (entries.length === 0) {
+    if (window.toast) toast('Não há registros pra exportar', 'error');
+    return;
+  }
+  const lines = ['# Diário de Bordo — Assignments', '', `_Exportado em ${new Date().toLocaleString('pt-BR')}_`, '', `**Total de registros:** ${entries.length}`, '', '---', ''];
+  entries.forEach(([date, text]) => {
+    lines.push(`## ${formatDate(date)}`);
+    lines.push('');
+    lines.push(text);
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+  });
+  const md = lines.join('\n');
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `diario-bordo_${new Date().toISOString().slice(0,10)}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
+  if (window.toast) toast('Diário exportado em Markdown', 'success');
+}
 
 function filterEntries() {
   const q      = (document.getElementById('search-input').value || '').toLowerCase();
@@ -623,7 +694,7 @@ function renderTimeline(data) {
           </div>
         </div>
         <div class="card-body">
-          <div class="card-text" id="text-${date}">${text.replace(/</g,'&lt;')}</div>
+          <div class="card-text" id="text-${date}">${highlightTags(text.replace(/</g,'&lt;'))}</div>
         </div>
         <div class="card-edit-area" id="edit-${date}">
           <textarea class="edit-textarea" id="ta-${date}">${text}</textarea>

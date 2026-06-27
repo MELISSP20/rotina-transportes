@@ -199,6 +199,66 @@
   .btn-copy { background: #E8F8EF; color: #006634; }
   .status { font-size: 12px; color: var(--green); margin-top: 6px; }
 
+  /* DIT History */
+  .hist-mini-chart {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  [data-theme="dark"] .hist-mini-chart { background: rgba(255,255,255,.03); }
+  .hist-chart-title {
+    font-size: 11px; font-weight: 800;
+    color: var(--muted);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .hist-chart-svg { width: 100%; height: 100px; }
+  .hist-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .hist-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    position: relative;
+    transition: all .15s;
+  }
+  [data-theme="dark"] .hist-card { background: rgba(255,255,255,.03); }
+  .hist-card:hover { border-color: var(--text); transform: translateY(-1px); }
+  .hist-card-date {
+    font-size: 10.5px; font-weight: 800;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .hist-card-dit {
+    font-size: 22px; font-weight: 900;
+    color: var(--text);
+    letter-spacing: -.4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .hist-card-dit.high { color: var(--red); }
+  .hist-card-dit.med { color: var(--amber); }
+  .hist-card-dit.low { color: var(--green); }
+  .hist-card-meta { font-size: 10.5px; font-weight: 600; color: var(--muted); margin-top: 4px; }
+  .hist-card-del {
+    position: absolute; top: 6px; right: 6px;
+    width: 22px; height: 22px;
+    border: none; background: transparent;
+    color: var(--muted); cursor: pointer;
+    font-size: 11px; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: all .15s;
+  }
+  .hist-card:hover .hist-card-del { opacity: 1; }
+  .hist-card-del:hover { background: var(--red); color: #fff; }
+
   /* ── DASHBOARD ── */
   .upload-row { display: flex; gap: 12px; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
   .upload-row .upload-zone { flex: 1; min-width: 260px; margin-bottom: 0; padding: 12px 16px; text-align: left; display: flex; align-items: center; gap: 12px; }
@@ -489,7 +549,21 @@
     <pre id="reportOutput"></pre>
     <div class="btn-row">
       <button class="btn btn-copy" onclick="copyReport()">📋 Copiar</button>
+      <button class="btn btn-secondary" onclick="saveToHistory()">💾 Salvar no histórico</button>
       <div class="status" id="copyStatus"></div>
+    </div>
+  </div>
+
+  <!-- HISTORIC SECTION -->
+  <div class="output-section" id="historicSection" style="margin-top:2rem;">
+    <div class="output-label" style="display:flex;justify-content:space-between;align-items:baseline;">
+      <span>📈 Histórico de análises DIT</span>
+      <button class="btn btn-secondary" style="font-size:11px;padding:6px 12px;" onclick="clearHistory()">Limpar histórico</button>
+    </div>
+    <div id="historicContent">
+      <div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;">
+        Nenhuma análise salva ainda. Gere um report e clique em <b>Salvar no histórico</b>.
+      </div>
     </div>
   </div>
 </div>
@@ -915,10 +989,132 @@ function generateReport() {
 function copyReport() {
   const text = document.getElementById('reportOutput').textContent;
   navigator.clipboard.writeText(text).then(() => {
-    document.getElementById('copyStatus').textContent = '✓ Copiado para área de transferência';
-    setTimeout(() => document.getElementById('copyStatus').textContent = '', 3000);
+    if (window.toast) toast('Copiado para área de transferência', 'success');
+    else {
+      document.getElementById('copyStatus').textContent = '✓ Copiado';
+      setTimeout(() => document.getElementById('copyStatus').textContent = '', 3000);
+    }
   });
 }
+
+// ── HISTÓRICO DIT ──
+const DIT_HISTORY_KEY = 'dit_history';
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(DIT_HISTORY_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveHistory(arr) {
+  localStorage.setItem(DIT_HISTORY_KEY, JSON.stringify(arr));
+}
+
+function saveToHistory() {
+  if (!agg) {
+    if (window.toast) toast('Gere o report antes de salvar', 'error');
+    return;
+  }
+  const date = document.getElementById('reportDate').value || new Date().toISOString().slice(0,10);
+  const total = agg.total;
+  // DIT % calculado: (insucessos + descontainerizados) / total
+  const ditCount = (agg.insTotal || 0) + (agg.descTotal || 0);
+  const ditPct = total > 0 ? (ditCount / total) * 100 : 0;
+  // Top 3 ofensores (rota é primeiro elemento do array)
+  const ofensores = (agg.ofensores || []).slice(0, 3).map(o => o[0]);
+  const history = loadHistory();
+  // remove entrada existente com mesma data
+  const filtered = history.filter(h => h.date !== date);
+  filtered.unshift({
+    date,
+    dit: ditPct,
+    total,
+    ditCount,
+    ofensores,
+    savedAt: Date.now(),
+  });
+  // Limitar a últimos 30
+  const trimmed = filtered.slice(0, 30);
+  saveHistory(trimmed);
+  renderHistory();
+  if (window.toast) toast(`Análise de ${formatDate(date)} salva no histórico`, 'success');
+}
+
+function clearHistory() {
+  if (!confirm('Limpar todo o histórico de análises DIT?')) return;
+  localStorage.removeItem(DIT_HISTORY_KEY);
+  renderHistory();
+  if (window.toast) toast('Histórico limpo', 'success');
+}
+
+function deleteHistoryItem(date) {
+  const history = loadHistory().filter(h => h.date !== date);
+  saveHistory(history);
+  renderHistory();
+}
+
+function formatDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+}
+
+function ditClass(v) {
+  if (v >= 5) return 'high';
+  if (v >= 3) return 'med';
+  return 'low';
+}
+
+function renderMiniChart(data) {
+  if (data.length < 2) return '';
+  const sorted = [...data].sort((a,b) => a.date.localeCompare(b.date));
+  const w = 400, h = 80, pad = 16;
+  const max = Math.max(...sorted.map(d => d.dit), 1);
+  const min = 0;
+  const xStep = (w - pad*2) / (sorted.length - 1);
+  const points = sorted.map((d, i) => {
+    const x = pad + i * xStep;
+    const y = h - pad - ((d.dit - min) / (max - min)) * (h - pad*2);
+    return `${x},${y}`;
+  }).join(' ');
+  const lastPoint = sorted[sorted.length - 1];
+  const lastX = pad + (sorted.length - 1) * xStep;
+  const lastY = h - pad - ((lastPoint.dit - min) / (max - min)) * (h - pad*2);
+  return `
+    <div class="hist-mini-chart">
+      <div class="hist-chart-title">Tendência DIT — últimas ${sorted.length} análises</div>
+      <svg class="hist-chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+        <polyline points="${points}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        ${sorted.map((d, i) => {
+          const x = pad + i * xStep;
+          const y = h - pad - ((d.dit - min) / (max - min)) * (h - pad*2);
+          return `<circle cx="${x}" cy="${y}" r="3" fill="var(--surface)" stroke="var(--blue)" stroke-width="1.8"/>`;
+        }).join('')}
+        <circle cx="${lastX}" cy="${lastY}" r="5" fill="var(--blue)"/>
+      </svg>
+    </div>
+  `;
+}
+
+function renderHistory() {
+  const container = document.getElementById('historicContent');
+  const history = loadHistory();
+  if (history.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;">Nenhuma análise salva ainda. Gere um report e clique em <b>Salvar no histórico</b>.</div>';
+    return;
+  }
+  const chart = renderMiniChart(history);
+  const cards = history.map(h => `
+    <div class="hist-card">
+      <button class="hist-card-del" onclick="deleteHistoryItem('${h.date}')" title="Remover">✕</button>
+      <div class="hist-card-date">${formatDate(h.date)}</div>
+      <div class="hist-card-dit ${ditClass(h.dit)}">${h.dit.toFixed(2)}%</div>
+      <div class="hist-card-meta">${h.total} pacotes · top: ${(h.ofensores || []).slice(0,2).join(', ') || '—'}</div>
+    </div>
+  `).join('');
+  container.innerHTML = chart + '<div class="hist-list">' + cards + '</div>';
+}
+
+// Render histórico ao carregar
+renderHistory();
 
 function clearAll() {
   if (!confirm('Limpar tudo?')) return;
