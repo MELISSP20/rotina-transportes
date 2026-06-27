@@ -969,6 +969,7 @@
 </style>
 <script src="keyboard.js" defer></script>
 <script src="toast.js" defer></script>
+<script src="ssp-city.js" defer></script>
 </head>
 <body>
 
@@ -1963,6 +1964,9 @@ function applySSP() {
   // Card de Apoio aparece SOMENTE no SSP·51
   const apoioCard = document.getElementById('apoio-ssp51');
   if (apoioCard) apoioCard.style.display = n === 51 ? 'block' : 'none';
+
+  // Disparar evento pra outros scripts (ssp-city.js etc) reagirem
+  try { window.dispatchEvent(new Event('sspChanged')); } catch(_){}
 }
 
 // ── Toggle do card de apoio (persistência em localStorage)
