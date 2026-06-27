@@ -746,6 +746,7 @@
   }
 </style>
 <script src="keyboard.js" defer></script>
+<script src="toast.js" defer></script>
 </head>
 <body>
 
@@ -891,7 +892,15 @@
   </div>
 
   <!-- Empty state -->
-  <div class="dash-empty" id="emptyState">Importe o CSV de roteirização para extrair a cidade dominante de cada rota.</div>
+  <div class="dash-empty fun-empty" id="emptyState">
+    <div class="fun-empty-art">
+      <span class="fun-empty-emoji">🗺️</span>
+      <div class="fun-empty-dots"><span></span><span></span><span></span></div>
+    </div>
+    <div class="fun-empty-title">Cadê o CSV?</div>
+    <div class="fun-empty-sub">Solta o arquivo de roteirização aí em cima — pode arrastar ou clicar pra escolher.</div>
+    <div class="fun-empty-hint">Vai precisar de uma coluna de <b>rota</b> e uma de <b>cidade</b>.</div>
+  </div>
 
   <!-- RESULTADO -->
   <div id="resultArea" style="display:none;">
@@ -1142,8 +1151,7 @@ function copyOutput() {
     const msg = currentFormat === 'tsv'
       ? `✓ ${fmtN(result.length)} linhas copiadas — cole no Excel: vai dividir em 2 colunas (Rota | Cidade)`
       : `✓ ${fmtN(result.length)} linhas copiadas`;
-    document.getElementById('copyStatus').textContent = msg;
-    setTimeout(() => document.getElementById('copyStatus').textContent = '', 5000);
+    toast(msg);
   });
 }
 

@@ -746,6 +746,7 @@
   }
 </style>
 <script src="keyboard.js" defer></script>
+<script src="toast.js" defer></script>
 </head>
 <body>
 
@@ -898,7 +899,15 @@
   </div>
 
   <!-- Empty state -->
-  <div class="dash-empty" id="emptyState">Cole a lista ou importe um CSV com <b>ID + descrição</b> dos produtos para extrair o nome padronizado.</div>
+  <div class="dash-empty fun-empty" id="emptyState">
+    <div class="fun-empty-art">
+      <span class="fun-empty-emoji">🏷️</span>
+      <div class="fun-empty-dots"><span></span><span></span><span></span></div>
+    </div>
+    <div class="fun-empty-title">Pronto pra padronizar?</div>
+    <div class="fun-empty-sub">Cola a lista ou importa um CSV com <b>ID + descrição</b> — o site descobre os produtos automaticamente.</div>
+    <div class="fun-empty-hint">Funciona com texto colado em sequência, sem precisar de linha separada por produto.</div>
+  </div>
 
   <!-- RESULTADO -->
   <div id="resultArea" style="display:none;">
@@ -1325,8 +1334,7 @@ function copyOutput() {
     const msg = currentFormat === 'tsv'
       ? `✓ ${fmtN(result.length)} linhas copiadas — cole no Excel: vai dividir em 2 colunas (ID | Produto)`
       : `✓ ${fmtN(result.length)} linhas copiadas`;
-    document.getElementById('copyStatus').textContent = msg;
-    setTimeout(() => document.getElementById('copyStatus').textContent = '', 5000);
+    toast(msg);
   });
 }
 
@@ -1346,8 +1354,7 @@ function exportCSV() {
   a.download = `resumo_produtos_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
-  document.getElementById('copyStatus').textContent = `✓ ${fmtN(result.length)} linhas baixadas em CSV`;
-  setTimeout(() => document.getElementById('copyStatus').textContent = '', 4000);
+  toast(`${fmtN(result.length)} linhas baixadas em CSV`, 'success');
 }
 
 function clearAll() {
