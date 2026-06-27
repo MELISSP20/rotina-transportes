@@ -963,175 +963,185 @@ let result = [];  // [{id, name}]
 const fmtN = n => Number(n).toLocaleString('pt-BR');
 const norm = s => (s||'').toString().trim();
 
-// ─── NORMALIZAÇÃO DE PRODUTOS ───
-const BRANDS = ['Electrolux','Brastemp','LG','Samsung','Hisense','Midea','Velt','Continental','Consul','Panasonic','Philco','Mondial','Britânia','Britania','Cadence','Mueller','Esmaltec','Atlas','Tramontina','TCL','Philips','Whirlpool','Suggar','HQ','Mueller','Fogatti','Dako'];
-
-function decodeText(s) {
-  // Algumas descrições vêm com encoding ruim (?, =, etc) — tenta fallback
-  return s;
-}
+// ─── NORMALIZAÇÃO DE PRODUTOS — heurística expandida ───
+const BRANDS = [
+  'Electrolux','Brastemp','Consul','Whirlpool','LG','Samsung','Panasonic','Philco','Midea','Hisense',
+  'Continental','Esmaltec','Atlas','Dako','Fogatti','Tramontina','Itatiaia','Bertolini','Mueller',
+  'Suggar','Latina','Mallory','Britânia','Britania','Mondial','Cadence','Lenoxx','Multilaser',
+  'Velt','Wap','Karcher','Black & Decker','Black+Decker','Oster','Arno','Walita',
+  'Philips','Faet','Cuisinart','Polishop','Premium','Layr','Realce','Fame',
+  'TCL','AOC','Toshiba','Sony','Sharp','Semp','Hyundai','HQ','JVC','H-Buster','Aiwa',
+  'Castor','Ortobom','Probel','Herval','Plumatex','Theva','Anjos','Paropas','Simmons','Sealy',
+  'Madesa','Politorno','Bartira','Carraro','Henn','Lopas','Movelar',
+  'Olympia','Apple','HP','Dell','Acer','Lenovo','Asus','Positivo','Bosch','Siemens'
+];
+const BRANDS_UNIQ = [...new Set(BRANDS.map(b => b.toLowerCase()))]
+  .sort((a,b) => b.length - a.length)
+  .map(b => BRANDS.find(x => x.toLowerCase() === b));
 
 function extractBrand(text) {
-  const lower = text.toLowerCase();
-  for (const b of BRANDS) {
-    if (lower.includes(b.toLowerCase())) return b;
+  const lower = ' ' + text.toLowerCase() + ' ';
+  for (const b of BRANDS_UNIQ) {
+    const esc = b.toLowerCase().replace(/[+&\/]/g, '\$&');
+    const pattern = new RegExp('[^a-záéíóúâêôãç]' + esc + '[^a-záéíóúâêôãç]', 'i');
+    if (pattern.test(lower)) return b;
   }
   return null;
 }
 
-// Categorias com regex e função de extração
+const getLitros = (t) => {
+  const m = t.match(/(\d{2,4})\s*(litros?|l\b|l\s|l\.|lts?\b)/i);
+  return m ? m[1] + 'L' : '';
+};
+const getKg = (t) => {
+  const m = t.match(/(\d{1,3}[.,]?\d{0,2})\s*kg/i);
+  return m ? m[1].replace('.', ',') + 'kg' : '';
+};
+const getBocas = (t) => {
+  const m = t.match(/(\d)\s*boca/i);
+  return m ? m[1] + ' bocas' : '';
+};
+const getServicos = (t) => {
+  const m = t.match(/(\d+)\s*servi[çc]o/i);
+  return m ? m[1] + ' serviços' : '';
+};
+const getBtus = (t) => {
+  const m = t.match(/(\d{1,2}[.,]?\d{0,3})\s*btus?/i);
+  return m ? m[1].replace(',','.') + ' BTUs' : '';
+};
+const getPol = (t) => {
+  const m = t.match(/\b(32|39|40|43|49|50|55|58|60|65|70|75|85|86|98)\b/);
+  return m ? m[1] : '';
+};
+const getMedida = (t) => {
+  const m = t.match(/(\d{2,3})\s*x\s*(\d{2,3})/i);
+  return m ? m[0].replace(/\s+/g,'') : '';
+};
+const getTipoColchao = (t) => {
+  if (/queen/i.test(t)) return 'Queen';
+  if (/king/i.test(t)) return 'King';
+  if (/casal/i.test(t)) return 'Casal';
+  if (/solteiro/i.test(t)) return 'Solteiro';
+  return '';
+};
+const getTipoForno = (t) => {
+  if (/el[eé]tric/i.test(t)) return 'elétrico';
+  if (/g[áa]s/i.test(t)) return 'a gás';
+  if (/embut/i.test(t)) return 'embutir';
+  return '';
+};
+
 const CATEGORIES = [
-  {
-    test: /\blav[ae]?[\s-]?lou[çc]/i,
-    label: 'Lava-louças',
-    extract: (t) => {
-      const m = t.match(/(\d+)\s*servi[çc]o/i);
-      return m ? m[1] + ' serviços' : '';
+  { test: /\blav[ae]?[\s-]?lou[çc]/i, label: 'Lava-louças', extract: getServicos },
+  { test: /\blav[a]?\s*e\s*seca|lava\s*-?\s*seca|wash\s*&?\s*dry/i, label: 'Lava e seca', extract: getKg },
+  { test: /\b(lavadora|m[aá]quina\s*de\s*lavar|tanquinho)/i, label: 'Lavadora', extract: getKg },
+  { test: /\bsecadora/i, label: 'Secadora', extract: getKg },
+  { test: /\bgeladeira|refrigerador|side\s*by\s*side/i, label: 'Geladeira', extract: getLitros },
+  { test: /\bfreezer/i, label: 'Freezer', extract: getLitros },
+  { test: /\b(cooktop|cook\s*top)/i, label: 'Cooktop', extract: getBocas },
+  { test: /\bfog[ãa]o/i, label: 'Fogão', extract: getBocas },
+  { test: /\b(micro[-\s]?ondas|microondas)/i, label: 'Micro-ondas', extract: getLitros },
+  { test: /\bforno/i, label: 'Forno', extract: (t) => [getTipoForno(t), getLitros(t)].filter(Boolean).join(' ') },
+  { test: /\b(smart\s*)?tv\b|televis[ãa]o/i, label: 'TV', extract: getPol },
+  { test: /\bcoifa|depurador/i, label: 'Coifa', extract: () => '' },
+  { test: /\bfrigobar/i, label: 'Frigobar', extract: getLitros },
+  { test: /\bcervejeira/i, label: 'Cervejeira', extract: getLitros },
+  { test: /\badega/i, label: 'Adega', extract: (t) => {
+      const m = t.match(/(\d+)\s*garrafa/i);
+      return m ? m[1] + ' garrafas' : getLitros(t);
     }
   },
-  {
-    test: /\blav[a]?\s*e\s*seca|lava\s*-?\s*seca|wash\s*&?\s*dry/i,
-    label: 'Lava e seca',
-    extract: (t) => {
-      const m = t.match(/(\d+[.,]?\d*)\s*kg/i);
-      return m ? m[1].replace('.', ',') + 'kg' : '';
+  { test: /\bexpositor/i, label: 'Expositor', extract: getLitros },
+  { test: /\bar[\s-]?condicionado|split/i, label: 'Ar-condicionado', extract: getBtus },
+  { test: /\bumidificador/i, label: 'Umidificador', extract: () => '' },
+  { test: /\b(climatizador|ar\s*portátil)/i, label: 'Climatizador', extract: () => '' },
+  { test: /\bventilador/i, label: 'Ventilador', extract: () => '' },
+  { test: /\bpurificador/i, label: 'Purificador', extract: () => '' },
+  { test: /\bbebedouro/i, label: 'Bebedouro', extract: () => '' },
+  { test: /\baquecedor/i, label: 'Aquecedor', extract: () => '' },
+  { test: /\bferro\s*de\s*passar|ferro\s*a\s*vapor/i, label: 'Ferro de passar', extract: () => '' },
+  { test: /\b(vaporizador|steamer)/i, label: 'Vaporizador', extract: () => '' },
+  { test: /\bair\s*fryer|fritadeira\s*el[eé]trica/i, label: 'Air Fryer', extract: getLitros },
+  { test: /\bliquidificador/i, label: 'Liquidificador', extract: () => '' },
+  { test: /\bbatedeira/i, label: 'Batedeira', extract: () => '' },
+  { test: /\bcafeteira|m[aá]quina\s*de\s*caf[eé]/i, label: 'Cafeteira', extract: () => '' },
+  { test: /\bsanduicheira|grill/i, label: 'Sanduicheira', extract: () => '' },
+  { test: /\bpipoqueira/i, label: 'Pipoqueira', extract: () => '' },
+  { test: /\bpanela\s*(de\s*press[ãa]o\s*)?el[eé]trica|panela\s*el[eé]trica/i, label: 'Panela elétrica', extract: getLitros },
+  { test: /\bmultiprocessador|processador\s*de\s*aliment/i, label: 'Multiprocessador', extract: () => '' },
+  { test: /\bcentr[íi]fuga/i, label: 'Centrífuga', extract: () => '' },
+  { test: /\bespremedor/i, label: 'Espremedor', extract: () => '' },
+  { test: /\bmixer|m[íi]xer/i, label: 'Mixer', extract: () => '' },
+  { test: /\btorradeira/i, label: 'Torradeira', extract: () => '' },
+  { test: /\baspirador|vacuum/i, label: 'Aspirador', extract: () => '' },
+  { test: /\b(robô|robo)\s*aspirador/i, label: 'Robô aspirador', extract: () => '' },
+  { test: /\benceradeira/i, label: 'Enceradeira', extract: () => '' },
+  { test: /\blavadora\s*de\s*alta\s*press|lava\s*j[áa]to/i, label: 'Lavadora de alta pressão', extract: () => '' },
+  { test: /\bcolch[ãa]o/i, label: 'Colchão', extract: (t) => [getTipoColchao(t), getMedida(t)].filter(Boolean).join(' ') },
+  { test: /\bguarda[\s-]?roupa/i, label: 'Guarda-roupa', extract: (t) => {
+      const m = t.match(/(\d+)\s*porta/i);
+      return m ? m[1] + ' portas' : '';
     }
   },
-  {
-    test: /\blavadora|m[aá]quina\s*de\s*lavar/i,
-    label: 'Lavadora',
-    extract: (t) => {
-      const m = t.match(/(\d+[.,]?\d*)\s*kg/i);
-      return m ? m[1].replace('.', ',') + 'kg' : '';
+  { test: /\bsof[áa]/i, label: 'Sofá', extract: (t) => {
+      const m = t.match(/(\d+)\s*lugar/i);
+      return m ? m[1] + ' lugares' : '';
     }
   },
-  {
-    test: /\bsecadora/i,
-    label: 'Secadora',
-    extract: (t) => {
-      const m = t.match(/(\d+[.,]?\d*)\s*kg/i);
-      return m ? m[1].replace('.', ',') + 'kg' : '';
+  { test: /\bcama\b/i, label: 'Cama', extract: getTipoColchao },
+  { test: /\barm[áa]rio|c[ôo]moda/i, label: 'Armário', extract: () => '' },
+  { test: /\bestante|rack\b/i, label: 'Rack', extract: () => '' },
+  { test: /\bmesa\b/i, label: 'Mesa', extract: () => '' },
+  { test: /\bcadeira/i, label: 'Cadeira', extract: () => '' },
+  { test: /\bnotebook|laptop/i, label: 'Notebook', extract: () => '' },
+  { test: /\b(monitor|tela)\b/i, label: 'Monitor', extract: getPol },
+  { test: /\bsmartphone|celular/i, label: 'Smartphone', extract: () => '' },
+  { test: /\bbicicleta|bike/i, label: 'Bicicleta', extract: (t) => {
+      const m = t.match(/aro\s*(\d{2})/i);
+      return m ? 'aro ' + m[1] : '';
     }
   },
-  {
-    test: /\bgeladeira|refrigerador/i,
-    label: 'Geladeira',
-    extract: (t) => {
-      const m = t.match(/(\d{2,4})\s*(litros|l\b|l\s|l\.)/i);
-      return m ? m[1] + 'L' : '';
-    }
-  },
-  {
-    test: /\bfreezer/i,
-    label: 'Freezer',
-    extract: (t) => {
-      const m = t.match(/(\d{2,4})\s*(litros|l\b|l\s|l\.)/i);
-      return m ? m[1] + 'L' : '';
-    }
-  },
-  {
-    test: /\bfog[ãa]o/i,
-    label: 'Fogão',
-    extract: (t) => {
-      const m = t.match(/(\d)\s*boca/i);
-      return m ? m[1] + ' bocas' : '';
-    }
-  },
-  {
-    test: /\bforno/i,
-    label: 'Forno',
-    extract: (t) => {
-      let tipo = '';
-      if (/el[eé]tric/i.test(t)) tipo = 'elétrico';
-      else if (/\b(g[áa]s)\b/i.test(t)) tipo = 'a gás';
-      else if (/embut/i.test(t)) tipo = 'embutir';
-      const cap = t.match(/(\d{2,3})\s*l\b/i);
-      const parts = [];
-      if (tipo) parts.push(tipo);
-      if (cap) parts.push(cap[1] + 'L');
-      return parts.join(' ');
-    }
-  },
-  {
-    test: /\b(smart\s*)?tv\b/i,
-    label: 'TV',
-    extract: (t) => {
-      // 32, 43, 50, 55, 65, 70, 75, 85 polegadas
-      const m = t.match(/\b(32|39|40|43|49|50|55|58|60|65|70|75|85|86|98)\b/);
-      return m ? m[1] : '';
-    }
-  },
-  {
-    test: /\bcoifa/i,
-    label: 'Coifa',
-    extract: (t) => ''
-  },
-  {
-    test: /\bfrigobar/i,
-    label: 'Frigobar',
-    extract: (t) => {
-      const m = t.match(/(\d{2,3})\s*l\b/i);
-      return m ? m[1] + 'L' : '';
-    }
-  },
-  {
-    test: /\bcervejeira/i,
-    label: 'Cervejeira',
-    extract: (t) => {
-      const m = t.match(/(\d{2,3})\s*l\b/i);
-      return m ? m[1] + 'L' : '';
-    }
-  },
-  {
-    test: /\bexpositor/i,
-    label: 'Expositor',
-    extract: (t) => {
-      const m = t.match(/(\d{2,4})\s*l\b/i);
-      return m ? m[1] + 'L' : '';
-    }
-  },
-  {
-    test: /\bar[\s-]?condicionado/i,
-    label: 'Ar-condicionado',
-    extract: (t) => {
-      const m = t.match(/(\d{1,2}[.,]?\d{0,3})\s*btus?/i);
-      return m ? m[1].replace(',','.') + ' BTUs' : '';
-    }
-  },
-  {
-    test: /\bcolch[ãa]o/i,
-    label: 'Colchão',
-    extract: (t) => {
-      // Tipo + medida (138x188, queen, etc)
-      let tipo = '';
-      if (/queen/i.test(t)) tipo = 'Queen';
-      else if (/king/i.test(t)) tipo = 'King';
-      else if (/casal/i.test(t)) tipo = 'Casal';
-      else if (/solteiro/i.test(t)) tipo = 'Solteiro';
-      const m = t.match(/(\d{2,3})\s*x\s*(\d{2,3})/i);
-      const parts = [tipo, m ? m[0] : ''].filter(Boolean);
-      return parts.join(' ');
-    }
-  }
+  { test: /\besteira\s*el/i, label: 'Esteira elétrica', extract: () => '' }
 ];
 
+const STOPWORDS = /\b(110v|127v|220v|bivolt|preto|preta|branco|branca|inox|cinza|prata|prateado|vermelho|amarelo|azul|verde|rosa|bege|marrom|com|de|da|do|para|por|em|sem|wi-?fi|smart|inverter|frost\s*free|cor|cores)\b/gi;
+
 function normalize(description) {
-  const text = decodeText(description);
+  const text = description.replace(/\s+/g,' ').trim();
+  if (!text) return '';
+
   const brand = extractBrand(text);
   let cat = null;
   for (const c of CATEGORIES) {
     if (c.test.test(text)) { cat = c; break; }
   }
-  if (!cat) {
-    return brand || 'Produto';
+
+  if (cat) {
+    const value = cat.extract(text);
+    const parts = [];
+    if (brand) parts.push(brand);
+    parts.push(cat.label);
+    if (value) parts.push(value);
+    return parts.join(' ');
   }
-  const value = cat.extract(text);
-  const parts = [];
-  if (brand) parts.push(brand);
-  parts.push(cat.label);
-  if (value) parts.push(value);
-  return parts.join(' ');
+
+  // FALLBACK: nenhuma categoria detectada → limpa lixo e mantém palavras úteis
+  let cleaned = text
+    .replace(STOPWORDS, ' ')
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\b\d+[a-z]+\d*[a-z]*\b/gi, ' ')
+    .replace(/[^a-záéíóúâêôãçA-Z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const words = cleaned.split(' ').filter(w => w.length > 1);
+  let summary = words.slice(0, 4).join(' ');
+  if (brand && !summary.toLowerCase().includes(brand.toLowerCase())) {
+    summary = brand + ' ' + summary;
+  }
+  return summary || (brand || 'Produto');
 }
+
 
 // ─── INPUT MODES ───
 function setMode(m) {
