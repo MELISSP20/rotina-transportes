@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="48x48" href="favicon.png"/>
+<link rel="manifest" href="manifest.json"/>
+<title>Comparativo SSP·20 × SSP·51 — Assignments</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="keyboard.js" defer></script>
+<script src="toast.js" defer></script>
+<script src="presentation.js" defer></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --yellow: #FFE600; --navy: #1A1A2E; --font: 'Inter', sans-serif;
+    --bg: #F5F5F5; --surface: #FFFFFF; --text: #333333;
+    --muted: #666666; --border: #E0E0E0;
+    --green: #00A650; --blue: #3483FA; --red: #E3262F;
+    --amber: #F59E0B; --purple: #a78bfa;
+    --radius: 8px; --radius-lg: 12px;
+  }
+  [data-theme="dark"] {
+    --bg: #0F1117; --surface: #1A1D27; --text: #E8EAF2;
+    --muted: #8B90A7; --border: #2A2E3F;
+  }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; transition: background .2s; }
+
+  .topbar { background: linear-gradient(180deg, var(--navy) 0%, #14182A 100%); height: 56px; display: flex; align-items: center; padding: 0 1.5rem; gap: 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,230,0,.08); }
+  [data-theme="dark"] .topbar { background: linear-gradient(180deg, #0A0D17 0%, #06080F 100%); }
+  .topbar-status { display: flex; align-items: center; gap: 9px; }
+  .status-dot-live { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: livePulse 2.2s infinite; }
+  @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.5); } 70% { box-shadow: 0 0 0 6px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+  .status-text { font-size: 11.5px; font-weight: 700; letter-spacing: .14em; color: rgba(255,255,255,.62); text-transform: uppercase; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .topbar-nav { display: flex; gap: 4px; padding: 3px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.05); border-radius: 11px; }
+  .topbar-nav-link { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6); text-decoration: none; border-radius: 8px; transition: all .22s; }
+  .topbar-nav-link svg { width: 14px; height: 14px; opacity: .55; }
+  .topbar-nav-link:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.95); }
+  .topbar-nav-link.active { background: var(--yellow); color: var(--navy); }
+  .clock-block { display: flex; flex-direction: column; align-items: flex-end; line-height: 1; gap: 2px; }
+  .clock-date { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.45); }
+  .clock-topbar { font-size: 13px; font-weight: 800; color: var(--yellow); font-family: ui-monospace, monospace; }
+  .theme-btn { background: transparent; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; cursor: pointer; padding: 7px 10px; font-size: 14px; color: rgba(255,255,255,.7); }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--yellow) 0%, #F5C800 100%);
+    padding: 32px 2rem 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: ''; position: absolute;
+    top: -50%; right: -10%;
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(26,26,46,.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .header-inner { max-width: 1280px; margin: 0 auto; position: relative; z-index: 1; }
+  .header-eyebrow {
+    font-size: 11px; font-weight: 800;
+    color: var(--navy); opacity: .65;
+    letter-spacing: .16em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .header-title {
+    font-size: clamp(38px, 6vw, 56px);
+    font-weight: 900; color: var(--navy);
+    letter-spacing: -1.5px; line-height: 1;
+    margin-bottom: 10px;
+  }
+  .header-title-dot { color: var(--surface); }
+  [data-theme="dark"] .header-title-dot { color: var(--navy); filter: brightness(.4); }
+  .header-sub {
+    font-size: 14px; font-weight: 600;
+    color: var(--navy); opacity: .75;
+    letter-spacing: -.2px;
+  }
+
+  /* WRAPPER */
+  .wrapper { max-width: 1280px; margin: 0 auto; padding: 28px 2rem 60px; }
+
+  /* SSP HERO CARDS */
+  .ssps-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .ssp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ssp-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--ssp-color);
+  }
+  .ssp-card.ssp20 { --ssp-color: var(--yellow); }
+  .ssp-card.ssp51 { --ssp-color: var(--purple); }
+  .ssp-card-head {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .ssp-card-name {
+    font-size: 28px; font-weight: 900;
+    color: var(--text);
+    letter-spacing: -.8px;
+  }
+  .ssp-card-name b { color: var(--ssp-color); font-weight: 900; }
+  .ssp-card-badge {
+    background: rgba(0,0,0,.04);
+    color: var(--text);
+    font-size: 10.5px; font-weight: 800;
+    padding: 6px 11px;
+    border-radius: 6px;
+    letter-spacing: .04em;
+  }
+  [data-theme="dark"] .ssp-card-badge { background: rgba(255,255,255,.05); }
+  .ssp-card-meta {
+    display: flex; gap: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .ssp-meta-item {
+    display: flex; flex-direction: column;
+    gap: 2px;
+  }
+  .ssp-meta-val { font-size: 18px; font-weight: 900; color: var(--text); }
+  .ssp-meta-lbl { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+
+  /* KPI input grid */
+  .kpi-inputs { display: grid; gap: 10px; }
+  .kpi-input-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 10px;
+    align-items: center;
+  }
+  .kpi-input-label {
+    font-size: 13px; font-weight: 700;
+    color: var(--text);
+    letter-spacing: -.1px;
+  }
+  .kpi-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    text-align: right;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .kpi-input:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,230,0,.15); }
+  [data-theme="dark"] .kpi-input { background: rgba(255,255,255,.04); }
+
+  /* COMPARISON BARS */
+  .comp-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 28px;
+    margin-bottom: 18px;
+  }
+  .comp-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -.3px;
+  }
+  .comp-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .comp-row { margin-bottom: 18px; }
+  .comp-row:last-child { margin-bottom: 0; }
+  .comp-row-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .comp-row-label {
+    font-size: 12.5px; font-weight: 800;
+    color: var(--text);
+    letter-spacing: -.2px;
+  }
+  .comp-row-context {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .comp-bars {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .comp-bar-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .comp-bar-side.left { justify-content: flex-end; flex-direction: row-reverse; }
+  .comp-bar-side.left .comp-bar { transform-origin: right; }
+  .comp-bar {
+    height: 22px;
+    border-radius: 6px;
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+    min-width: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .comp-bar.ssp20 { background: linear-gradient(90deg, #F5C800 0%, var(--yellow) 100%); }
+  .comp-bar.ssp51 { background: linear-gradient(90deg, var(--purple) 0%, #8B5CF6 100%); }
+  .comp-bar-side.left .comp-bar.ssp20 { background: linear-gradient(270deg, #F5C800 0%, var(--yellow) 100%); }
+  .comp-bar-val {
+    font-size: 14px; font-weight: 900;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.2px;
+    min-width: 56px;
+    flex-shrink: 0;
+  }
+  .comp-bar-side.left .comp-bar-val { text-align: right; }
+  .comp-center {
+    width: 1px;
+    height: 36px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .comp-diff {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: -.1px;
+  }
+  .comp-diff.good { color: var(--green); }
+  .comp-diff.bad { color: var(--red); }
+  .comp-diff.neutral { color: var(--muted); }
+
+  /* Action bar */
+  .action-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: var(--font);
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    transition: all .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--text); }
+  .btn.primary { background: var(--navy); color: var(--yellow); border-color: var(--navy); }
+  .btn.primary:hover { box-shadow: 0 8px 20px rgba(26,26,46,.25); }
+  [data-theme="dark"] .btn.primary { background: var(--yellow); color: var(--navy); }
+
+  @media (max-width: 800px) {
+    .ssps-row { grid-template-columns: 1fr; }
+    .header { padding: 24px 1rem 22px; }
+    .wrapper { padding: 20px 1rem 40px; }
+    .comp-bars { gap: 8px; }
+    .comp-bar-val { min-width: 44px; font-size: 13px; }
+    .comp-section { padding: 20px 18px; }
+  }
+  @media (max-width: 600px) {
+    .status-text, .topbar-nav-link span:not(.qh-arrow) { display: none; }
+    .topbar-nav-link { padding: 6px 9px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-status">
+    <span class="status-dot-live"></span>
+    <span class="status-text">TRANSPORTES <span style="opacity:.4;">/</span> LAST MILE</span>
+  </div>
+  <div class="topbar-right">
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        <span>Hub</span>
+      </a>
+      <a href="rotina.html" class="topbar-nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 17l2 2 4-4"/><path d="M3 7l2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+        <span>Rotina</span>
+      </a>
+      <a href="madrugadao.html" class="topbar-nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
+        <span>Organograma</span>
+      </a>
+    </nav>
+    <div class="clock-block">
+      <span class="clock-date" id="clock-date">—</span>
+      <span class="clock-topbar" id="live-clock">00:00:00</span>
+    </div>
+    <button class="theme-btn" id="theme-btn">🌙</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">REPORTS / COMPARATIVO</div>
+    <div class="header-title">SSP·20 <span style="color:rgba(26,26,46,.4);font-weight:700;">×</span> SSP·51<span class="header-title-dot">.</span></div>
+    <div class="header-sub">Visualização lado a lado dos KPIs operacionais das duas facilities</div>
+  </div>
+</div>
+
+<!-- WRAPPER -->
+<div class="wrapper">
+
+  <div class="action-bar">
+    <button class="btn primary" onclick="loadExample()">📊 Carregar exemplo</button>
+    <button class="btn" onclick="resetData()">🔄 Limpar tudo</button>
+    <button class="btn" onclick="exportData()">💾 Exportar dados</button>
+  </div>
+
+  <!-- SSP HERO ROW -->
+  <div class="ssps-row">
+    <div class="ssp-card ssp20">
+      <div class="ssp-card-head">
+        <div class="ssp-card-name">SSP·<b>20</b></div>
+        <div class="ssp-card-badge">SOROCABA · PRINCIPAL</div>
+      </div>
+      <div class="ssp-card-meta">
+        <div class="ssp-meta-item">
+          <div class="ssp-meta-val">5</div>
+          <div class="ssp-meta-lbl">OPS III</div>
+        </div>
+        <div class="ssp-meta-item">
+          <div class="ssp-meta-val">2</div>
+          <div class="ssp-meta-lbl">Turnos</div>
+        </div>
+        <div class="ssp-meta-item">
+          <div class="ssp-meta-val">1</div>
+          <div class="ssp-meta-lbl">TL</div>
+        </div>
+      </div>
+      <div class="kpi-inputs" id="inputs-ssp20"></div>
+    </div>
+
+    <div class="ssp-card ssp51">
+      <div class="ssp-card-head">
+        <div class="ssp-card-name">SSP·<b>51</b></div>
+        <div class="ssp-card-badge">SOROCABA · DEDICADA</div>
+      </div>
+      <div class="ssp-card-meta">
+        <div class="ssp-meta-item">
+          <div class="ssp-meta-val">1</div>
+          <div class="ssp-meta-lbl">OPS III</div>
+        </div>
+        <div class="ssp-meta-item">
+          <div class="ssp-meta-val">1</div>
+          <div class="ssp-meta-lbl">Turno</div>
+        </div>
+        <div class="ssp-meta-item">
+          <div class="ssp-meta-val">1</div>
+          <div class="ssp-meta-lbl">TL</div>
+        </div>
+      </div>
+      <div class="kpi-inputs" id="inputs-ssp51"></div>
+    </div>
+  </div>
+
+  <!-- COMPARISON -->
+  <div class="comp-section">
+    <div class="comp-title">Comparativo lado a lado</div>
+    <div class="comp-sub">Barras proporcionais ao maior valor entre as duas SSPs. Diferença calculada em ponto percentual ou absoluta conforme a métrica.</div>
+    <div id="comparison-bars"></div>
+  </div>
+
+</div>
+
+<script>
+const KPIS = [
+  { id: 'dit', label: 'DIT (%)', context: 'Quanto menor, melhor', unit: '%', lowerIsBetter: true, default20: 4.2, default51: 5.1 },
+  { id: 'orh', label: 'ORH (h)', context: 'Tempo médio de rota — quanto menor, melhor', unit: 'h', lowerIsBetter: true, default20: 8.4, default51: 7.9 },
+  { id: 'descon', label: 'Descontainerizados (%)', context: 'Pacotes retirados de rota — quanto menor, melhor', unit: '%', lowerIsBetter: true, default20: 2.1, default51: 1.8 },
+  { id: 'rotas', label: 'Rotas diárias', context: 'Volume total de rotas processadas', unit: '', lowerIsBetter: false, default20: 142, default51: 38 },
+  { id: 'mee', label: 'MEE entregues', context: 'Pacotes MEE entregues no dia', unit: '', lowerIsBetter: false, default20: 1850, default51: 420 },
+  { id: 'fail', label: 'Taxa de falha (%)', context: 'Falhas operacionais sobre total', unit: '%', lowerIsBetter: true, default20: 1.8, default51: 1.2 },
+  { id: 'sla', label: 'SLA cumprido (%)', context: 'Pacotes entregues no prazo', unit: '%', lowerIsBetter: false, default20: 96.2, default51: 97.8 },
+];
+
+const STORAGE_KEY = 'comparativo_ssp_data';
+
+function loadData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveData() {
+  const data = {};
+  KPIS.forEach(k => {
+    const v20 = document.getElementById('input-ssp20-' + k.id).value;
+    const v51 = document.getElementById('input-ssp51-' + k.id).value;
+    data[k.id] = { v20: parseFloat(v20) || 0, v51: parseFloat(v51) || 0 };
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function renderInputs() {
+  const data = loadData();
+  ['ssp20', 'ssp51'].forEach(ssp => {
+    const container = document.getElementById('inputs-' + ssp);
+    container.innerHTML = KPIS.map(k => {
+      const stored = data[k.id];
+      const val = stored ? (ssp === 'ssp20' ? stored.v20 : stored.v51) : '';
+      return `
+        <div class="kpi-input-row">
+          <label class="kpi-input-label">${k.label}</label>
+          <input type="number" step="0.1" class="kpi-input" id="input-${ssp}-${k.id}" value="${val}" placeholder="—" oninput="updateAll()"/>
+        </div>
+      `;
+    }).join('');
+  });
+}
+
+function renderComparison() {
+  const container = document.getElementById('comparison-bars');
+  container.innerHTML = KPIS.map(k => {
+    const v20 = parseFloat(document.getElementById('input-ssp20-' + k.id).value) || 0;
+    const v51 = parseFloat(document.getElementById('input-ssp51-' + k.id).value) || 0;
+    const max = Math.max(v20, v51, 0.01);
+    const pct20 = (v20 / max) * 100;
+    const pct51 = (v51 / max) * 100;
+
+    // Diff calculation
+    let diffText = '—';
+    let diffClass = 'neutral';
+    if (v20 > 0 && v51 > 0) {
+      const absDiff = v20 - v51;
+      const pctDiff = ((v20 - v51) / v51) * 100;
+      const sign = absDiff > 0 ? '+' : '';
+      const isGood = (absDiff < 0 && k.lowerIsBetter) || (absDiff > 0 && !k.lowerIsBetter);
+      // do ponto de vista do SSP·20
+      diffClass = absDiff === 0 ? 'neutral' : (isGood ? 'good' : 'bad');
+      if (k.unit === '%') {
+        diffText = `SSP·20 ${sign}${absDiff.toFixed(1)}pp (${sign}${pctDiff.toFixed(1)}%)`;
+      } else {
+        diffText = `SSP·20 ${sign}${absDiff.toFixed(1)}${k.unit} (${sign}${pctDiff.toFixed(1)}%)`;
+      }
+    }
+
+    return `
+      <div class="comp-row">
+        <div class="comp-row-head">
+          <div class="comp-row-label">${k.label}</div>
+          <div class="comp-row-context">${k.context}</div>
+        </div>
+        <div class="comp-bars">
+          <div class="comp-bar-side left">
+            <span class="comp-bar-val">${v20.toFixed(1)}${k.unit}</span>
+            <div class="comp-bar ssp20" style="width:${pct20}%;"></div>
+          </div>
+          <div class="comp-center"></div>
+          <div class="comp-bar-side">
+            <div class="comp-bar ssp51" style="width:${pct51}%;"></div>
+            <span class="comp-bar-val">${v51.toFixed(1)}${k.unit}</span>
+          </div>
+        </div>
+        <div class="comp-diff ${diffClass}">${diffText}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateAll() {
+  saveData();
+  renderComparison();
+}
+
+function loadExample() {
+  KPIS.forEach(k => {
+    document.getElementById('input-ssp20-' + k.id).value = k.default20;
+    document.getElementById('input-ssp51-' + k.id).value = k.default51;
+  });
+  updateAll();
+  if (window.toast) toast('Dados de exemplo carregados', 'info');
+}
+
+function resetData() {
+  if (!confirm('Limpar todos os dados?')) return;
+  KPIS.forEach(k => {
+    document.getElementById('input-ssp20-' + k.id).value = '';
+    document.getElementById('input-ssp51-' + k.id).value = '';
+  });
+  localStorage.removeItem(STORAGE_KEY);
+  renderComparison();
+  if (window.toast) toast('Dados limpos', 'success');
+}
+
+function exportData() {
+  const data = loadData();
+  if (Object.keys(data).length === 0) {
+    if (window.toast) toast('Nada pra exportar — preenche os KPIs primeiro', 'error');
+    return;
+  }
+  const lines = ['KPI,SSP·20,SSP·51,Diferença absoluta,Diferença %'];
+  KPIS.forEach(k => {
+    const d = data[k.id] || { v20: 0, v51: 0 };
+    const absDiff = d.v20 - d.v51;
+    const pctDiff = d.v51 ? ((d.v20 - d.v51) / d.v51) * 100 : 0;
+    lines.push(`"${k.label}",${d.v20},${d.v51},${absDiff.toFixed(2)},${pctDiff.toFixed(2)}%`);
+  });
+  const csv = lines.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `comparativo-ssp_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  if (window.toast) toast('CSV exportado', 'success');
+}
+
+// Theme
+const html = document.documentElement;
+const tbtn = document.getElementById('theme-btn');
+const saved = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', saved);
+tbtn.textContent = saved === 'dark' ? '☀️' : '🌙';
+tbtn.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  tbtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', next);
+});
+
+// Clock
+function tick() {
+  const n = new Date();
+  document.getElementById('live-clock').textContent =
+    String(n.getHours()).padStart(2,'0') + ':' +
+    String(n.getMinutes()).padStart(2,'0') + ':' +
+    String(n.getSeconds()).padStart(2,'0');
+  const days = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+  const months = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  document.getElementById('clock-date').textContent =
+    `${days[n.getDay()]} ${String(n.getDate()).padStart(2,'0')} ${months[n.getMonth()]}`;
+}
+tick(); setInterval(tick, 1000);
+
+// Init
+renderInputs();
+renderComparison();
+</script>
+
+</body>
+</html>
