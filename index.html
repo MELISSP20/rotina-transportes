@@ -172,6 +172,7 @@
   .hub-card:nth-child(7) { animation-delay: .62s; }
   .hub-card:nth-child(8) { animation-delay: .68s; }
   .hub-qh-cta { animation: hubFadeUp .55s cubic-bezier(.4,0,.2,1) .78s both; }
+  .hub-tv-cta { animation: hubFadeUp .55s cubic-bezier(.4,0,.2,1) .82s both; }
   .hub-footer { animation: hubFadeUp .6s cubic-bezier(.4,0,.2,1) .88s both; }
 
   /* Easter egg — credits modal */
@@ -452,6 +453,60 @@
   .hub-qh-cta-arrow { font-size: 13px; opacity: .7; transition: transform .2s; }
   .hub-qh-cta:hover .hub-qh-cta-arrow { transform: translate(3px, -3px); opacity: 1; }
 
+  /* Container dos CTAs e botão Modo TV */
+  .hub-ctas {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .hub-tv-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 32px;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -.2px;
+    transition: all .25s cubic-bezier(.4,0,.2,1);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-family: var(--font);
+    position: relative;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .hub-tv-cta { background: rgba(255,255,255,.04); }
+  .hub-tv-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,230,0,.12) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity .25s;
+    pointer-events: none;
+  }
+  .hub-tv-cta:hover {
+    transform: translateY(-3px);
+    border-color: var(--yellow);
+    box-shadow: 0 14px 32px rgba(255,230,0,.22);
+  }
+  .hub-tv-cta:hover::before { opacity: 1; }
+  .hub-tv-cta-icon { font-size: 18px; line-height: 1; }
+  .hub-tv-cta-hint {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-left: 1px solid var(--border);
+    padding-left: 12px;
+  }
+
   /* Footer minimal */
   .hub-footer {
     margin-top: auto;
@@ -703,13 +758,18 @@
       </a>
     </div>
 
-    <!-- Query Hub external CTA -->
-    <div style="text-align:center;">
+    <!-- CTAs externos -->
+    <div class="hub-ctas">
       <a href="https://melissp20.github.io/MeliSSP20/" target="_blank" class="hub-qh-cta">
         <span class="hub-qh-cta-bolt">⚡</span>
         <span>Abrir Query Hub</span>
         <span class="hub-qh-cta-arrow">↗</span>
       </a>
+      <button class="hub-tv-cta" onclick="window.__presentToggle && window.__presentToggle()">
+        <span class="hub-tv-cta-icon">📺</span>
+        <span>Modo TV / Telão</span>
+        <span class="hub-tv-cta-hint">auto-rotação</span>
+      </button>
     </div>
 
   </div>

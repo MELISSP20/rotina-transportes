@@ -20,7 +20,8 @@
     { keys: 'Esc', desc: 'Fecha o modal de atalhos' },
     { keys: 'Cmd/Ctrl+K', desc: 'Abre esta lista de atalhos' },
     { keys: '← / →', desc: 'Navega curiosidades no Hub' },
-    { keys: 'F11', desc: 'Modo apresentação (telão)' },
+    { keys: 'F11 / T', desc: 'Modo TV (auto-rotação entre páginas)' },
+    { keys: 'Espaço', desc: 'Pausa/retoma Modo TV' },
   ];
 
   // ── Modal HTML ──
@@ -127,6 +128,15 @@
 
     // Não processar atalhos com modificadores
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    // T → abre Modo TV (configuração) ou sai se ativo
+    if (e.key.toLowerCase() === 't') {
+      if (typeof window.__presentToggle === 'function') {
+        e.preventDefault();
+        window.__presentToggle();
+        return;
+      }
+    }
 
     // Atalhos de navegação
     const shortcut = SHORTCUTS.find(s => e.key.toLowerCase() === s.key);
