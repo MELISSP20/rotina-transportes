@@ -431,6 +431,78 @@
     /* ─── ORGANOGRAMA — REPAGINADO ─── */
     .header-title-dot { color: var(--yellow); }
 
+    /* Search box (Quick filter) */
+    .org-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 6px 16px 6px 50px;
+      margin-bottom: 18px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .org-search:focus-within {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 4px rgba(255,230,0,.12);
+    }
+    .org-search-icon {
+      position: absolute;
+      left: 18px;
+      width: 18px; height: 18px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .org-search input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 14px 0;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -.2px;
+    }
+    .org-search input::placeholder { color: var(--muted); font-weight: 500; opacity: .8; }
+    .org-search-clear {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 26px; height: 26px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+    .org-search-clear:hover { background: var(--red); color: #fff; border-color: var(--red); }
+    [data-theme="dark"] .org-search-clear { background: rgba(255,255,255,.05); }
+    .org-search-count {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .org-search-count.active { color: var(--text); }
+
+    /* Highlight matches */
+    mark {
+      background: rgba(255,230,0,.4);
+      color: inherit;
+      padding: 0 2px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    [data-theme="dark"] mark { background: rgba(255,230,0,.3); color: var(--yellow); }
+
+
     /* KPI Strip */
     .org-kpis {
       display: grid;
@@ -950,6 +1022,7 @@
   </style>
 <script src="keyboard.js" defer></script>
 <script src="toast.js" defer></script>
+<script src="presentation.js" defer></script>
 </head>
 <body>
 
@@ -1087,6 +1160,14 @@
     </div>
   </div>
 
+  <!-- QUICK FILTER -->
+  <div class="org-search">
+    <svg class="org-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="org-filter" placeholder="Buscar por nome, foco, turno, SSP... (ex: DIT, madrugada, ssp51, bruno)" autocomplete="off"/>
+    <button class="org-search-clear" id="org-clear" onclick="clearFilter()" style="display:none;">✕</button>
+    <div class="org-search-count" id="org-count"></div>
+  </div>
+
   <!-- VIEW SWITCHER -->
   <div class="view-switcher">
     <div class="view-switcher-label">Visualização</div>
@@ -1212,8 +1293,10 @@ function memberCard(m, opts) {
 
 function viewLeadership() {
   let html = '';
+  const filteredTeam = getFilteredTeam();
   for (const tl of TLS) {
-    const members = TEAM.filter(m => m.tl === tl.id);
+    const members = filteredTeam.filter(m => m.tl === tl.id);
+    if (currentFilter && members.length === 0) continue; // hide empty TL sections when filtering
     const byShift = {};
     members.forEach(m => { byShift[m.shift] = byShift[m.shift] || []; byShift[m.shift].push(m); });
 
@@ -1270,11 +1353,18 @@ function viewLeadership() {
   return html;
 }
 
+  if (currentFilter && !html) {
+    html = '<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:48px;margin-bottom:14px;">🔍</div><div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;">Nenhum resultado pra "' + currentFilter + '"</div><div style="font-size:13px;">Tenta outro termo, ou ' + '<a href="#" onclick="clearFilter();return false;" style="color:var(--yellow);font-weight:700;text-decoration:underline;">limpa o filtro</a>.</div></div>';
+  }
+  return html;
+}
+
 function viewShift() {
-  const shifts = SHIFTS.filter(sh => TEAM.some(m => m.shift === sh.id));
+  const filteredTeam = getFilteredTeam();
+  const shifts = SHIFTS.filter(sh => filteredTeam.some(m => m.shift === sh.id));
   let html = '<div class="shift-grid">';
   for (const sh of shifts) {
-    const members = TEAM.filter(m => m.shift === sh.id);
+    const members = filteredTeam.filter(m => m.shift === sh.id);
     html += `
       <div class="shift-column ${sh.id}">
         <div class="shift-column-head">
@@ -1293,9 +1383,10 @@ function viewShift() {
 }
 
 function viewFocus() {
+  const filteredTeam = getFilteredTeam();
   let html = '<div class="focus-grid">';
   for (const cat of FOCUS_CATEGORIES) {
-    const members = TEAM.filter(cat.match);
+    const members = filteredTeam.filter(cat.match);
     if (members.length === 0) continue;
     html += `
       <div class="focus-card" style="--focus-color: ${cat.color};">
@@ -1323,20 +1414,98 @@ function viewFocus() {
 }
 
 let currentView = 'leadership';
+let currentFilter = '';
+
+function memberMatchesFilter(m, filter) {
+  if (!filter) return true;
+  const f = filter.toLowerCase();
+  const shiftLabel = (SHIFTS.find(s => s.id === m.shift)?.label || '').toLowerCase();
+  const tags = m.tags.join(' ').toLowerCase();
+  return (
+    m.name.toLowerCase().includes(f) ||
+    m.initials.toLowerCase().includes(f) ||
+    m.focal.toLowerCase().includes(f) ||
+    m.tlName.toLowerCase().includes(f) ||
+    shiftLabel.includes(f) ||
+    tags.includes(f) ||
+    (m.ssp || '').toLowerCase().includes(f) ||
+    m.tl.toLowerCase().includes(f) ||
+    m.shift.toLowerCase().includes(f)
+  );
+}
+
+function getFilteredTeam() {
+  if (!currentFilter) return TEAM;
+  return TEAM.filter(m => memberMatchesFilter(m, currentFilter));
+}
+
+function highlightText(text, filter) {
+  if (!filter) return text;
+  const safe = filter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${safe})`, 'gi'), '<mark>$1</mark>');
+}
 
 function setView(view) {
   currentView = view;
   document.querySelectorAll('.view-pill').forEach(p => p.classList.toggle('active', p.dataset.view === view));
+  renderContent();
+}
+
+function renderContent() {
   const content = document.getElementById('org-content');
   let html = '';
-  if (view === 'leadership') html = viewLeadership();
-  else if (view === 'shift') html = viewShift();
-  else if (view === 'focus') html = viewFocus();
+  if (currentView === 'leadership') html = viewLeadership();
+  else if (currentView === 'shift') html = viewShift();
+  else if (currentView === 'focus') html = viewFocus();
   content.innerHTML = html;
+
+  // Aplicar highlight em todas as ocorrências do filtro
+  if (currentFilter) {
+    const safe = currentFilter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${safe})`, 'gi');
+    content.querySelectorAll('.member-card-name-new, .member-card-role-new, .member-tag, .focus-member-name, .focus-member-meta').forEach(el => {
+      const t = el.textContent;
+      if (regex.test(t)) {
+        el.innerHTML = t.replace(regex, '<mark>$1</mark>');
+      }
+    });
+  }
+
+  // Atualizar contagem
+  const countEl = document.getElementById('org-count');
+  const total = TEAM.length;
+  const filtered = getFilteredTeam().length;
+  if (countEl) {
+    if (currentFilter) {
+      countEl.textContent = `${filtered} de ${total}`;
+      countEl.classList.add('active');
+    } else {
+      countEl.textContent = '';
+      countEl.classList.remove('active');
+    }
+  }
+}
+
+function clearFilter() {
+  currentFilter = '';
+  const input = document.getElementById('org-filter');
+  if (input) input.value = '';
+  document.getElementById('org-clear').style.display = 'none';
+  renderContent();
 }
 
 // Initial render
 setView('leadership');
+
+// Bind filter input
+const filterInput = document.getElementById('org-filter');
+if (filterInput) {
+  filterInput.addEventListener('input', (e) => {
+    currentFilter = e.target.value.trim();
+    document.getElementById('org-clear').style.display = currentFilter ? 'flex' : 'none';
+    renderContent();
+  });
+}
 
 // Password
 function openPwd() {
