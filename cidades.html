@@ -1070,7 +1070,7 @@ function onColumnChange() {
   // Pílulas de ciclo (se coluna ciclo selecionada)
   if (detected.colCycle) {
     cycles = [...new Set(csvRows.map(r => norm(r[detected.colCycle])).filter(Boolean))].sort();
-    const pillsHTML = ['<button class="filter-pill active" data-c="all" onclick="setCycle('all')">Todos</button>']
+    const pillsHTML = [`<button class="filter-pill active" data-c="all" onclick="setCycle('all')">Todos</button>`]
       .concat(cycles.map(c => `<button class="filter-pill" data-c="${c}" onclick="setCycle('${c}')">${c}</button>`))
       .join('');
     document.getElementById('cyclePills').innerHTML = pillsHTML;

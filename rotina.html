@@ -765,6 +765,176 @@
     @media (max-width: 400px) {
       .topbar-nav-link { font-size: 9px; padding: 5px 6px; }
     }
+  /* ── CARD APOIO SSP·51 ── */
+  .apoio-ssp51 {
+    background: linear-gradient(135deg, #14172B 0%, #1F2240 100%);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 24px;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(26,26,46,.18);
+    border: 1px solid rgba(255,230,0,.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .apoio-ssp51::before {
+    content: '';
+    position: absolute;
+    top: 0; right: -10%;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(255,230,0,.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .apoio-head {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .apoio-eyebrow {
+    color: var(--yellow);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .apoio-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -.4px;
+  }
+  .apoio-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    position: relative;
+  }
+  @media (min-width: 900px) {
+    .apoio-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+  }
+  .apoio-block {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 11px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .apoio-block-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 2px;
+  }
+  .apoio-info-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+  .apoio-info-tag {
+    background: var(--yellow);
+    color: var(--navy);
+    font-weight: 900;
+    font-size: 9.5px;
+    letter-spacing: .08em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .apoio-info-tag-purple {
+    background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+    color: #fff;
+  }
+  .apoio-info-text { color: rgba(255,255,255,.92); }
+  .apoio-info-text b { color: var(--yellow); font-weight: 800; }
+  .apoio-link-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .apoio-link {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: all .18s;
+  }
+  .apoio-link:hover {
+    background: rgba(255,230,0,.1);
+    border-color: rgba(255,230,0,.35);
+    transform: translateY(-1px);
+  }
+  .apoio-link-title {
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: -.1px;
+  }
+  .apoio-link-host {
+    color: rgba(255,255,255,.45);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: .04em;
+  }
+  .apoio-link:hover .apoio-link-title { color: var(--yellow); }
+  .apoio-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .apoio-link-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 12px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 7px;
+    text-decoration: none;
+    transition: all .15s;
+  }
+  .apoio-link-row:hover {
+    background: rgba(255,230,0,.08);
+    border-color: rgba(255,230,0,.3);
+    transform: translateX(2px);
+  }
+  .apoio-link-row-title {
+    color: rgba(255,255,255,.92);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: -.1px;
+  }
+  .apoio-link-row:hover .apoio-link-row-title { color: var(--yellow); }
+  .apoio-link-row-arrow {
+    color: rgba(255,255,255,.4);
+    font-size: 13px;
+    transition: transform .15s;
+  }
+  .apoio-link-row:hover .apoio-link-row-arrow {
+    color: var(--yellow);
+    transform: translate(2px, -2px);
+  }
+  .apoio-link-row-sheet {
+    background: rgba(16,124,16,.18);
+    border-color: rgba(16,124,16,.4);
+  }
+  .apoio-link-row-sheet:hover {
+    background: rgba(16,124,16,.3);
+    border-color: rgba(34,197,94,.6);
+  }
+
 </style>
 <script src="keyboard.js" defer></script>
 <script src="toast.js" defer></script>
@@ -958,6 +1128,67 @@
     <div class="countdown-timer" id="countdown-timer">00:00</div>
   </div>
 
+  <!-- CARD DE APOIO — somente SSP·51 -->
+  <div class="apoio-ssp51" id="apoio-ssp51" style="display:none;">
+    <div class="apoio-head">
+      <span class="apoio-eyebrow">📍 INFORMAÇÕES DO SSP·51</span>
+      <span class="apoio-title">Apoio operacional</span>
+    </div>
+
+    <div class="apoio-grid">
+      <!-- Docas info -->
+      <div class="apoio-block">
+        <div class="apoio-block-label">🚛 Distribuição por categoria</div>
+        <div class="apoio-info-row">
+          <span class="apoio-info-tag">Geral</span>
+          <span class="apoio-info-text"><b>Utilitários · Passeios · Meli Extras</b> → carregam nas <b>docas 183 a 220</b></span>
+        </div>
+        <div class="apoio-info-row">
+          <span class="apoio-info-tag apoio-info-tag-purple">VUC FasterLog</span>
+          <span class="apoio-info-text">carregam <b>somente nas docas 6, 7, 8, 9 e 10</b></span>
+        </div>
+      </div>
+
+      <!-- Priorização -->
+      <div class="apoio-block">
+        <div class="apoio-block-label">🎯 Priorização</div>
+        <div class="apoio-link-grid">
+          <a href="https://envios.adminml.com/logistics/sorting/monitoring" target="_blank" rel="noopener" class="apoio-link">
+            <span class="apoio-link-title">Separação</span>
+            <span class="apoio-link-host">envios.adminml.com</span>
+          </a>
+          <a href="https://envios.adminml.com/logistics/dispatch-tools" target="_blank" rel="noopener" class="apoio-link">
+            <span class="apoio-link-title">Expedição</span>
+            <span class="apoio-link-host">envios.adminml.com</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Ferramentas individuais -->
+      <div class="apoio-block">
+        <div class="apoio-block-label">🛠️ Ferramentas operacionais</div>
+        <div class="apoio-link-list">
+          <a href="https://envios.adminml.com/logistics/travel-management/last-mile" target="_blank" rel="noopener" class="apoio-link-row">
+            <span class="apoio-link-row-title">Ajuste de scheduling</span>
+            <span class="apoio-link-row-arrow">↗</span>
+          </a>
+          <a href="https://envios.adminml.com/logistics/dispatch-tools" target="_blank" rel="noopener" class="apoio-link-row">
+            <span class="apoio-link-row-title">Input de placas</span>
+            <span class="apoio-link-row-arrow">↗</span>
+          </a>
+          <a href="https://envios.adminml.com/logistics/dispatch-tools" target="_blank" rel="noopener" class="apoio-link-row">
+            <span class="apoio-link-row-title">Ajuste de layout pós distribuição</span>
+            <span class="apoio-link-row-arrow">↗</span>
+          </a>
+          <a href="https://docs.google.com/spreadsheets/d/1VQkV5KoyIhIABGjVVyyslfkei3-91nDRk8HX-kdaMZU/edit?pli=1&gid=74024833#gid=74024833" target="_blank" rel="noopener" class="apoio-link-row apoio-link-row-sheet">
+            <span class="apoio-link-row-title">📄 Atribuição de placas (Sheets)</span>
+            <span class="apoio-link-row-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="section-header">
     <span class="section-tag">Tarefas do turno</span>
     <span class="section-time">Madrugada</span>
@@ -1084,13 +1315,13 @@ const TASKS = {
     { id:"t02", name:"Envio do Planification no grupo WhatsApp", desc:"Extração do arquivo de pacotes totais disponíveis via query e envio dos resultados no grupo Planification WhatsApp", deadline:"03:00", priority:"media", urgent:false, link:"#" },
     { id:"t03", name:'Envio do horário de início e fim da roteirização/priorização no grupo "Sinergia - GCHAT"', desc:"Comunicação de início/fim para suporte time KPIs", deadline:"04:00", priority:"media", urgent:false, link:"#" },
     { id:"t04", name:"Linha Bulky", desc:"Extração da listagem de produtos H&B e seu volume por rota, impacto direto na distribuição", deadline:"03:30", priority:"urgente", urgent:true, link:"#" },
-    { id:"t05", name:"Planilha NEX/DC", desc:"Quantidade de rotas por Nodo e SPR das Sacas", deadline:"04:00", priority:"urgente", urgent:true, link:"#" },
+    { id:"t05", name:"Planilha NEX/DC", desc:"Quantidade de rotas por Nodo e SPR das Sacas", deadline:"04:00", priority:"urgente", urgent:true, link:"#", excludeSSP51:true },
     { id:"t06", name:"Distribuição de percursos MLP", desc:"Distribuição de rotas Expedição, considerando scheduling disponível do dia", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
     { id:"t07", name:"Ajuste de layout pós distribuição", desc:"Refinamento pós distribuição, adequando movimentações realizadas de acordo com cada particularidade MLP/Veículo", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
     { id:"t08", name:"Envio da Geral para os MLPs SVC", desc:"Formalização dos percursos atribuídos. Se ultrapassar 05:30, notificar transportadores.", deadline:"06:00", priority:"critico", urgent:false, link:"#" },
     { id:"t17", name:'Envio da Geral nos grupos "Sinergia GCHAT" e "Assuntos operacionais"', desc:"Formalização e comunicação da Geral para os grupos de suporte operacional.", deadline:"06:00", priority:"critico", urgent:false, link:"#" },
     { id:"t11", name:"Disponibilizar link para atribuição de placas", desc:"Enviar link Sheets com dados atualizados da Expedição, para que os MLPs atribuam as placas a serem carregadas", deadline:"06:00", priority:"urgente", urgent:true, link:"#" },
-    { id:"t09", name:"Envio da Geral para XPT", desc:"Envio da programação de rotas/dia XPT", deadline:"06:30", priority:"media", urgent:false, link:"#" },
+    { id:"t09", name:"Envio da Geral para XPT", desc:"Envio da programação de rotas/dia XPT", deadline:"06:30", priority:"media", urgent:false, link:"#", excludeSSP51:true },
     { id:"t16", name:"Report Gerencial — Grupo Indicadores", desc:"Envio das informações consolidadas da volumetria do ciclo", deadline:"07:00", priority:"critico", urgent:false, link:"tutorial-report-gerencial.html" },
     { id:"t10", name:"Ajuste de scheduling", desc:"Ajuste geral de ofertas em scheduling pós distribuição, considerando movimentações realizadas com foco especial na categoria Meli Extra", deadline:"05:30", priority:"critico", urgent:false, link:"#" },
     { id:"t12", name:"Imprimir a Geral para Operação", desc:"Impressão completa do arquivo da Geral por onda", deadline:"07:00", priority:"critico", urgent:false, link:"#" },
@@ -1228,7 +1459,11 @@ function saveCustomOrder(ids) {
   localStorage.setItem(ORDER_KEY, JSON.stringify(ids));
 }
 function getOrderedTasks() {
-  const tasks = TASKS['list-tarefas'] || [];
+  let tasks = TASKS['list-tarefas'] || [];
+  // Filtrar tarefas que devem ser excluídas no SSP·51
+  if (currentSSP === 51) {
+    tasks = tasks.filter(t => !t.excludeSSP51);
+  }
   const order = loadCustomOrder();
   if (!order || !Array.isArray(order)) return tasks;
   const byId = Object.fromEntries(tasks.map(t => [t.id, t]));
@@ -1681,6 +1916,10 @@ function applySSP() {
   });
   const bnTime = document.querySelector('.bn-item[href="madrugadao.html"]');
   if (bnTime) bnTime.style.display = n === 51 ? 'none' : '';
+
+  // Card de Apoio aparece SOMENTE no SSP·51
+  const apoioCard = document.getElementById('apoio-ssp51');
+  if (apoioCard) apoioCard.style.display = n === 51 ? 'block' : 'none';
 }
 
 applySSP();
