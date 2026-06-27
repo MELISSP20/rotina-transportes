@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/rotina-transportes/favicon.png"/>
   <link rel="apple-touch-icon" href="icon-192.png"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cidades por Rota – SSP20</title>
+<title>Resumo de Produtos – SSP20</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -792,11 +792,11 @@
           <span class="chevron">▾</span>
         </button>
         <div class="topbar-dropdown-menu" id="resources-menu">
-          <a href="cidades.html" class="topbar-dropdown-item active-link">
+          <a href="cidades.html" class="topbar-dropdown-item>
             <span class="item-dot" style="background:#16a34a;"></span>
             <span>Cidades por Rota</span>
           </a>
-          <a href="produtos.html" class="topbar-dropdown-item">
+          <a href="produtos.html" class="topbar-dropdown-item active-link">
             <span class="item-dot" style="background:#f59e0b;"></span>
             <span>Resumo de produtos</span>
           </a>
@@ -822,64 +822,73 @@
   <div class="header-inner">
     <div class="brand-block">
       <div>
-        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> GEOGRAFIA</div>
-        <div class="header-title">Cidades por Rota</div>
-        <div class="header-sub">Cidade dominante de cada rota · Auto-detecção do CSV · Filtro por ciclo</div>
+        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 <span style="margin:0 7px;opacity:.45;">·</span> NORMALIZAÇÃO</div>
+        <div class="header-title">Resumo de Produtos</div>
+        <div class="header-sub">Padroniza nome do produto · CSV ou colagem · Marca + categoria + capacidade</div>
       </div>
     </div>
     <div class="dit-info-card">
-      <span class="dit-info-emoji">📍</span>
+      <span class="dit-info-emoji">🏷️</span>
       <span class="dit-info-text">
         <span class="dit-info-eyebrow">FONTE</span>
-        <span class="dit-info-name">CSV roteirização</span>
-        <span class="dit-info-hint">rota · cidade · ciclo</span>
+        <span class="dit-info-name">CSV ou texto</span>
+        <span class="dit-info-hint">ID + descrição</span>
       </span>
     </div>
   </div>
 </div>
 
 <div class="wrapper">
-  <!-- Upload -->
-  <div class="upload-row">
+  <!-- Modo de entrada -->
+  <div class="format-bar" style="margin-bottom:14px;">
+    <span class="format-label">📥 Entrada</span>
+    <div class="filter-pills">
+      <button class="filter-pill active" data-m="paste" onclick="setMode('paste')">📋 Colar texto</button>
+      <button class="filter-pill" data-m="csv" onclick="setMode('csv')">📂 Importar CSV</button>
+    </div>
+  </div>
+
+  <!-- Modo CSV -->
+  <div class="upload-row" id="modeCSV" style="display:none;">
     <div class="upload-zone" id="zoneCSV" onclick="document.getElementById('fileCSV').click()" style="cursor:pointer;">
-      <div class="upload-icon">📍</div>
+      <div class="upload-icon">🏷️</div>
       <div class="upload-info">
-        <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV de roteirização</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Detecta automaticamente as colunas de rota e cidade. Opcional: filtro por ciclo.</div>
+        <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV (ID + descrição)</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Detecta automaticamente as colunas. Escolha qual é o ID e qual é a descrição.</div>
       </div>
       <input type="file" id="fileCSV" accept=".csv" style="display:none"/>
     </div>
   </div>
 
-  <!-- Filtros -->
+  <!-- Seletores de coluna (modo CSV) -->
   <div class="filter-bar" id="filterBar" style="display:none;">
     <div class="filter-group">
-      <span class="filter-bar-label">📋 Coluna rota</span>
-      <select class="field-input col-select" id="selRoute" onchange="onColumnChange()" style="min-width:160px;padding:6px 10px;font-size:11.5px;"></select>
+      <span class="filter-bar-label">🔑 Coluna ID</span>
+      <select class="field-input col-select" id="selId" onchange="processInput()" style="min-width:160px;padding:6px 10px;font-size:11.5px;"></select>
     </div>
     <div class="filter-group">
-      <span class="filter-bar-label">📍 Coluna cidade</span>
-      <select class="field-input col-select" id="selCity" onchange="onColumnChange()" style="min-width:160px;padding:6px 10px;font-size:11.5px;"></select>
-    </div>
-    <div class="filter-group">
-      <span class="filter-bar-label">🔄 Coluna ciclo</span>
-      <select class="field-input col-select" id="selCycle" onchange="onColumnChange()" style="min-width:160px;padding:6px 10px;font-size:11.5px;">
-        <option value="">— sem filtro —</option>
-      </select>
+      <span class="filter-bar-label">📝 Coluna descrição</span>
+      <select class="field-input col-select" id="selDesc" onchange="processInput()" style="min-width:160px;padding:6px 10px;font-size:11.5px;"></select>
     </div>
     <div class="filter-info" id="filterInfo"></div>
   </div>
 
-  <!-- Cycle pills (separado, quando coluna ciclo selecionada) -->
-  <div class="filter-bar" id="cycleBar" style="display:none;">
-    <div class="filter-group">
-      <span class="filter-bar-label">🔄 Ciclo</span>
-      <div class="filter-pills" id="cyclePills"></div>
+  <!-- Modo Colar -->
+  <div id="modePaste" style="margin-bottom:14px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);">📋 Cole abaixo (ID seguido da descrição, um por linha)</span>
+        <button class="btn btn-secondary" onclick="loadExample()" style="margin-left:auto;font-size:11px;padding:5px 12px;">Carregar exemplo</button>
+      </div>
+      <textarea id="pasteInput" oninput="processInput()" placeholder="Cole aqui — ex:
+47292612880 Forno De Embutir Eletrico Electrolux 80l...
+47319788567 Secadora De Roupas Velt 11,2kg..."
+        style="width:100%;min-height:180px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.6;color:var(--text);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
     </div>
   </div>
 
   <!-- Empty state -->
-  <div class="dash-empty" id="emptyState">Importe o CSV de roteirização para extrair a cidade dominante de cada rota.</div>
+  <div class="dash-empty" id="emptyState">Cole a lista ou importe um CSV com <b>ID + descrição</b> dos produtos para extrair o nome padronizado.</div>
 
   <!-- RESULTADO -->
   <div id="resultArea" style="display:none;">
@@ -889,9 +898,10 @@
       <span class="format-label">📋 Formato</span>
       <div class="filter-pills">
         <button class="filter-pill active" data-f="tsv" onclick="setFormat('tsv')">Duas colunas (Excel)</button>
-        <button class="filter-pill" data-f="dash" onclick="setFormat('dash')">Rota – Cidade</button>
+        <button class="filter-pill" data-f="dash" onclick="setFormat('dash')">ID – Nome</button>
       </div>
       <button class="btn btn-copy" onclick="copyOutput()" style="margin-left:auto;">📋 Copiar tudo</button>
+      <button class="btn btn-secondary" onclick="exportCSV()" style="margin-left:6px;">⬇ Baixar CSV</button>
     </div>
     <div class="status" id="copyStatus" style="margin-bottom:8px;"></div>
 
@@ -944,31 +954,212 @@ document.addEventListener('click', function(e) {
 });
 
 // ── State ──
+let mode = 'paste';
 let csvRows = null;
-let detected = null;
-let cycles = [];
-let currentCycle = 'all';
+let csvHeaders = [];
 let currentFormat = 'tsv';
-let result = [];      // [{route, city}]
+let result = [];  // [{id, name}]
 
 const fmtN = n => Number(n).toLocaleString('pt-BR');
 const norm = s => (s||'').toString().trim();
 
-function detectColumns(sample) {
-  const headers = Object.keys(sample);
-  const lower = headers.map(h => h.toLowerCase());
-  const findCol = (cands) => {
-    for (const c of cands) { const i = lower.findIndex(h => h === c.toLowerCase()); if (i >= 0) return headers[i]; }
-    for (const c of cands) { const i = lower.findIndex(h => h.includes(c.toLowerCase())); if (i >= 0) return headers[i]; }
-    return null;
-  };
-  return {
-    colRoute: findCol(['SHP_LG_ROUTE_ID','route_name','rota_nome','wave_route','rota','ROTA','route','Rota','ROUTE_ID','route_id']),
-    colCity: findCol(['cidade','CIDADE','city','CITY','municipio','MUNICIPIO','município','SHP_BUYER_ADDRESS_CITY','BUYER_CITY']),
-    colCycle: findCol(['SHP_CYCLE_NAME_PLANNED','SHP_CYCLE_NAME','CYCLE','ciclo','CICLO','cycle','WAVE','wave'])
-  };
+// ─── NORMALIZAÇÃO DE PRODUTOS ───
+const BRANDS = ['Electrolux','Brastemp','LG','Samsung','Hisense','Midea','Velt','Continental','Consul','Panasonic','Philco','Mondial','Britânia','Britania','Cadence','Mueller','Esmaltec','Atlas','Tramontina','TCL','Philips','Whirlpool','Suggar','HQ','Mueller','Fogatti','Dako'];
+
+function decodeText(s) {
+  // Algumas descrições vêm com encoding ruim (?, =, etc) — tenta fallback
+  return s;
 }
 
+function extractBrand(text) {
+  const lower = text.toLowerCase();
+  for (const b of BRANDS) {
+    if (lower.includes(b.toLowerCase())) return b;
+  }
+  return null;
+}
+
+// Categorias com regex e função de extração
+const CATEGORIES = [
+  {
+    test: /\blav[ae]?[\s-]?lou[çc]/i,
+    label: 'Lava-louças',
+    extract: (t) => {
+      const m = t.match(/(\d+)\s*servi[çc]o/i);
+      return m ? m[1] + ' serviços' : '';
+    }
+  },
+  {
+    test: /\blav[a]?\s*e\s*seca|lava\s*-?\s*seca|wash\s*&?\s*dry/i,
+    label: 'Lava e seca',
+    extract: (t) => {
+      const m = t.match(/(\d+[.,]?\d*)\s*kg/i);
+      return m ? m[1].replace('.', ',') + 'kg' : '';
+    }
+  },
+  {
+    test: /\blavadora|m[aá]quina\s*de\s*lavar/i,
+    label: 'Lavadora',
+    extract: (t) => {
+      const m = t.match(/(\d+[.,]?\d*)\s*kg/i);
+      return m ? m[1].replace('.', ',') + 'kg' : '';
+    }
+  },
+  {
+    test: /\bsecadora/i,
+    label: 'Secadora',
+    extract: (t) => {
+      const m = t.match(/(\d+[.,]?\d*)\s*kg/i);
+      return m ? m[1].replace('.', ',') + 'kg' : '';
+    }
+  },
+  {
+    test: /\bgeladeira|refrigerador/i,
+    label: 'Geladeira',
+    extract: (t) => {
+      const m = t.match(/(\d{2,4})\s*(litros|l\b|l\s|l\.)/i);
+      return m ? m[1] + 'L' : '';
+    }
+  },
+  {
+    test: /\bfreezer/i,
+    label: 'Freezer',
+    extract: (t) => {
+      const m = t.match(/(\d{2,4})\s*(litros|l\b|l\s|l\.)/i);
+      return m ? m[1] + 'L' : '';
+    }
+  },
+  {
+    test: /\bfog[ãa]o/i,
+    label: 'Fogão',
+    extract: (t) => {
+      const m = t.match(/(\d)\s*boca/i);
+      return m ? m[1] + ' bocas' : '';
+    }
+  },
+  {
+    test: /\bforno/i,
+    label: 'Forno',
+    extract: (t) => {
+      let tipo = '';
+      if (/el[eé]tric/i.test(t)) tipo = 'elétrico';
+      else if (/\b(g[áa]s)\b/i.test(t)) tipo = 'a gás';
+      else if (/embut/i.test(t)) tipo = 'embutir';
+      const cap = t.match(/(\d{2,3})\s*l\b/i);
+      const parts = [];
+      if (tipo) parts.push(tipo);
+      if (cap) parts.push(cap[1] + 'L');
+      return parts.join(' ');
+    }
+  },
+  {
+    test: /\b(smart\s*)?tv\b/i,
+    label: 'TV',
+    extract: (t) => {
+      // 32, 43, 50, 55, 65, 70, 75, 85 polegadas
+      const m = t.match(/\b(32|39|40|43|49|50|55|58|60|65|70|75|85|86|98)\b/);
+      return m ? m[1] : '';
+    }
+  },
+  {
+    test: /\bcoifa/i,
+    label: 'Coifa',
+    extract: (t) => ''
+  },
+  {
+    test: /\bfrigobar/i,
+    label: 'Frigobar',
+    extract: (t) => {
+      const m = t.match(/(\d{2,3})\s*l\b/i);
+      return m ? m[1] + 'L' : '';
+    }
+  },
+  {
+    test: /\bcervejeira/i,
+    label: 'Cervejeira',
+    extract: (t) => {
+      const m = t.match(/(\d{2,3})\s*l\b/i);
+      return m ? m[1] + 'L' : '';
+    }
+  },
+  {
+    test: /\bexpositor/i,
+    label: 'Expositor',
+    extract: (t) => {
+      const m = t.match(/(\d{2,4})\s*l\b/i);
+      return m ? m[1] + 'L' : '';
+    }
+  },
+  {
+    test: /\bar[\s-]?condicionado/i,
+    label: 'Ar-condicionado',
+    extract: (t) => {
+      const m = t.match(/(\d{1,2}[.,]?\d{0,3})\s*btus?/i);
+      return m ? m[1].replace(',','.') + ' BTUs' : '';
+    }
+  },
+  {
+    test: /\bcolch[ãa]o/i,
+    label: 'Colchão',
+    extract: (t) => {
+      // Tipo + medida (138x188, queen, etc)
+      let tipo = '';
+      if (/queen/i.test(t)) tipo = 'Queen';
+      else if (/king/i.test(t)) tipo = 'King';
+      else if (/casal/i.test(t)) tipo = 'Casal';
+      else if (/solteiro/i.test(t)) tipo = 'Solteiro';
+      const m = t.match(/(\d{2,3})\s*x\s*(\d{2,3})/i);
+      const parts = [tipo, m ? m[0] : ''].filter(Boolean);
+      return parts.join(' ');
+    }
+  }
+];
+
+function normalize(description) {
+  const text = decodeText(description);
+  const brand = extractBrand(text);
+  let cat = null;
+  for (const c of CATEGORIES) {
+    if (c.test.test(text)) { cat = c; break; }
+  }
+  if (!cat) {
+    return brand || 'Produto';
+  }
+  const value = cat.extract(text);
+  const parts = [];
+  if (brand) parts.push(brand);
+  parts.push(cat.label);
+  if (value) parts.push(value);
+  return parts.join(' ');
+}
+
+// ─── INPUT MODES ───
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.filter-pill[data-m]').forEach(p => p.classList.toggle('active', p.dataset.m === m));
+  document.getElementById('modeCSV').style.display = m === 'csv' ? 'block' : 'none';
+  document.getElementById('modePaste').style.display = m === 'paste' ? 'block' : 'none';
+  if (m === 'csv') {
+    document.getElementById('filterBar').style.display = csvRows ? 'flex' : 'none';
+  } else {
+    document.getElementById('filterBar').style.display = 'none';
+  }
+  processInput();
+}
+
+function loadExample() {
+  document.getElementById('pasteInput').value = `47292612880 Forno De Embutir Eletrico Electrolux 80l Experience Air Fryer 220v Preto
+47319788567 Secadora De Roupas Velt 11,2kg Mecanica
+47326713619 Geladeira Electrolux Frost Free Inverter 400l Efficient Inverse Black
+47321792460 Smart Tv Profissional 4k 65 LG Uhd Webos
+47295101706 Lava-louca Electrolux 10 Servicos Inox Lava E Seca
+47288603295 Lavadora Midea Wave Agitator 13kg Branco 220v
+47292321599 Lava E Seca Hisense 12kg/8kg Inverter
+47256767573 Geladeira Inteligente Brastemp 500 Litros Inox`;
+  processInput();
+}
+
+// ─── CSV mode ───
 function parseCSVLine(line) {
   const out = []; let cur = ''; let q = false;
   for (let i = 0; i < line.length; i++) {
@@ -1005,105 +1196,98 @@ function handleCSV(file) {
     const parsed = parseCSV(e.target.result);
     if (parsed.length === 0) { alert('CSV vazio.'); return; }
     csvRows = parsed;
-    const headers = Object.keys(parsed[0]);
-    const auto = detectColumns(parsed[0]);
+    csvHeaders = Object.keys(parsed[0]);
 
-    // Popular dropdowns com todas as colunas
-    const selRoute = document.getElementById('selRoute');
-    const selCity = document.getElementById('selCity');
-    const selCycle = document.getElementById('selCycle');
-    const optsAll = headers.map(h => `<option value="${h}">${h}</option>`).join('');
-    selRoute.innerHTML = optsAll;
-    selCity.innerHTML = optsAll;
-    selCycle.innerHTML = '<option value="">— sem filtro —</option>' + optsAll;
-    if (auto.colRoute) selRoute.value = auto.colRoute;
-    if (auto.colCity) selCity.value = auto.colCity;
-    if (auto.colCycle) selCycle.value = auto.colCycle;
+    const optsAll = csvHeaders.map(h => `<option value="${h}">${h}</option>`).join('');
+    document.getElementById('selId').innerHTML = optsAll;
+    document.getElementById('selDesc').innerHTML = optsAll;
+
+    // Auto-detect: ID = primeira coluna que parece numérica longa, Desc = coluna mais longa
+    let bestId = null, bestDesc = null;
+    let bestIdScore = -1, bestDescScore = -1;
+    csvHeaders.forEach(h => {
+      let numCount = 0, longCount = 0, totalLen = 0;
+      parsed.slice(0,20).forEach(r => {
+        const v = String(r[h]||'').trim();
+        if (/^\d{8,}$/.test(v)) numCount++;
+        if (v.length > 30) longCount++;
+        totalLen += v.length;
+      });
+      if (numCount > bestIdScore) { bestIdScore = numCount; bestId = h; }
+      if (longCount > bestDescScore) { bestDescScore = longCount; bestDesc = h; }
+    });
+    if (bestId) document.getElementById('selId').value = bestId;
+    if (bestDesc) document.getElementById('selDesc').value = bestDesc;
 
     document.getElementById('zoneCSV').classList.add('loaded-csv');
-    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(parsed.length)} linhas · ${headers.length} colunas</span>`;
+    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(parsed.length)} linhas · ${csvHeaders.length} colunas</span>`;
     document.getElementById('filterBar').style.display = 'flex';
-    document.getElementById('emptyState').style.display = 'none';
-    document.getElementById('resultArea').style.display = 'block';
-
-    onColumnChange();
+    processInput();
   };
   reader.readAsText(file, 'utf-8');
 }
 
-function onColumnChange() {
-  if (!csvRows) return;
-  detected = {
-    colRoute: document.getElementById('selRoute').value,
-    colCity: document.getElementById('selCity').value,
-    colCycle: document.getElementById('selCycle').value || null
-  };
-  if (!detected.colRoute || !detected.colCity) return;
+// ─── PROCESS (chamado tanto no paste quanto no csv) ───
+function processInput() {
+  let pairs = []; // [{id, desc}]
 
-  // Pílulas de ciclo (se coluna ciclo selecionada)
-  if (detected.colCycle) {
-    cycles = [...new Set(csvRows.map(r => norm(r[detected.colCycle])).filter(Boolean))].sort();
-    const pillsHTML = ['<button class="filter-pill active" data-c="all" onclick="setCycle('all')">Todos</button>']
-      .concat(cycles.map(c => `<button class="filter-pill" data-c="${c}" onclick="setCycle('${c}')">${c}</button>`))
-      .join('');
-    document.getElementById('cyclePills').innerHTML = pillsHTML;
-    document.getElementById('cycleBar').style.display = cycles.length > 0 ? 'flex' : 'none';
-  } else {
-    document.getElementById('cycleBar').style.display = 'none';
-    cycles = [];
+  if (mode === 'paste') {
+    const text = document.getElementById('pasteInput').value;
+    if (!text.trim()) {
+      result = [];
+      hideResult();
+      return;
+    }
+    // Parse: cada linha tem ID seguido de descrição (separado por espaço, tab ou vírgula)
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    pairs = lines.map(line => {
+      // Tenta separar: número grande + resto
+      const m = line.match(/^["\s]*(\d{6,})[\s,;|\t"]+(.+)$/);
+      if (m) return { id: m[1], desc: m[2].trim() };
+      // Fallback: tab/vírgula
+      const parts = line.split(/[\t,]/);
+      if (parts.length >= 2) return { id: parts[0].trim(), desc: parts.slice(1).join(' ').trim() };
+      return null;
+    }).filter(Boolean);
+  } else if (mode === 'csv') {
+    if (!csvRows) { result = []; hideResult(); return; }
+    const colId = document.getElementById('selId').value;
+    const colDesc = document.getElementById('selDesc').value;
+    if (!colId || !colDesc) { result = []; hideResult(); return; }
+    pairs = csvRows.map(r => ({ id: norm(r[colId]), desc: norm(r[colDesc]) })).filter(p => p.id && p.desc);
   }
-  currentCycle = 'all';
-  process();
-}
 
-function setCycle(c) {
-  currentCycle = c;
-  document.querySelectorAll('.filter-pill[data-c]').forEach(p => p.classList.toggle('active', p.dataset.c === c));
-  process();
-}
+  if (pairs.length === 0) {
+    result = [];
+    hideResult();
+    return;
+  }
 
-function setFormat(f) {
-  currentFormat = f;
-  document.querySelectorAll('.filter-pill[data-f]').forEach(p => p.classList.toggle('active', p.dataset.f === f));
+  result = pairs.map(p => ({
+    id: p.id,
+    name: normalize(p.desc),
+    raw: p.desc
+  }));
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'block';
+  if (mode === 'csv') {
+    document.getElementById('filterInfo').innerHTML = `<b>${fmtN(result.length)}</b> produtos processados`;
+  }
+  document.getElementById('resultFoot').innerHTML = `${fmtN(result.length)} linhas processadas · revise antes de copiar`;
+
   renderOutput();
 }
 
-function process() {
-  if (!csvRows || !detected) return;
-  let rows = csvRows;
-  if (currentCycle !== 'all' && detected.colCycle) {
-    rows = rows.filter(r => norm(r[detected.colCycle]) === currentCycle);
-  }
+function hideResult() {
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'block';
+}
 
-  // Extrai prefixo da rota: AM1_131_5 → AM1_131, AM1_1 → AM1_1
-  const prefix = full => {
-    const parts = full.split('_');
-    return parts.length >= 2 ? parts[0] + '_' + parts[1] : full;
-  };
-
-  // Agrupa por PREFIXO da rota → cidade mais frequente em TODAS as sub-rotas
-  const byRoute = {};
-  rows.forEach(r => {
-    const fullRoute = norm(r[detected.colRoute]);
-    if (!fullRoute) return;
-    const route = prefix(fullRoute);
-    const city = norm(r[detected.colCity]);
-    if (!byRoute[route]) byRoute[route] = {};
-    if (city) byRoute[route][city] = (byRoute[route][city] || 0) + 1;
-  });
-
-  result = Object.entries(byRoute).map(([route, cities]) => {
-    const top = Object.entries(cities).sort((a,b) => b[1]-a[1])[0];
-    return { route, city: top ? top[0] : '' };
-  });
-
-  // Sort natural (AM1_1, AM1_2, ..., AM1_10)
-  result.sort((a,b) => a.route.localeCompare(b.route, undefined, {numeric: true, sensitivity: 'base'}));
-
-  const semCidade = result.filter(r => !r.city).length;
-  document.getElementById('filterInfo').innerHTML = `<b>${fmtN(result.length)}</b> rotas` + (semCidade > 0 ? ` <span style="color:var(--red);">· ${semCidade} sem cidade</span>` : '');
-  document.getElementById('resultFoot').innerHTML = `${fmtN(result.length)} rotas (agrupadas por prefixo)` + (semCidade > 0 ? ` · <span style="color:var(--red);">${semCidade} ficaram sem cidade</span>` : ' · todas com cidade ✓');
-
+// ─── OUTPUT ───
+function setFormat(f) {
+  currentFormat = f;
+  document.querySelectorAll('.filter-pill[data-f]').forEach(p => p.classList.toggle('active', p.dataset.f === f));
   renderOutput();
 }
 
@@ -1115,10 +1299,10 @@ function renderOutput() {
   let header = '';
   let lines;
   if (currentFormat === 'tsv') {
-    header = 'Rota\tCidade\n';
-    lines = result.map(r => r.route + '\t' + (r.city || '— sem cidade —'));
+    header = 'ID\tProduto\n';
+    lines = result.map(r => r.id + '\t' + r.name);
   } else {
-    lines = result.map(r => r.route + ' – ' + (r.city || '— sem cidade —'));
+    lines = result.map(r => r.id + ' – ' + r.name);
   }
   document.getElementById('outputBox').textContent = header + lines.join('\n');
 }
@@ -1128,18 +1312,38 @@ function copyOutput() {
   if (!text) return;
   navigator.clipboard.writeText(text).then(() => {
     const msg = currentFormat === 'tsv'
-      ? `✓ ${fmtN(result.length)} linhas copiadas — cole no Excel: vai dividir em 2 colunas (Rota | Cidade)`
+      ? `✓ ${fmtN(result.length)} linhas copiadas — cole no Excel: vai dividir em 2 colunas (ID | Produto)`
       : `✓ ${fmtN(result.length)} linhas copiadas`;
     document.getElementById('copyStatus').textContent = msg;
     setTimeout(() => document.getElementById('copyStatus').textContent = '', 5000);
   });
 }
 
+function exportCSV() {
+  if (!result || result.length === 0) return;
+  // CSV com header + escape de aspas
+  const escape = s => {
+    s = String(s||'');
+    if (/[,"\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  };
+  const lines = ['ID,Produto'].concat(result.map(r => escape(r.id) + ',' + escape(r.name)));
+  const blob = new Blob([lines.join('\n')], {type: 'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `resumo_produtos_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('copyStatus').textContent = `✓ ${fmtN(result.length)} linhas baixadas em CSV`;
+  setTimeout(() => document.getElementById('copyStatus').textContent = '', 4000);
+}
+
 function clearAll() {
-  csvRows = null; detected = null; cycles = []; result = [];
-  currentCycle = 'all'; currentFormat = 'dash';
+  result = []; csvRows = null; csvHeaders = [];
+  document.getElementById('pasteInput').value = '';
   document.getElementById('zoneCSV').classList.remove('loaded-csv');
-  document.getElementById('csvLabel').innerHTML = 'Importar CSV de roteirização';
+  document.getElementById('csvLabel').innerHTML = 'Importar CSV (ID + descrição)';
   document.getElementById('resultArea').style.display = 'none';
   document.getElementById('filterBar').style.display = 'none';
   document.getElementById('emptyState').style.display = 'block';
