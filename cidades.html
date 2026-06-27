@@ -867,10 +867,10 @@
 
     <!-- Toggle formato -->
     <div class="format-bar">
-      <span class="format-label">📋 Formato de saída</span>
+      <span class="format-label">📋 Formato</span>
       <div class="filter-pills">
-        <button class="filter-pill active" data-f="dash" onclick="setFormat(\'dash\')">Rota – Cidade</button>
-        <button class="filter-pill" data-f="tsv" onclick="setFormat(\'tsv\')">Duas colunas (Excel)</button>
+        <button class="filter-pill active" data-f="tsv" onclick="setFormat(\'tsv\')">Duas colunas (Excel)</button>
+        <button class="filter-pill" data-f="dash" onclick="setFormat(\'dash\')">Rota – Cidade</button>
       </div>
       <button class="btn btn-copy" onclick="copyOutput()" style="margin-left:auto;">📋 Copiar tudo</button>
     </div>
@@ -921,7 +921,7 @@ let csvRows = null;
 let detected = null;
 let cycles = [];
 let currentCycle = 'all';
-let currentFormat = 'dash';
+let currentFormat = 'tsv';
 let result = [];      // [{route, city}]
 
 const fmtN = n => Number(n).toLocaleString('pt-BR');
@@ -1085,20 +1085,26 @@ function renderOutput() {
     document.getElementById('outputBox').textContent = '';
     return;
   }
-  const lines = result.map(r => {
-    const city = r.city || '— sem cidade —';
-    if (currentFormat === 'tsv') return r.route + '\t' + city;
-    return r.route + ' – ' + city;
-  });
-  document.getElementById('outputBox').textContent = lines.join('\n');
+  let header = '';
+  let lines;
+  if (currentFormat === 'tsv') {
+    header = 'Rota\tCidade\n';
+    lines = result.map(r => r.route + '\t' + (r.city || '— sem cidade —'));
+  } else {
+    lines = result.map(r => r.route + ' – ' + (r.city || '— sem cidade —'));
+  }
+  document.getElementById('outputBox').textContent = header + lines.join('\n');
 }
 
 function copyOutput() {
   const text = document.getElementById('outputBox').textContent;
   if (!text) return;
   navigator.clipboard.writeText(text).then(() => {
-    document.getElementById('copyStatus').textContent = '✓ ' + fmtN(result.length) + ' linhas copiadas — cola direto no Excel ou onde precisar';
-    setTimeout(() => document.getElementById('copyStatus').textContent = '', 4000);
+    const msg = currentFormat === 'tsv'
+      ? `✓ ${fmtN(result.length)} linhas copiadas — cole no Excel: vai dividir em 2 colunas (Rota | Cidade)`
+      : `✓ ${fmtN(result.length)} linhas copiadas`;
+    document.getElementById('copyStatus').textContent = msg;
+    setTimeout(() => document.getElementById('copyStatus').textContent = '', 5000);
   });
 }
 
