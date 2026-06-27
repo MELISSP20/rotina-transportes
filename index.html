@@ -141,7 +141,70 @@
     margin: 0;
     display: inline-flex;
     align-items: baseline;
+    cursor: pointer;
+    user-select: none;
+    transition: transform .15s;
   }
+  .hub-title:active { transform: scale(.98); }
+  .hub-title.party { animation: titleParty .6s ease-in-out; }
+  @keyframes titleParty {
+    0%,100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-3deg) scale(1.08); }
+    50% { transform: rotate(3deg) scale(1.12); }
+    75% { transform: rotate(-2deg) scale(1.08); }
+  }
+
+  /* Entry animations — slide up + fade in */
+  @keyframes hubFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hub-welcome { animation: hubFadeUp .6s cubic-bezier(.4,0,.2,1) both; }
+  .hub-trivia { animation: hubFadeUp .6s cubic-bezier(.4,0,.2,1) .12s both; }
+  .hub-divider { animation: hubFadeUp .5s cubic-bezier(.4,0,.2,1) .2s both; }
+  .hub-card { animation: hubFadeUp .55s cubic-bezier(.4,0,.2,1) both; }
+  .hub-card:nth-child(1) { animation-delay: .26s; }
+  .hub-card:nth-child(2) { animation-delay: .32s; }
+  .hub-card:nth-child(3) { animation-delay: .38s; }
+  .hub-card:nth-child(4) { animation-delay: .44s; }
+  .hub-card:nth-child(5) { animation-delay: .50s; }
+  .hub-card:nth-child(6) { animation-delay: .56s; }
+  .hub-card:nth-child(7) { animation-delay: .62s; }
+  .hub-card:nth-child(8) { animation-delay: .68s; }
+  .hub-qh-cta { animation: hubFadeUp .55s cubic-bezier(.4,0,.2,1) .78s both; }
+  .hub-footer { animation: hubFadeUp .6s cubic-bezier(.4,0,.2,1) .88s both; }
+
+  /* Easter egg — credits modal */
+  #ee-credits { position: fixed; inset: 0; z-index: 9998; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.7); backdrop-filter: blur(8px); padding: 1rem; }
+  #ee-credits.open { display: flex; animation: hubFadeUp .25s ease-out; }
+  .ee-box { background: linear-gradient(135deg, var(--navy) 0%, #2A2D44 100%); color: #fff; border-radius: 20px; padding: 36px 40px; max-width: 480px; width: 100%; text-align: center; position: relative; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+  .ee-box::before { content: '🎉'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 48px; animation: eeBounce 1s ease-in-out infinite; }
+  @keyframes eeBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
+  .ee-eyebrow { color: var(--yellow); font-size: 10.5px; font-weight: 900; letter-spacing: .26em; text-transform: uppercase; margin: 20px 0 12px; }
+  .ee-title { font-size: 28px; font-weight: 900; letter-spacing: -.8px; margin-bottom: 6px; }
+  .ee-sub { font-size: 13px; color: rgba(255,255,255,.7); margin-bottom: 24px; font-weight: 500; }
+  .ee-list { text-align: left; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 18px 22px; font-size: 12.5px; font-weight: 600; line-height: 1.9; }
+  .ee-list b { color: var(--yellow); font-weight: 800; }
+  .ee-list span { color: rgba(255,255,255,.55); }
+  .ee-close { margin-top: 22px; background: var(--yellow); color: var(--navy); border: none; padding: 12px 28px; border-radius: 10px; font-family: var(--font); font-size: 13px; font-weight: 800; cursor: pointer; transition: all .2s; }
+  .ee-close:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(255,230,0,.35); }
+
+  /* Konami mode — disco strobing */
+  body.konami { animation: konamiBg 1s linear infinite; }
+  @keyframes konamiBg {
+    0% { background: var(--bg); }
+    25% { background: #FF006E; }
+    50% { background: #8338EC; }
+    75% { background: #3A86FF; }
+    100% { background: var(--bg); }
+  }
+  body.konami .hub-title { animation: konamiTitle 1s linear infinite; }
+  @keyframes konamiTitle {
+    0%,100% { color: var(--yellow); }
+    33% { color: #FF006E; }
+    66% { color: #3A86FF; }
+  }
+
   [data-theme="dark"] .hub-title { color: #fff; }
   .hub-title-dot { color: var(--yellow); }
   .hub-sub {
@@ -467,6 +530,7 @@
     .hub-divider { font-size: 9.5px; letter-spacing: .2em; }
   }
 </style>
+<script src="keyboard.js" defer></script>
 </head>
 <body>
 
@@ -643,6 +707,25 @@
   <div class="hub-footer">
     <div class="hub-footer-main">ASSIGNMENTS <span class="hub-footer-sep">·</span> SOROCABA</div>
     <div class="hub-footer-credit">DEVELOPED BY <b>MATHEUS LOGAN</b></div>
+  </div>
+</div>
+
+<!-- Easter egg credits modal -->
+<div id="ee-credits" onclick="closeCredits()">
+  <div class="ee-box" onclick="event.stopPropagation()">
+    <div class="ee-eyebrow">🎬 CRÉDITOS</div>
+    <div class="ee-title">Assignments<span style="color:var(--yellow);">.</span></div>
+    <div class="ee-sub">Construído com café, paciência e madrugadas</div>
+    <div class="ee-list">
+      <div>🎨 <b>Idealização & Design</b> <span>·</span> Matheus Logan</div>
+      <div>👨‍💻 <b>Desenvolvimento</b> <span>·</span> Matheus Logan</div>
+      <div>🐛 <b>QA & Bug hunting</b> <span>·</span> Matheus Logan</div>
+      <div>🤖 <b>Pair programming</b> <span>·</span> Claude (Anthropic)</div>
+      <div>📍 <b>Cenário</b> <span>·</span> SSP·20 + SSP·51, Sorocaba</div>
+      <div>🌃 <b>Trilha sonora</b> <span>·</span> Madrugada da última milha</div>
+      <div>📅 <b>Estreia</b> <span>·</span> 17 de junho de 2026</div>
+    </div>
+    <button class="ee-close" onclick="closeCredits()">Fechar</button>
   </div>
 </div>
 
@@ -828,6 +911,40 @@ triviaIndex = Math.floor(Math.random() * TRIVIAS.length);
 triviaTextEl.innerHTML = TRIVIAS[triviaIndex];
 renderDots();
 resetTriviaTimer();
+
+// ─── EASTER EGGS ───
+// 1. Click 5x no título "Assignments" → mostra créditos
+let titleClicks = 0;
+let titleClickTimer = null;
+const titleEl = document.querySelector('.hub-title');
+titleEl?.addEventListener('click', () => {
+  titleClicks++;
+  titleEl.classList.add('party');
+  setTimeout(() => titleEl.classList.remove('party'), 600);
+  clearTimeout(titleClickTimer);
+  titleClickTimer = setTimeout(() => titleClicks = 0, 1500);
+  if (titleClicks >= 5) {
+    titleClicks = 0;
+    document.getElementById('ee-credits').classList.add('open');
+  }
+});
+function closeCredits() {
+  document.getElementById('ee-credits').classList.remove('open');
+}
+
+// 2. Konami code → modo disco por 6 segundos
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let konamiBuf = [];
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  konamiBuf.push(e.key);
+  if (konamiBuf.length > KONAMI.length) konamiBuf.shift();
+  if (konamiBuf.length === KONAMI.length && konamiBuf.every((k,i) => k === KONAMI[i])) {
+    konamiBuf = [];
+    document.body.classList.add('konami');
+    setTimeout(() => document.body.classList.remove('konami'), 6000);
+  }
+});
 </script>
 
 </body>
