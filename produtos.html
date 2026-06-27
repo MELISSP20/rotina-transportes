@@ -877,12 +877,10 @@
   <div id="modePaste" style="margin-bottom:14px;">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
-        <span style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);">📋 Cole abaixo (ID seguido da descrição, um por linha)</span>
-        <button class="btn btn-secondary" onclick="loadExample()" style="margin-left:auto;font-size:11px;padding:5px 12px;">Carregar exemplo</button>
+        <span style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);">📋 Cole abaixo os IDs + descrições</span>
+        <span style="font-size:10.5px;color:var(--muted);font-weight:500;">O site usa os IDs (números longos) pra separar os produtos automaticamente — não importa se estão em linhas separadas ou colados em sequência.</span>
       </div>
-      <textarea id="pasteInput" oninput="processInput()" placeholder="Cole aqui — ex:
-47292612880 Forno De Embutir Eletrico Electrolux 80l...
-47319788567 Secadora De Roupas Velt 11,2kg..."
+      <textarea id="pasteInput" oninput="processInput()" placeholder="Cole o texto aqui..."
         style="width:100%;min-height:180px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:ui-monospace,monospace;font-size:12.5px;line-height:1.6;color:var(--text);resize:vertical;outline:none;box-sizing:border-box;"></textarea>
     </div>
   </div>
@@ -1157,18 +1155,6 @@ function setMode(m) {
   processInput();
 }
 
-function loadExample() {
-  document.getElementById('pasteInput').value = `47292612880 Forno De Embutir Eletrico Electrolux 80l Experience Air Fryer 220v Preto
-47319788567 Secadora De Roupas Velt 11,2kg Mecanica
-47326713619 Geladeira Electrolux Frost Free Inverter 400l Efficient Inverse Black
-47321792460 Smart Tv Profissional 4k 65 LG Uhd Webos
-47295101706 Lava-louca Electrolux 10 Servicos Inox Lava E Seca
-47288603295 Lavadora Midea Wave Agitator 13kg Branco 220v
-47292321599 Lava E Seca Hisense 12kg/8kg Inverter
-47256767573 Geladeira Inteligente Brastemp 500 Litros Inox`;
-  processInput();
-}
-
 // ─── CSV mode ───
 function parseCSVLine(line) {
   const out = []; let cur = ''; let q = false;
@@ -1248,17 +1234,20 @@ function processInput() {
       hideResult();
       return;
     }
-    // Parse: cada linha tem ID seguido de descrição (separado por espaço, tab ou vírgula)
-    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    pairs = lines.map(line => {
-      // Tenta separar: número grande + resto
-      const m = line.match(/^["\s]*(\d{6,})[\s,;|\t"]+(.+)$/);
-      if (m) return { id: m[1], desc: m[2].trim() };
-      // Fallback: tab/vírgula
-      const parts = line.split(/[\t,]/);
-      if (parts.length >= 2) return { id: parts[0].trim(), desc: parts.slice(1).join(' ').trim() };
-      return null;
-    }).filter(Boolean);
+    // Usar IDs (8+ dígitos consecutivos) como pontos de separação
+    // Funciona com produtos em linhas separadas OU colados em sequência
+    const idPattern = /\b(\d{8,})\b/g;
+    const matches = [...text.matchAll(idPattern)];
+
+    for (let i = 0; i < matches.length; i++) {
+      const id = matches[i][1];
+      const startDesc = matches[i].index + matches[i][0].length;
+      const endDesc = i + 1 < matches.length ? matches[i+1].index : text.length;
+      let desc = text.slice(startDesc, endDesc).trim();
+      // Limpar lixo comum no início (shipped, status, etc)
+      desc = desc.replace(/^["\s,;|\t-]*(shipped|delivered|pending|active)?\s*/i, '').trim();
+      if (id && desc) pairs.push({ id, desc });
+    }
   } else if (mode === 'csv') {
     if (!csvRows) { result = []; hideResult(); return; }
     const colId = document.getElementById('selId').value;
@@ -1284,7 +1273,7 @@ function processInput() {
   if (mode === 'csv') {
     document.getElementById('filterInfo').innerHTML = `<b>${fmtN(result.length)}</b> produtos processados`;
   }
-  document.getElementById('resultFoot').innerHTML = `${fmtN(result.length)} linhas processadas · revise antes de copiar`;
+  document.getElementById('resultFoot').innerHTML = `${fmtN(result.length)} produtos detectados · revise antes de copiar`;
 
   renderOutput();
 }
