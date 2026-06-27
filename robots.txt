@@ -1,0 +1,3 @@
+# Assignments - Site interno de operação. Não indexar.
+User-agent: *
+Disallow: /

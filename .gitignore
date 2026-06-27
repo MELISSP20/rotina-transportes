@@ -1,0 +1,24 @@
+# Segredos
+*.env
+.env.*
+*.pem
+*.key
+*-credentials*.json
+*service-account*.json
+
+# Caches/builds
+node_modules/
+.cache/
+dist/
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Backups
+*.bak
+*.tmp
+*~
