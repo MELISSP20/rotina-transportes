@@ -11,6 +11,7 @@
     { key: 'q', label: 'ORH', url: 'orh.html', icon: '⏱' },
     { key: 'c', label: 'Cidades por Rota', url: 'cidades.html', icon: '📍' },
     { key: 'p', label: 'Resumo de Produtos', url: 'produtos.html', icon: '🏷️' },
+    { key: 'v', label: 'Volumosos por Ciclo', url: 'volumosos.html', icon: '📦' },
     { key: 'b', label: 'Diário de Bordo', url: 'diario.html', icon: '📒' },
   ];
 

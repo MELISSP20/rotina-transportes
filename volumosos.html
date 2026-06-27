@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<link rel="icon" type="image/x-icon" href="/rotina-transportes/favicon.ico"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/rotina-transportes/favicon.png"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Volumosos por Ciclo — Assignments</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="keyboard.js" defer></script>
+<script src="toast.js" defer></script>
+<script src="presentation.js" defer></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --yellow: #FFE600; --navy: #1A1A2E; --font: 'Inter', sans-serif;
+    --bg: #F5F5F5; --surface: #FFFFFF; --text: #333333;
+    --muted: #666666; --border: #E0E0E0;
+    --green: #00A650; --blue: #3483FA; --red: #E3262F;
+    --amber: #F59E0B; --purple: #a78bfa;
+    --radius: 8px; --radius-lg: 12px;
+  }
+  [data-theme="dark"] {
+    --bg: #0F1117; --surface: #1A1D27; --text: #E8EAF2;
+    --muted: #8B90A7; --border: #2A2E3F;
+  }
+
+  body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; transition: background .2s; }
+
+  /* TOPBAR (compartilhado) */
+  .topbar { background: linear-gradient(180deg, var(--navy) 0%, #14182A 100%); height: 56px; display: flex; align-items: center; padding: 0 1.5rem; gap: 14px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,230,0,.08); box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  [data-theme="dark"] .topbar { background: linear-gradient(180deg, #0A0D17 0%, #06080F 100%); }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .topbar-status { display: flex; align-items: center; gap: 9px; }
+  .status-dot-live { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(74,222,128,.5); animation: livePulse 2.2s infinite; }
+  @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,.5); } 70% { box-shadow: 0 0 0 6px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+  .status-text { font-size: 11.5px; font-weight: 700; letter-spacing: .14em; color: rgba(255,255,255,.62); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+  .status-sep { margin: 0 5px; color: rgba(255,255,255,.25); }
+  .topbar-vsep { width: 1px; height: 26px; background: rgba(255,255,255,.1); flex-shrink: 0; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .online-cluster { display: flex; align-items: center; gap: 6px; padding-right: 6px; border-right: 1px solid rgba(255,255,255,.08); }
+  .online-badge { display: flex; align-items: center; justify-content: center; padding: 0 3px; cursor: help; }
+  .online-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .topbar-nav { display: flex; align-items: center; gap: 4px; padding: 3px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.05); border-radius: 11px; }
+  .topbar-nav-link { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; font-family: var(--font); font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6); text-decoration: none; border-radius: 8px; background: transparent; border: 1px solid transparent; transition: all .22s cubic-bezier(.4,0,.2,1); letter-spacing: -.1px; position: relative; }
+  .topbar-nav-link svg { width: 14px; height: 14px; opacity: .55; transition: opacity .2s, transform .2s; flex-shrink: 0; }
+  .topbar-nav-link:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.95); transform: translateY(-1px); }
+  .topbar-nav-link:hover svg { opacity: 1; transform: scale(1.08); }
+  .topbar-nav-link.active { background: var(--yellow); color: var(--navy); }
+  .query-hub-link { background: linear-gradient(135deg, rgba(167,139,250,.14), rgba(124,58,237,.08)) !important; border: 1px solid rgba(167,139,250,.22) !important; color: #c4b5fd !important; }
+  .query-hub-link svg { color: #c4b5fd; opacity: .9 !important; }
+  .query-hub-link:hover { background: linear-gradient(135deg, rgba(167,139,250,.24), rgba(124,58,237,.16)) !important; border-color: rgba(167,139,250,.45) !important; color: #ddd6fe !important; }
+  .qh-arrow { display: inline-block; font-size: 11px; transition: transform .2s; opacity: .8; }
+  .topbar-dropdown { position: relative; }
+  .topbar-dropdown-btn { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; font-family: var(--font); font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6); background: transparent; border: 1px solid transparent; border-radius: 8px; cursor: pointer; transition: all .22s; letter-spacing: -.1px; }
+  .topbar-dropdown-btn svg { width: 14px; height: 14px; opacity: .55; transition: opacity .2s, transform .2s; }
+  .topbar-dropdown-btn .chevron { font-size: 9px; opacity: .6; transition: transform .2s; }
+  .topbar-dropdown-btn:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.95); transform: translateY(-1px); }
+  .topbar-dropdown-btn:hover svg { opacity: 1; transform: scale(1.08); }
+  .topbar-dropdown-btn.open { background: rgba(255,230,0,.1); color: var(--yellow); border-color: rgba(255,230,0,.25); }
+  .topbar-dropdown-btn.open .chevron { transform: rotate(180deg); opacity: 1; }
+  .topbar-dropdown-btn.active-link { color: var(--yellow) !important; background: rgba(255,230,0,.08) !important; }
+  .topbar-dropdown-menu { position: absolute; top: calc(100% + 8px); right: 0; min-width: 210px; background: #14182A; border: 1px solid rgba(255,230,0,.15); border-radius: 11px; padding: 5px; box-shadow: 0 12px 32px rgba(0,0,0,.4); opacity: 0; transform: translateY(-6px); pointer-events: none; transition: all .22s; z-index: 200; }
+  .topbar-dropdown-menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  a.topbar-dropdown-item:link, a.topbar-dropdown-item:visited { color: rgba(255,255,255,.75); text-decoration: none; }
+  a.topbar-dropdown-item:hover { color: var(--yellow); }
+  a.topbar-dropdown-item.active-link { color: var(--yellow) !important; background: rgba(255,230,0,.1) !important; }
+  .topbar-dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 15px; font-size: 11.5px; font-weight: 600; white-space: nowrap; border-radius: 7px; }
+  .topbar-dropdown-item:hover { background: rgba(255,230,0,.08); }
+  .topbar-dropdown-item .item-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(255,255,255,.06); }
+  .clock-block { display: flex; flex-direction: column; align-items: flex-end; line-height: 1; gap: 2px; }
+  .clock-date { font-size: 10px; font-weight: 700; letter-spacing: .14em; color: rgba(255,255,255,.45); text-transform: uppercase; font-variant-numeric: tabular-nums; }
+  .clock-topbar { font-size: 13px; font-weight: 800; color: var(--yellow); font-variant-numeric: tabular-nums; letter-spacing: -.2px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .theme-btn { background: transparent; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; cursor: pointer; padding: 7px 10px; font-size: 14px; color: rgba(255,255,255,.7); transition: all .2s; }
+  .theme-btn:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.95); }
+
+  /* HEADER amarelo padrão */
+  .header { background: var(--yellow); padding: 24px 2rem; border-bottom: 1px solid rgba(0,0,0,.05); }
+  [data-theme="dark"] .header { background: linear-gradient(135deg, #FFE600 0%, #FFD600 100%); }
+  .header-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .header-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: .18em; color: var(--navy); opacity: .65; text-transform: uppercase; margin-bottom: 4px; }
+  .header-title { font-size: 28px; font-weight: 900; color: var(--navy); letter-spacing: -.8px; line-height: 1; }
+  .header-title-dot { color: rgba(26,26,46,.7); }
+  .header-sub { font-size: 12px; font-weight: 600; color: var(--navy); opacity: .7; margin-top: 4px; letter-spacing: -.1px; }
+  .header-info-card { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(26,26,46,.08); border-radius: 12px; }
+  .header-info-emoji { font-size: 22px; }
+  .header-info-text { display: flex; flex-direction: column; line-height: 1.2; }
+  .header-info-eyebrow { font-size: 9px; font-weight: 800; letter-spacing: .18em; color: var(--navy); opacity: .55; text-transform: uppercase; }
+  .header-info-name { font-size: 13px; font-weight: 800; color: var(--navy); margin-top: 2px; letter-spacing: -.2px; }
+  .header-info-hint { font-size: 10px; font-weight: 600; color: var(--navy); opacity: .55; margin-top: 1px; }
+
+  /* WRAPPER */
+  .wrapper { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+  /* SECTION (card padrão) */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 18px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    color: var(--text);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+
+  /* UPLOAD GRID — 3 caixas */
+  .upload-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .upload-card {
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    background: var(--bg);
+    position: relative;
+  }
+  [data-theme="dark"] .upload-card { background: rgba(255,255,255,.025); }
+  .upload-card:hover { border-color: var(--yellow); transform: translateY(-1px); }
+  .upload-card.has-file { border-style: solid; border-color: var(--green); background: rgba(0,166,80,.05); }
+  [data-theme="dark"] .upload-card.has-file { background: rgba(0,166,80,.1); }
+  .upload-card.has-file::after {
+    content: '✓';
+    position: absolute;
+    top: 8px; right: 10px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .upload-card-icon { font-size: 26px; margin-bottom: 6px; line-height: 1; }
+  .upload-card-type {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .upload-card.has-file .upload-card-type { color: var(--green); }
+  .upload-card-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -.2px;
+    margin-bottom: 3px;
+  }
+  .upload-card-fmt {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .upload-card-file {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--green);
+    margin-top: 6px;
+    word-break: break-all;
+    line-height: 1.3;
+  }
+  .upload-card input { display: none; }
+
+  /* BOTÃO PROCESSAR */
+  .process-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .btn {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: -.1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: var(--navy);
+    color: var(--yellow);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #2A2D44;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(26,26,46,.2);
+  }
+  .btn-primary:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--surface);
+    border-color: var(--text);
+  }
+  [data-theme="dark"] .btn-secondary { background: rgba(255,255,255,.05); }
+
+  /* RESULTADO */
+  #result-block { display: none; }
+  #result-block.show { display: block; }
+
+  /* KPI cards no estilo do exemplo (fundo escuro) */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .kpi-card {
+    background: linear-gradient(135deg, #1F2230 0%, #14172B 100%);
+    color: #fff;
+    padding: 18px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.06);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0,0,0,.18);
+  }
+  .kpi-card-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,.7);
+    margin-bottom: 6px;
+    letter-spacing: -.1px;
+  }
+  .kpi-card-pct {
+    font-size: 32px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -1.2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-card-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,.55);
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* BAR CHART horizontal */
+  .chart-block {
+    background: linear-gradient(135deg, #1F2230 0%, #14172B 100%);
+    border-radius: 14px;
+    padding: 28px 32px;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.06);
+    margin-bottom: 18px;
+  }
+  .chart-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .18em;
+    color: rgba(255,255,255,.55);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .chart-row:last-child { margin-bottom: 4px; }
+  .chart-row-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255,255,255,.92);
+    text-align: right;
+  }
+  .chart-row-bar-wrap { position: relative; height: 18px; background: rgba(255,255,255,.05); border-radius: 10px; overflow: hidden; }
+  .chart-row-bar {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 10px;
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+    min-width: 6px;
+  }
+  .chart-row-bar.van { background: var(--blue); }
+  .chart-row-bar.vuc { background: #34D399; }
+  .chart-row-bar.util { background: var(--amber); }
+  .chart-row-bar.passeio { background: var(--red); }
+  .chart-row-bar.outro { background: var(--purple); }
+  .chart-row-val {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
+    font-variant-numeric: tabular-nums;
+  }
+  .chart-axis {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 16px;
+    margin-top: 6px;
+  }
+  .chart-axis-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(255,255,255,.45);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  /* SUMMARY card */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .summary-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  [data-theme="dark"] .summary-card { background: rgba(255,255,255,.025); }
+  .summary-label {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .summary-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.6px;
+    line-height: 1;
+  }
+  .summary-meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .summary-insight {
+    grid-column: 1 / -1;
+    background: rgba(245,158,11,.08);
+    border: 1px solid rgba(245,158,11,.25);
+    color: var(--text);
+  }
+  .summary-insight .summary-label { color: var(--amber); }
+  .summary-insight-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+    letter-spacing: -.1px;
+  }
+
+  /* EMPTY state */
+  .fun-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+  }
+  .fun-empty-emoji { font-size: 48px; line-height: 1; margin-bottom: 12px; }
+  .fun-empty-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+  .fun-empty-sub { font-size: 12.5px; font-weight: 500; }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .upload-grid { grid-template-columns: 1fr; }
+    .chart-block { padding: 20px 18px; }
+    .chart-row { grid-template-columns: 80px 1fr; gap: 10px; }
+    .chart-row-label { font-size: 12px; }
+    .chart-axis { grid-template-columns: 80px 1fr; gap: 10px; }
+  }
+  @media (max-width: 768px) {
+    .topbar { padding: 0 1rem; gap: 8px; }
+    .status-text, .topbar-vsep, .online-cluster, .clock-block { display: none; }
+    .topbar-nav { padding: 2px; gap: 2px; }
+    .topbar-nav-link, .topbar-dropdown-btn { padding: 6px 9px; font-size: 11px; }
+    .topbar-nav-link span:not(.qh-arrow), .topbar-dropdown-btn span:not(.chevron) { display: none; }
+    .qh-arrow { display: inline-block !important; }
+    .header { padding: 18px 1rem; }
+    .header-title { font-size: 22px; }
+    .wrapper { padding: 1rem; }
+    .section { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-status">
+      <span class="status-dot-live"></span>
+      <span class="status-text">TRANSPORTES <span class="status-sep">/</span> <span>SSP·20</span></span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="online-cluster">
+      <div class="online-badge" title="Sistema online"><div class="online-dot"></div></div>
+    </div>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+        <span>Hub</span>
+      </a>
+      <a href="rotina.html" class="topbar-nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l2 2 4-4"/><path d="M3 7l2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>
+        <span>Rotina</span>
+      </a>
+      <a href="madrugadao.html" class="topbar-nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3a2 2 0 0 0 2 2h1"/><path d="M12 7v3a2 2 0 0 1-2 2H9"/><path d="M9 14v3"/><path d="M15 14v3"/></svg>
+        <span>Organograma</span>
+      </a>
+      <div class="topbar-dropdown">
+        <button class="topbar-dropdown-btn" id="reports-btn" onclick="toggleReportsMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></svg>
+          <span>Reports</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div class="topbar-dropdown-menu" id="reports-menu">
+          <a href="analise-ops.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#60a5fa;"></span>
+            <span>Descont.</span>
+          </a>
+          <a href="dit-report.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#f0b429;"></span>
+            <span>DIT Report</span>
+          </a>
+          <a href="orh.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#a78bfa;"></span>
+            <span>ORH</span>
+          </a>
+          <a href="comparativo.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#a78bfa;"></span>
+            <span>Comparativo SSPs</span>
+          </a>
+        </div>
+      </div>
+      <div class="topbar-dropdown">
+        <button class="topbar-dropdown-btn active-link" id="resources-btn" onclick="toggleResourcesMenu()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span>Recursos</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div class="topbar-dropdown-menu" id="resources-menu">
+          <a href="cidades.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#16a34a;"></span>
+            <span>Cidades por Rota</span>
+          </a>
+          <a href="produtos.html" class="topbar-dropdown-item">
+            <span class="item-dot" style="background:#f59e0b;"></span>
+            <span>Resumo de produtos</span>
+          </a>
+          <a href="volumosos.html" class="topbar-dropdown-item active-link">
+            <span class="item-dot" style="background:#3483FA;"></span>
+            <span>Volumosos por Ciclo</span>
+          </a>
+        </div>
+      </div>
+      <a href="https://melissp20.github.io/MeliSSP20/" target="_blank" class="topbar-nav-link query-hub-link">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>Query Hub</span>
+        <span class="qh-arrow">↗</span>
+      </a>
+    </nav>
+    <div class="topbar-vsep"></div>
+    <div class="clock-block">
+      <span class="clock-date" id="clock-date">—</span>
+      <span class="clock-topbar" id="live-clock">00:00:00</span>
+    </div>
+    <button class="theme-btn" id="theme-btn">🌙</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> LAST MILE <span style="margin:0 7px;opacity:.45;">·</span> ALOCAÇÃO</div>
+      <div class="header-title">Volumosos por Ciclo<span class="header-title-dot">.</span></div>
+      <div class="header-sub">Cruza Planification × Consolidar × Geral para identificar veículo dos pacotes volumosos</div>
+    </div>
+    <div class="header-info-card">
+      <span class="header-info-emoji">📦</span>
+      <span class="header-info-text">
+        <span class="header-info-eyebrow">FONTES</span>
+        <span class="header-info-name">3 arquivos</span>
+        <span class="header-info-hint">Planification · Consolidar · Geral</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <!-- UPLOAD -->
+  <div class="section">
+    <div class="section-title">📥 Importar arquivos do ciclo</div>
+    <div class="section-sub">Envie os 3 arquivos abaixo para fazer o cruzamento. Aceita CSV (Planification) e Excel (Consolidar/Geral).</div>
+
+    <div class="upload-grid">
+      <label class="upload-card" id="card-plan">
+        <input type="file" id="file-plan" accept=".csv"/>
+        <div class="upload-card-icon">📋</div>
+        <div class="upload-card-type">ARQUIVO 1</div>
+        <div class="upload-card-name">Planification</div>
+        <div class="upload-card-fmt">.csv · contém merchant_type</div>
+        <div class="upload-card-file" id="file-plan-name"></div>
+      </label>
+
+      <label class="upload-card" id="card-cons">
+        <input type="file" id="file-cons" accept=".xlsx,.xls"/>
+        <div class="upload-card-icon">🗂️</div>
+        <div class="upload-card-type">ARQUIVO 2</div>
+        <div class="upload-card-name">Consolidar</div>
+        <div class="upload-card-fmt">.xlsx · contém Rota Otimizada</div>
+        <div class="upload-card-file" id="file-cons-name"></div>
+      </label>
+
+      <label class="upload-card" id="card-ger">
+        <input type="file" id="file-ger" accept=".xlsx,.xls"/>
+        <div class="upload-card-icon">🚛</div>
+        <div class="upload-card-type">ARQUIVO 3</div>
+        <div class="upload-card-name">Geral</div>
+        <div class="upload-card-fmt">.xlsx · contém OTI e MODAL</div>
+        <div class="upload-card-file" id="file-ger-name"></div>
+      </label>
+    </div>
+
+    <div class="process-row">
+      <button class="btn btn-primary" id="btn-process" disabled onclick="processFiles()">
+        <span>⚡</span>
+        <span>Analisar volumosos</span>
+      </button>
+      <button class="btn btn-secondary" id="btn-clear" onclick="clearAll()">
+        🗑️ Limpar
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="result-block">
+    <!-- KPIs -->
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <!-- Gráfico de barras -->
+    <div class="chart-block" id="chart-block"></div>
+
+    <!-- Summary -->
+    <div class="section">
+      <div class="section-title">📊 Resumo do ciclo</div>
+      <div class="section-sub">Quantos pacotes em cada etapa do funil + insight de alocação.</div>
+      <div class="summary-grid" id="summary-grid"></div>
+
+      <div class="process-row" style="margin-top: 18px;">
+        <button class="btn btn-secondary" onclick="copyResult()">📋 Copiar resultado</button>
+        <button class="btn btn-secondary" onclick="downloadCsv()">💾 Baixar CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state inicial -->
+  <div class="section" id="empty-state">
+    <div class="fun-empty">
+      <div class="fun-empty-emoji">📦</div>
+      <div class="fun-empty-title">Sem análise ainda</div>
+      <div class="fun-empty-sub">Importa os 3 arquivos do ciclo acima e clica em <b>Analisar volumosos</b>.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Theme toggle ──
+const htmlEl = document.documentElement;
+const themeBtn = document.getElementById('theme-btn');
+const savedTheme = localStorage.getItem('theme') || 'light';
+htmlEl.setAttribute('data-theme', savedTheme);
+themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+themeBtn.addEventListener('click', () => {
+  const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  htmlEl.setAttribute('data-theme', next);
+  themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', next);
+});
+
+// ── Dropdowns ──
+function toggleReportsMenu() {
+  document.getElementById('reports-btn').classList.toggle('open');
+  document.getElementById('reports-menu').classList.toggle('open');
+}
+function toggleResourcesMenu() {
+  document.getElementById('resources-btn').classList.toggle('open');
+  document.getElementById('resources-menu').classList.toggle('open');
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.topbar-dropdown')) {
+    ['reports','resources'].forEach(id => {
+      document.getElementById(id + '-btn')?.classList.remove('open');
+      document.getElementById(id + '-menu')?.classList.remove('open');
+    });
+  }
+});
+
+// ── Clock ──
+function updateClock() {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const ss = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('live-clock').textContent = `${hh}:${mm}:${ss}`;
+  const days = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+  const months = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  document.getElementById('clock-date').textContent = `${days[now.getDay()]} ${String(now.getDate()).padStart(2,'0')} ${months[now.getMonth()]}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── State ──
+const files = { plan: null, cons: null, ger: null };
+let lastResult = null;
+
+// ── Upload handlers ──
+function setupUpload(inputId, cardId, fileNameId, key) {
+  const input = document.getElementById(inputId);
+  const card = document.getElementById(cardId);
+  const fileName = document.getElementById(fileNameId);
+  input.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    files[key] = f;
+    card.classList.add('has-file');
+    fileName.textContent = f.name;
+    updateProcessBtn();
+  });
+}
+setupUpload('file-plan', 'card-plan', 'file-plan-name', 'plan');
+setupUpload('file-cons', 'card-cons', 'file-cons-name', 'cons');
+setupUpload('file-ger', 'card-ger', 'file-ger-name', 'ger');
+
+function updateProcessBtn() {
+  const btn = document.getElementById('btn-process');
+  btn.disabled = !(files.plan && files.cons && files.ger);
+}
+
+// ── CSV parser ──
+function parseCSV(text) {
+  // Detecta separador (vírgula, ponto-e-vírgula ou tab)
+  const firstLine = text.split('\n')[0];
+  let sep = ',';
+  if (firstLine.split(';').length > firstLine.split(',').length) sep = ';';
+  if (firstLine.split('\t').length > firstLine.split(sep).length) sep = '\t';
+
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const headers = parseLine(lines[0], sep).map(h => h.trim());
+  return lines.slice(1).map(line => {
+    const cols = parseLine(line, sep);
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (cols[i] ?? '').trim(); });
+    return obj;
+  });
+}
+function parseLine(line, sep) {
+  const result = [];
+  let cur = '', inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
+      else inQuote = !inQuote;
+    } else if (c === sep && !inQuote) {
+      result.push(cur);
+      cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+
+// ── Excel reader (SheetJS) ──
+async function readExcel(file) {
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, { type: 'array' });
+  // pega a primeira sheet
+  const firstSheet = wb.SheetNames[0];
+  const ws = wb.Sheets[firstSheet];
+  // converte para JSON com headers
+  return XLSX.utils.sheet_to_json(ws, { defval: '' });
+}
+
+async function readCSV(file) {
+  const text = await file.text();
+  return parseCSV(text);
+}
+
+// ── Helpers de coluna (case-insensitive, tolerância a variações) ──
+function findCol(row, candidates) {
+  if (!row) return null;
+  const keys = Object.keys(row);
+  for (const cand of candidates) {
+    const candLower = cand.toLowerCase().trim();
+    const exact = keys.find(k => k.toLowerCase().trim() === candLower);
+    if (exact) return exact;
+  }
+  // tentativa parcial
+  for (const cand of candidates) {
+    const candLower = cand.toLowerCase().trim();
+    const partial = keys.find(k => k.toLowerCase().trim().includes(candLower));
+    if (partial) return partial;
+  }
+  return null;
+}
+
+// ── Categorização do MODAL ──
+function categorize(modal) {
+  const x = (modal || '').toString().toLowerCase();
+  if (x.includes('vuc'))      return 'VUC';
+  if (x.includes('van'))      return 'Van';
+  if (x.includes('utilit'))   return 'Utilitário';
+  if (x.includes('passeio'))  return 'Passeio';
+  return 'Outro';
+}
+
+const CAT_CLASS = {
+  'Van': 'van',
+  'VUC': 'vuc',
+  'Utilitário': 'util',
+  'Passeio': 'passeio',
+  'Outro': 'outro',
+};
+
+// ── PROCESSAR ──
+async function processFiles() {
+  const btn = document.getElementById('btn-process');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span><span>Processando…</span>';
+
+  try {
+    // 1. Planification (CSV)
+    const planRows = await readCSV(files.plan);
+    if (planRows.length === 0) throw new Error('Planification vazio ou inválido');
+
+    const colUnit = findCol(planRows[0], ['unit_id','unitId','unit id','id']);
+    const colMerchant = findCol(planRows[0], ['merchant_type','merchantType','merchant type']);
+    const colVol = findCol(planRows[0], ['volume','vol']);
+
+    if (!colUnit) throw new Error('Coluna unit_id não encontrada no Planification');
+    if (!colMerchant) throw new Error('Coluna merchant_type não encontrada no Planification');
+
+    // Filtrar voluminous/bulky
+    const volumosos = planRows.filter(r => {
+      const mt = (r[colMerchant] || '').toString().toLowerCase().trim();
+      return mt === 'voluminous' || mt === 'bulky';
+    }).map(r => ({
+      unit_id: (r[colUnit] || '').toString().trim(),
+      volume: colVol ? parseFloat((r[colVol] || '').toString().replace(',','.')) : null,
+    })).filter(r => r.unit_id);
+
+    if (volumosos.length === 0) throw new Error('Nenhum pacote voluminous/bulky encontrado no Planification');
+
+    // 2. Consolidar (Excel)
+    const consRows = await readExcel(files.cons);
+    if (consRows.length === 0) throw new Error('Consolidar vazio');
+
+    const colConsUnit = findCol(consRows[0], ['unit_id','unitId','unit id','id']);
+    const colRota = findCol(consRows[0], ['Rota Otimizada','rota otimizada','Rota_Otimizada','RotaOtimizada','rota']);
+
+    if (!colConsUnit) throw new Error('Coluna unit_id não encontrada no Consolidar');
+    if (!colRota) throw new Error('Coluna "Rota Otimizada" não encontrada no Consolidar');
+
+    // Map unit_id → rota (dedup por unit_id, mantendo o primeiro com rota preenchida)
+    const rotaMap = new Map();
+    for (const r of consRows) {
+      const uid = (r[colConsUnit] || '').toString().trim();
+      const rota = (r[colRota] || '').toString().trim();
+      if (uid && rota && !rotaMap.has(uid)) rotaMap.set(uid, rota);
+    }
+
+    // 3. Geral (Excel)
+    const gerRows = await readExcel(files.ger);
+    if (gerRows.length === 0) throw new Error('Geral vazio');
+
+    const colOTI = findCol(gerRows[0], ['OTI','oti']);
+    const colMODAL = findCol(gerRows[0], ['MODAL','modal']);
+
+    if (!colOTI) throw new Error('Coluna OTI não encontrada no Geral');
+    if (!colMODAL) throw new Error('Coluna MODAL não encontrada no Geral');
+
+    const modalMap = new Map();
+    for (const r of gerRows) {
+      const oti = (r[colOTI] || '').toString().trim();
+      const modal = (r[colMODAL] || '').toString().trim();
+      if (oti && modal && !modalMap.has(oti)) modalMap.set(oti, modal);
+    }
+
+    // 4. Cruzar
+    const enriched = volumosos.map(v => {
+      const rota = rotaMap.get(v.unit_id) || null;
+      const modal = rota ? (modalMap.get(rota) || null) : null;
+      return {
+        unit_id: v.unit_id,
+        volume: v.volume,
+        rota: rota,
+        modal: modal,
+        cat: modal ? categorize(modal) : null,
+      };
+    });
+
+    const semRota = enriched.filter(e => !e.rota).length;
+    const semModal = enriched.filter(e => e.rota && !e.modal).length;
+    const comModal = enriched.filter(e => e.modal);
+
+    // 5. Contar por categoria
+    const catCount = {};
+    for (const e of comModal) {
+      catCount[e.cat] = (catCount[e.cat] || 0) + 1;
+    }
+
+    const ordering = ['Van','VUC','Utilitário','Passeio','Outro'];
+    const sorted = ordering
+      .filter(c => catCount[c])
+      .map(c => ({ cat: c, count: catCount[c] }));
+
+    const totalComModal = comModal.length;
+
+    lastResult = {
+      totalPlanificacao: planRows.length,
+      totalVolumosos: volumosos.length,
+      totalComRota: enriched.filter(e => e.rota).length,
+      totalComModal: totalComModal,
+      semRota,
+      semModal,
+      categorias: sorted.map(s => ({
+        ...s,
+        pct: totalComModal > 0 ? (s.count / totalComModal * 100) : 0,
+      })),
+      timestamp: new Date(),
+    };
+
+    renderResult();
+    if (window.toast) toast(`Analisados ${totalComModal.toLocaleString('pt-BR')} pacotes volumosos`, 'success');
+
+  } catch (err) {
+    if (window.toast) toast('Erro: ' + err.message, 'error');
+    else alert('Erro: ' + err.message);
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>⚡</span><span>Analisar volumosos</span>';
+  }
+}
+
+// ── RENDER ──
+function renderResult() {
+  if (!lastResult) return;
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('result-block').classList.add('show');
+
+  // KPI cards
+  const kpiGrid = document.getElementById('kpi-grid');
+  kpiGrid.innerHTML = lastResult.categorias.map(c => `
+    <div class="kpi-card">
+      <div class="kpi-card-label">${c.cat}</div>
+      <div class="kpi-card-pct">${c.pct.toFixed(1).replace('.',',')}%</div>
+      <div class="kpi-card-count">${c.count.toLocaleString('pt-BR')} IDs</div>
+    </div>
+  `).join('');
+
+  // Chart
+  const maxPct = Math.max(...lastResult.categorias.map(c => c.pct), 1);
+  const axisMax = Math.ceil(maxPct / 10) * 10;
+  const chartBlock = document.getElementById('chart-block');
+  chartBlock.innerHTML = `
+    <div class="chart-title">Distribuição de volumosos por tipo de veículo</div>
+    ${lastResult.categorias.map(c => `
+      <div class="chart-row">
+        <div class="chart-row-label">${c.cat}</div>
+        <div class="chart-row-bar-wrap">
+          <div class="chart-row-bar ${CAT_CLASS[c.cat] || 'outro'}" style="width: ${(c.pct / axisMax * 100).toFixed(1)}%;"></div>
+          <span class="chart-row-val">${c.pct.toFixed(1).replace('.',',')}%</span>
+        </div>
+      </div>
+    `).join('')}
+    <div class="chart-axis">
+      <div></div>
+      <div class="chart-axis-ticks">
+        <span>0%</span>
+        <span>${Math.round(axisMax * .25)}%</span>
+        <span>${Math.round(axisMax * .5)}%</span>
+        <span>${Math.round(axisMax * .75)}%</span>
+        <span>${axisMax}%</span>
+      </div>
+    </div>
+  `;
+
+  // Summary
+  const summaryGrid = document.getElementById('summary-grid');
+  const passeioCat = lastResult.categorias.find(c => c.cat === 'Passeio');
+  const passeioWarn = passeioCat && passeioCat.count > 0;
+
+  summaryGrid.innerHTML = `
+    <div class="summary-card">
+      <div class="summary-label">Planification</div>
+      <div class="summary-value">${lastResult.totalPlanificacao.toLocaleString('pt-BR')}</div>
+      <div class="summary-meta">Total de IDs no arquivo</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Volumosos identificados</div>
+      <div class="summary-value">${lastResult.totalVolumosos.toLocaleString('pt-BR')}</div>
+      <div class="summary-meta">voluminous + bulky</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Com rota encontrada</div>
+      <div class="summary-value">${lastResult.totalComRota.toLocaleString('pt-BR')}</div>
+      <div class="summary-meta">${lastResult.semRota} sem rota</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Com veículo</div>
+      <div class="summary-value">${lastResult.totalComModal.toLocaleString('pt-BR')}</div>
+      <div class="summary-meta">${lastResult.semModal} sem MODAL no Geral</div>
+    </div>
+    ${passeioWarn ? `
+      <div class="summary-card summary-insight">
+        <div class="summary-label">⚠️ Atenção</div>
+        <div class="summary-insight-text">
+          <b>${passeioCat.count} pacotes volumosos</b> foram alocados em veículos de <b>Passeio</b> (${passeioCat.pct.toFixed(1).replace('.',',')}% do total).
+          Vale revisar a roteirização — esses pacotes podem não caber ou sobrecarregar o carro.
+        </div>
+      </div>
+    ` : ''}
+  `;
+
+  // Scroll suave pro resultado
+  document.getElementById('result-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Limpar ──
+function clearAll() {
+  files.plan = files.cons = files.ger = null;
+  ['plan','cons','ger'].forEach(k => {
+    document.getElementById('file-' + k).value = '';
+    document.getElementById('card-' + k).classList.remove('has-file');
+    document.getElementById('file-' + k + '-name').textContent = '';
+  });
+  updateProcessBtn();
+  lastResult = null;
+  document.getElementById('result-block').classList.remove('show');
+  document.getElementById('empty-state').style.display = '';
+  if (window.toast) toast('Limpo', 'info');
+}
+
+// ── Copiar resultado ──
+function copyResult() {
+  if (!lastResult) return;
+  let txt = '📦 VOLUMOSOS POR CICLO\n';
+  txt += `Gerado em ${lastResult.timestamp.toLocaleString('pt-BR')}\n\n`;
+  txt += `Planification: ${lastResult.totalPlanificacao.toLocaleString('pt-BR')} IDs\n`;
+  txt += `Volumosos: ${lastResult.totalVolumosos.toLocaleString('pt-BR')} (voluminous + bulky)\n`;
+  txt += `Com rota: ${lastResult.totalComRota.toLocaleString('pt-BR')} (${lastResult.semRota} sem rota)\n`;
+  txt += `Com veículo: ${lastResult.totalComModal.toLocaleString('pt-BR')} (${lastResult.semModal} sem MODAL)\n\n`;
+  txt += 'DISTRIBUIÇÃO POR VEÍCULO:\n';
+  for (const c of lastResult.categorias) {
+    txt += `${c.cat.padEnd(12)} ${c.count.toString().padStart(5)} IDs   ${c.pct.toFixed(1).replace('.',',')}%\n`;
+  }
+  navigator.clipboard.writeText(txt).then(() => {
+    if (window.toast) toast('Resultado copiado', 'copy');
+  });
+}
+
+// ── Baixar CSV ──
+function downloadCsv() {
+  if (!lastResult) return;
+  let csv = 'Categoria;Quantidade;Percentual\n';
+  for (const c of lastResult.categorias) {
+    csv += `${c.cat};${c.count};${c.pct.toFixed(2).replace('.',',')}%\n`;
+  }
+  csv += `\nTotal;${lastResult.totalComModal};100,00%\n`;
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const dateStr = lastResult.timestamp.toISOString().slice(0,10);
+  a.download = `volumosos_por_ciclo_${dateStr}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  if (window.toast) toast('CSV baixado', 'success');
+}
+</script>
+
+</body>
+</html>
