@@ -428,6 +428,521 @@
       .tl-avatar img { width: 30px; height: 30px; }
       .tl-name { font-size: 16px; }
     }
+    /* ─── ORGANOGRAMA — REPAGINADO ─── */
+    .header-title-dot { color: var(--yellow); }
+
+    /* KPI Strip */
+    .org-kpis {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .org-kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .org-kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,26,46,.08); }
+    .org-kpi-val {
+      font-size: 36px; font-weight: 900;
+      color: var(--text);
+      letter-spacing: -1.5px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .org-kpi-lbl {
+      font-size: 11px; font-weight: 800;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-top: 8px;
+    }
+    .org-kpi-foot {
+      font-size: 10.5px; font-weight: 600;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: -.1px;
+    }
+    .org-kpi-accent {
+      background: linear-gradient(135deg, var(--navy) 0%, #2A2D44 100%);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    .org-kpi-accent .org-kpi-val { color: var(--yellow); }
+    .org-kpi-accent .org-kpi-lbl { color: rgba(255,255,255,.95); }
+    .org-kpi-accent .org-kpi-foot { color: rgba(255,255,255,.55); }
+    [data-theme="dark"] .org-kpi-accent { background: linear-gradient(135deg, #14172B 0%, #1F2240 100%); }
+
+    /* View Switcher */
+    .view-switcher {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .view-switcher-label {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .14em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .view-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .view-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 14px;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .view-pill:hover { color: var(--text); background: rgba(0,0,0,.03); }
+    [data-theme="dark"] .view-pill:hover { background: rgba(255,255,255,.04); }
+    .view-pill.active {
+      background: var(--navy);
+      color: var(--yellow);
+      border-color: var(--navy);
+    }
+    [data-theme="dark"] .view-pill.active {
+      background: var(--yellow);
+      color: var(--navy);
+      border-color: var(--yellow);
+    }
+    .view-pill-icon { font-size: 14px; line-height: 1; }
+
+    /* Leadership View — TL hero card */
+    .tl-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tl-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--yellow) 0%, transparent 100%);
+    }
+    .tl-section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .tl-section-info { display: flex; align-items: center; gap: 14px; }
+    .tl-section-avatar {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--yellow) 0%, #F5C800 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 16px rgba(255,230,0,.25);
+      flex-shrink: 0;
+    }
+    .tl-section-avatar img { width: 32px; height: 32px; }
+    .tl-section-text { display: flex; flex-direction: column; gap: 2px; }
+    .tl-section-eyebrow {
+      font-size: 9.5px; font-weight: 800;
+      letter-spacing: .18em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .tl-section-name {
+      font-size: 22px; font-weight: 900;
+      color: var(--text);
+      letter-spacing: -.5px;
+      line-height: 1.1;
+    }
+    .tl-section-meta {
+      font-size: 12px; font-weight: 600;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: -.1px;
+    }
+    .tl-section-stats {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .tl-stat {
+      background: rgba(255,230,0,.1);
+      border: 1px solid rgba(255,230,0,.3);
+      border-radius: 10px;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tl-stat-val {
+      font-size: 18px; font-weight: 900;
+      color: var(--text);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .tl-stat-lbl {
+      font-size: 9px; font-weight: 800;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* Shift groups inside TL section */
+    .shift-group {
+      margin-bottom: 18px;
+    }
+    .shift-group:last-child { margin-bottom: 0; }
+    .shift-group-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .shift-group-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+    .shift-group-pill.madrugada { background: rgba(26,26,46,.08); color: var(--navy); }
+    [data-theme="dark"] .shift-group-pill.madrugada { background: rgba(255,255,255,.08); color: rgba(255,255,255,.8); }
+    .shift-group-pill.am { background: rgba(245,158,11,.12); color: #B45309; }
+    [data-theme="dark"] .shift-group-pill.am { background: rgba(245,158,11,.16); color: #FCD34D; }
+    .shift-group-pill.pm { background: rgba(124,58,237,.1); color: var(--purple); }
+    [data-theme="dark"] .shift-group-pill.pm { background: rgba(124,58,237,.16); color: #C4B5FD; }
+    .shift-group-pill.sd { background: rgba(0,166,80,.1); color: #047857; }
+    [data-theme="dark"] .shift-group-pill.sd { background: rgba(0,166,80,.16); color: #4ADE80; }
+    .shift-group-count {
+      font-size: 11px; font-weight: 700;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .shift-group-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Member cards (new design) */
+    .member-grid-new {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .member-card-new {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      transition: all .2s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    [data-theme="dark"] .member-card-new { background: rgba(255,255,255,.025); }
+    .member-card-new::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--member-color, var(--yellow));
+      opacity: .8;
+    }
+    .member-card-new:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(26,26,46,.06);
+      border-color: var(--member-color, var(--border));
+    }
+    .member-card-new.madrugada { --member-color: var(--navy); }
+    [data-theme="dark"] .member-card-new.madrugada { --member-color: var(--yellow); }
+    .member-card-new.am { --member-color: #F59E0B; }
+    .member-card-new.pm { --member-color: var(--purple); }
+    .member-card-new.sd { --member-color: var(--green); }
+
+    .member-card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .member-card-avatar {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--member-color, var(--navy));
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: -.5px;
+      flex-shrink: 0;
+    }
+    .member-card-info { flex: 1; min-width: 0; }
+    .member-card-name-new {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.2px;
+      line-height: 1.2;
+    }
+    .member-card-role-new {
+      font-size: 10.5px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 1px;
+      letter-spacing: -.1px;
+    }
+    .member-card-focal {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: var(--member-color, var(--navy));
+      background: var(--surface);
+      padding: 5px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    [data-theme="dark"] .member-card-focal { background: rgba(255,255,255,.04); }
+    .member-card-badge {
+      font-size: 9px; font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: rgba(0,0,0,.05);
+      color: var(--muted);
+    }
+    [data-theme="dark"] .member-card-badge { background: rgba(255,255,255,.05); }
+    .member-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .member-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 5px;
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      letter-spacing: -.1px;
+    }
+    [data-theme="dark"] .member-tag { background: rgba(255,255,255,.03); }
+    .member-card-ssp51 {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      color: var(--yellow);
+      background: var(--navy);
+      padding: 3px 7px;
+      border-radius: 5px;
+    }
+
+    /* Shift View */
+    .shift-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .shift-column {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .shift-column::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--shift-color, var(--yellow));
+    }
+    .shift-column.madrugada { --shift-color: var(--navy); }
+    [data-theme="dark"] .shift-column.madrugada { --shift-color: var(--yellow); }
+    .shift-column.am { --shift-color: #F59E0B; }
+    .shift-column.pm { --shift-color: var(--purple); }
+    .shift-column.sd { --shift-color: var(--green); }
+    .shift-column-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .shift-column-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -.4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .shift-column-count {
+      background: var(--shift-color, var(--yellow));
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: .04em;
+    }
+    .shift-column.madrugada .shift-column-count { color: var(--yellow); }
+    [data-theme="dark"] .shift-column.madrugada .shift-column-count { color: var(--navy); }
+    .shift-column-hours {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: -.1px;
+      margin-bottom: 14px;
+      font-variant-numeric: tabular-nums;
+    }
+    .shift-column-members {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Focus View */
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .focus-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .focus-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--focus-color, var(--yellow));
+    }
+    .focus-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .focus-card-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -.3px;
+    }
+    .focus-card-count {
+      background: var(--focus-color, var(--yellow));
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 5px;
+      letter-spacing: .04em;
+    }
+    .focus-card-desc {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .focus-card-members {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .focus-member {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    [data-theme="dark"] .focus-member { background: rgba(255,255,255,.025); }
+    .focus-member-avatar {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: var(--focus-color, var(--navy));
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900;
+      font-size: 10px;
+      flex-shrink: 0;
+      letter-spacing: -.3px;
+    }
+    .focus-member-info { flex: 1; min-width: 0; }
+    .focus-member-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.2px;
+      line-height: 1.1;
+    }
+    .focus-member-meta {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .org-kpis { grid-template-columns: repeat(2, 1fr); }
+      .org-kpi-accent { grid-column: 1 / -1; }
+      .org-kpi-val { font-size: 28px; }
+      .tl-section { padding: 22px 18px; }
+      .tl-section-head { flex-direction: column; align-items: flex-start; }
+      .member-grid-new { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .view-switcher { padding: 10px; gap: 10px; }
+      .view-switcher-label { display: none; }
+      .view-pill { padding: 6px 11px; font-size: 11.5px; }
+      .view-pill span:not(.view-pill-icon) { display: none; }
+      .view-pill-icon { font-size: 16px; }
+      .tl-section-stats .tl-stat { padding: 6px 10px; }
+      .tl-stat-val { font-size: 14px; }
+      .tl-stat-lbl { font-size: 8.5px; }
+    }
   </style>
 </head>
 <body>
@@ -517,16 +1032,12 @@
   <div class="header-inner">
     <div class="brand-block">
       <div>
-        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> SSP·20</div>
-        <div class="header-title">Organograma <span>Operacional</span></div>
-        <div class="header-sub">Estrutura de times · Transportes Last Mile</div>
+        <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> LAST MILE <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 + SSP·51</div>
+        <div class="header-title">Organograma<span class="header-title-dot">.</span></div>
+        <div class="header-sub">Estrutura da operação · 2 lideranças · 8 OPS III · 4 turnos cobertos</div>
       </div>
     </div>
     <div class="header-actions">
-      <div class="team-stat">
-        <div class="team-stat-val">7</div>
-        <div class="team-stat-lbl">EQUIPE ATIVA</div>
-      </div>
       <button class="perf-card" onclick="openPwd()">
         <span class="perf-card-emoji">🏆</span>
         <span class="perf-card-text">
@@ -541,250 +1052,59 @@
 
 <div class="wrapper">
 
-  <!-- STATS -->
-  <div class="stats-strip">
-    <div class="stat-chip c-yellow">
-      <div class="stat-chip-head">
-        <div class="stat-chip-icon" style="background:#FFF5CC;color:#8A6200;">👥</div>
-        <div class="stat-chip-trend">EQUIPE</div>
-      </div>
-      <div class="stat-chip-val">5</div>
-      <div class="stat-chip-lbl">OPS III ativos</div>
+  <!-- KPI STRIP -->
+  <div class="org-kpis">
+    <div class="org-kpi">
+      <div class="org-kpi-val">8</div>
+      <div class="org-kpi-lbl">OPS III</div>
+      <div class="org-kpi-foot">Operacional</div>
     </div>
-    <div class="stat-chip c-blue">
-      <div class="stat-chip-head">
-        <div class="stat-chip-icon" style="background:#EBF2FE;color:var(--blue);">🌙</div>
-        <div class="stat-chip-trend">02:30 → 10:30</div>
-      </div>
-      <div class="stat-chip-val">2</div>
-      <div class="stat-chip-lbl">Madrugada</div>
+    <div class="org-kpi">
+      <div class="org-kpi-val">2</div>
+      <div class="org-kpi-lbl">Team Leaders</div>
+      <div class="org-kpi-foot">Lideranças</div>
     </div>
-    <div class="stat-chip c-purple">
-      <div class="stat-chip-head">
-        <div class="stat-chip-icon" style="background:#F3E8FF;color:var(--purple);">☀️</div>
-        <div class="stat-chip-trend">07:00 → 15:20</div>
-      </div>
-      <div class="stat-chip-val">3</div>
-      <div class="stat-chip-lbl">AM/PM</div>
+    <div class="org-kpi">
+      <div class="org-kpi-val">4</div>
+      <div class="org-kpi-lbl">Turnos</div>
+      <div class="org-kpi-foot">Madrugada · AM · PM · SD</div>
     </div>
-    <div class="stat-chip c-green">
-      <div class="stat-chip-head">
-        <div class="stat-chip-icon" style="background:#E8F8EF;color:var(--green);">🎯</div>
-        <div class="stat-chip-trend">LIDERANÇA</div>
-      </div>
-      <div class="stat-chip-val">2</div>
-      <div class="stat-chip-lbl">Team Leaders</div>
+    <div class="org-kpi">
+      <div class="org-kpi-val">2</div>
+      <div class="org-kpi-lbl">SSPs</div>
+      <div class="org-kpi-foot">SSP·20 + SSP·51</div>
+    </div>
+    <div class="org-kpi org-kpi-accent">
+      <div class="org-kpi-val">24/7</div>
+      <div class="org-kpi-lbl">Cobertura</div>
+      <div class="org-kpi-foot">100% da operação</div>
     </div>
   </div>
 
-  <!-- TEAM LEADERS -->
-  <div class="section-label">Team Leaders</div>
-  <div class="tl-row">
-
-    <div class="tl-card" id="tl-ml" onclick="toggleTeam('ml')">
-      <div class="tl-card-band"></div>
-      <div class="tl-card-body">
-        <div class="tl-avatar"><img src="rank-leader.png" alt="TL"/></div>
-        <div class="tl-info">
-          <div class="tl-role-top">TEAM LEADER</div>
-          <div class="tl-name">Matheus Logan</div>
-          <div class="tl-badges">
-            <span class="tl-badge shift-madrugada">Madrugada · AM/PM</span>
-            <span class="tl-badge team-count">5 OPS III</span>
-          </div>
-        </div>
-      </div>
-      <div class="tl-expand-hint" id="hint-ml">
-        <span>Ver equipe</span> <span class="tl-expand-chevron" id="chevron-ml">▾</span>
-      </div>
-    </div>
-
-    <div class="tl-card shift-am" id="tl-jg" onclick="toggleTeam('jg')">
-      <div class="tl-card-band"></div>
-      <div class="tl-card-body">
-        <div class="tl-avatar"><img src="rank-leader.png" alt="TL"/></div>
-        <div class="tl-info">
-          <div class="tl-role-top">TEAM LEADER</div>
-          <div class="tl-name">Juliana Godinho</div>
-          <div class="tl-badges">
-            <span class="tl-badge shift-am tl-badge-am-icon">Madrugada · SD</span>
-            <span class="tl-badge team-count">3 OPS III</span>
-          </div>
-        </div>
-      </div>
-      <div class="tl-expand-hint" id="hint-jg">
-        <span>Ver equipe</span> <span class="tl-expand-chevron" id="chevron-jg">▾</span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- TEAM ML -->
-  <div class="team-panel" id="panel-ml">
-    <div class="shift-block">
-      <div class="shift-header">
-        <span class="shift-pill madrugada">🌙 Madrugada</span>
-        <div class="shift-line"></div>
-      </div>
-      <div class="member-grid">
-        <div class="member-card">
-          <div class="member-card-top">
-            <div class="member-avatar">MC</div>
-            <div class="member-info">
-              <div class="member-name">Matheus Campos</div>
-              <div class="member-role">OPS III · Operações</div>
-            </div>
-            <span class="member-badge madrugada">Madrugada</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Focal XPT</div>
-            <div class="task-chip">Focal Calibrações ROUT</div>
-            <div class="task-chip">Rodízio semanal — distribuição</div>
-          </div>
-        </div>
-        <div class="member-card">
-          <div class="member-card-top">
-            <div class="member-avatar">GB</div>
-            <div class="member-info">
-              <div class="member-name">Gabriela</div>
-              <div class="member-role">OPS III · Operações</div>
-            </div>
-            <span class="member-badge madrugada">Madrugada</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Focal Telemetria</div>
-            <div class="task-chip">Rodízio semanal — distribuição</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="shift-block">
-      <div class="shift-header">
-        <span class="shift-pill am">☀️ AM/PM</span>
-        <div class="shift-line"></div>
-      </div>
-      <div class="member-grid">
-        <div class="member-card shift-am">
-          <div class="member-card-top">
-            <div class="member-avatar am">BC</div>
-            <div class="member-info">
-              <div class="member-name">Bruno Costa</div>
-              <div class="member-role">OPS III · Operações</div>
-            </div>
-            <span class="member-badge am">AM/PM</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Focal DIT</div>
-            <div class="task-chip">Suporte AM/PM</div>
-            <div class="task-chip">Rodízio distribuição semanal</div>
-          </div>
-        </div>
-        <div class="member-card shift-am">
-          <div class="member-card-top">
-            <div class="member-avatar am">BC</div>
-            <div class="member-info">
-              <div class="member-name">Bruno Cardoso</div>
-              <div class="member-role">OPS III · Operações</div>
-            </div>
-            <span class="member-badge am">AM/PM</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Focal Nodos</div>
-            <div class="task-chip">Suporte AM/PM</div>
-            <div class="task-chip">Rodízio distribuição semanal</div>
-          </div>
-        </div>
-        <div class="member-card shift-am">
-          <div class="member-card-top">
-            <div class="member-avatar am">BL</div>
-            <div class="member-info">
-              <div class="member-name">Bruna Larissa</div>
-              <div class="member-role">OPS III · Operações</div>
-            </div>
-            <span class="member-badge am">AM/PM</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Focal MEE</div>
-            <div class="task-chip">Rodízio distribuição semanal</div>
-          </div>
-        </div>
-      </div>
+  <!-- VIEW SWITCHER -->
+  <div class="view-switcher">
+    <div class="view-switcher-label">Visualização</div>
+    <div class="view-pills">
+      <button class="view-pill active" data-view="leadership" onclick="setView('leadership')">
+        <span class="view-pill-icon">👑</span>
+        <span>Por Liderança</span>
+      </button>
+      <button class="view-pill" data-view="shift" onclick="setView('shift')">
+        <span class="view-pill-icon">🕐</span>
+        <span>Por Turno</span>
+      </button>
+      <button class="view-pill" data-view="focus" onclick="setView('focus')">
+        <span class="view-pill-icon">🎯</span>
+        <span>Por Foco</span>
+      </button>
     </div>
   </div>
 
-  <!-- TEAM JG -->
-  <div class="team-panel" id="panel-jg">
-    <div class="shift-block">
-      <div class="shift-header">
-        <span class="shift-pill madrugada">🌙 Madrugada</span>
-        <div class="shift-line"></div>
-      </div>
-      <div class="member-grid">
-        <div class="member-card">
-          <div class="member-card-top">
-            <div class="member-avatar">EA</div>
-            <div class="member-info">
-              <div class="member-name">Everton Adriano</div>
-              <div class="member-role">OPS III · Operações <span style="color:var(--yellow);font-weight:800;">· SSP51</span></div>
-            </div>
-            <span class="member-badge madrugada">Madrugada</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Focal Telemetria</div>
-            <div class="task-chip">SSP51 — Sorocaba</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="shift-block">
-      <div class="shift-header">
-        <span class="shift-pill am">🌅 SD</span>
-        <div class="shift-line"></div>
-      </div>
-      <div class="member-grid">
-        <div class="member-card shift-am">
-          <div class="member-card-top">
-            <div class="member-avatar am">CL</div>
-            <div class="member-info">
-              <div class="member-name">Caio Leme</div>
-              <div class="member-role">OPS III · Operações</div>
-            </div>
-            <span class="member-badge am">SD</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Suporte SD</div>
-            <div class="task-chip">Rodízio distribuição semanal</div>
-          </div>
-        </div>
-        <div class="member-card shift-am">
-          <div class="member-card-top">
-            <div class="member-avatar am">GG</div>
-            <div class="member-info">
-              <div class="member-name">Gislene Gomes</div>
-              <div class="member-role">OPS III · Operações</div>
-            </div>
-            <span class="member-badge am">SD</span>
-          </div>
-          <div class="member-tasks">
-              <div class="member-tasks-lbl">Funções principais</div>
-            <div class="task-chip">Suporte SD</div>
-            <div class="task-chip">Rodízio distribuição semanal</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- DYNAMIC CONTENT -->
+  <div id="org-content"></div>
 
 </div>
+
 
 <!-- PASSWORD MODAL -->
 <div class="pwd-overlay" id="pwd-overlay">
@@ -820,21 +1140,190 @@ tbtn.addEventListener('click', () => {
   localStorage.setItem('theme', next);
 });
 
-// Team toggle
-let openTeam = null;
-function toggleTeam(id) {
-  const panel = document.getElementById('panel-' + id);
-  const card  = document.getElementById('tl-' + id);
+// ─── TEAM DATA ───
+const TEAM = [
+  // Matheus team
+  { id:'mc', initials:'MC', name:'Matheus Campos', tl:'ml', tlName:'Matheus Logan', shift:'madrugada', focal:'XPT / ROUT', tags:['Focal XPT','Focal Calibrações ROUT','Rodízio distribuição'] },
+  { id:'gb', initials:'GB', name:'Gabriela', tl:'ml', tlName:'Matheus Logan', shift:'madrugada', focal:'Telemetria', tags:['Focal Telemetria','Rodízio distribuição'] },
+  { id:'bcosta', initials:'BC', name:'Bruno Costa', tl:'ml', tlName:'Matheus Logan', shift:'am', focal:'DIT', tags:['Focal DIT','Suporte AM/PM','Rodízio distribuição'] },
+  { id:'bcard', initials:'BC', name:'Bruno Cardoso', tl:'ml', tlName:'Matheus Logan', shift:'am', focal:'Nodos', tags:['Focal Nodos','Suporte AM/PM','Rodízio distribuição'] },
+  { id:'bl', initials:'BL', name:'Bruna Larissa', tl:'ml', tlName:'Matheus Logan', shift:'pm', focal:'MEE', tags:['Focal MEE','Rodízio distribuição'] },
+  // Juliana team
+  { id:'ea', initials:'EA', name:'Everton Adriano', tl:'jg', tlName:'Juliana Godinho', shift:'madrugada', focal:'Telemetria', ssp:'SSP·51', tags:['Focal Telemetria','SSP·51 — Sorocaba'] },
+  { id:'cl', initials:'CL', name:'Caio Leme', tl:'jg', tlName:'Juliana Godinho', shift:'sd', focal:'Suporte SD', tags:['Suporte SD','Rodízio distribuição'] },
+  { id:'gg', initials:'GG', name:'Gislene Gomes', tl:'jg', tlName:'Juliana Godinho', shift:'sd', focal:'Suporte SD', tags:['Suporte SD','Rodízio distribuição'] },
+];
 
-  if (openTeam && openTeam !== id) {
-    document.getElementById('panel-' + openTeam).classList.remove('open');
-    document.getElementById('tl-' + openTeam).classList.remove('open');
-  }
+const TLS = [
+  { id:'ml', name:'Matheus Logan', role:'Madrugada · AM · PM', ssp:'SSP·20', shifts:['madrugada','am','pm'] },
+  { id:'jg', name:'Juliana Godinho', role:'Madrugada · SD', ssp:'SSP·20 + SSP·51', shifts:['madrugada','sd'] },
+];
 
-  const isOpen = panel.classList.toggle('open');
-  card.classList.toggle('open', isOpen);
-  openTeam = isOpen ? id : null;
+const SHIFTS = [
+  { id:'madrugada', label:'Madrugada', emoji:'🌙', hours:'02:30 → 10:30' },
+  { id:'am', label:'AM', emoji:'☀️', hours:'07:00 → 15:20' },
+  { id:'pm', label:'PM', emoji:'🌤️', hours:'07:00 → 15:20' },
+  { id:'sd', label:'SD', emoji:'🌅', hours:'15:20 → 23:20' },
+];
+
+const FOCUS_CATEGORIES = [
+  { id:'dit', label:'DIT', icon:'📊', color:'#F0B429', desc:'Análise de pacotes em atraso (Delayed In Transit)', match: m => m.focal.includes('DIT') },
+  { id:'mee', label:'MEE', icon:'⚡', color:'#3483FA', desc:'Mercado Envios Extra — modal especial', match: m => m.focal.includes('MEE') },
+  { id:'nodos', label:'Nodos', icon:'🔗', color:'#7C3AED', desc:'Pontos intermediários da malha logística', match: m => m.focal.includes('Nodos') },
+  { id:'telemetria', label:'Telemetria', icon:'📡', color:'#16A34A', desc:'Monitoramento e tracking de operação', match: m => m.focal.includes('Telemetria') },
+  { id:'xpt', label:'XPT / ROUT', icon:'🚛', color:'#E3262F', desc:'Calibrações de rota e validações', match: m => m.focal.includes('XPT') || m.focal.includes('ROUT') },
+  { id:'support', label:'Suporte por turno', icon:'🤝', color:'#1A1A2E', desc:'Apoio a operações específicas do turno', match: m => m.focal.includes('Suporte') },
+];
+
+// ─── RENDER FUNCTIONS ───
+function memberCard(m, opts) {
+  opts = opts || {};
+  const shiftLabel = SHIFTS.find(s => s.id === m.shift)?.label || m.shift.toUpperCase();
+  const ssp51 = m.ssp === 'SSP·51' ? `<span class="member-card-ssp51">SSP·51</span>` : '';
+  const tags = opts.hideTags ? '' : `<div class="member-card-tags">${m.tags.map(t => `<span class="member-tag">${t}</span>`).join('')}</div>`;
+  return `
+    <div class="member-card-new ${m.shift}">
+      ${ssp51}
+      <div class="member-card-head">
+        <div class="member-card-avatar">${m.initials}</div>
+        <div class="member-card-info">
+          <div class="member-card-name-new">${m.name}</div>
+          <div class="member-card-role-new">${opts.subtitle || `Foco: ${m.focal}`}</div>
+        </div>
+        ${opts.badge ? `<div class="member-card-badge">${opts.badge}</div>` : ''}
+      </div>
+      ${tags}
+    </div>
+  `;
 }
+
+function viewLeadership() {
+  let html = '';
+  for (const tl of TLS) {
+    const members = TEAM.filter(m => m.tl === tl.id);
+    const byShift = {};
+    members.forEach(m => { byShift[m.shift] = byShift[m.shift] || []; byShift[m.shift].push(m); });
+
+    let shiftBlocks = '';
+    for (const sh of SHIFTS) {
+      if (!byShift[sh.id]) continue;
+      const list = byShift[sh.id];
+      shiftBlocks += `
+        <div class="shift-group">
+          <div class="shift-group-head">
+            <span class="shift-group-pill ${sh.id}">${sh.emoji} ${sh.label}</span>
+            <span class="shift-group-count">${list.length} ${list.length === 1 ? 'OPS III' : 'OPS III'}</span>
+            <div class="shift-group-line"></div>
+            <span class="shift-group-count">${sh.hours}</span>
+          </div>
+          <div class="member-grid-new">
+            ${list.map(m => memberCard(m)).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    const shiftPills = tl.shifts.map(s => {
+      const sh = SHIFTS.find(x => x.id === s);
+      return `<span class="shift-group-pill ${s}" style="font-size:9.5px;padding:4px 9px;">${sh.emoji} ${sh.label}</span>`;
+    }).join(' ');
+
+    html += `
+      <div class="tl-section">
+        <div class="tl-section-head">
+          <div class="tl-section-info">
+            <div class="tl-section-avatar"><img src="rank-leader.png" alt="TL"/></div>
+            <div class="tl-section-text">
+              <div class="tl-section-eyebrow">TEAM LEADER</div>
+              <div class="tl-section-name">${tl.name}</div>
+              <div class="tl-section-meta">${tl.role} · ${tl.ssp}</div>
+            </div>
+          </div>
+          <div class="tl-section-stats">
+            <div class="tl-stat">
+              <div class="tl-stat-val">${members.length}</div>
+              <div class="tl-stat-lbl">OPS III</div>
+            </div>
+            <div class="tl-stat">
+              <div class="tl-stat-val">${tl.shifts.length}</div>
+              <div class="tl-stat-lbl">Turnos</div>
+            </div>
+          </div>
+        </div>
+        ${shiftBlocks}
+      </div>
+    `;
+  }
+  return html;
+}
+
+function viewShift() {
+  const shifts = SHIFTS.filter(sh => TEAM.some(m => m.shift === sh.id));
+  let html = '<div class="shift-grid">';
+  for (const sh of shifts) {
+    const members = TEAM.filter(m => m.shift === sh.id);
+    html += `
+      <div class="shift-column ${sh.id}">
+        <div class="shift-column-head">
+          <div class="shift-column-title">${sh.emoji} ${sh.label}</div>
+          <div class="shift-column-count">${members.length}</div>
+        </div>
+        <div class="shift-column-hours">${sh.hours}</div>
+        <div class="shift-column-members">
+          ${members.map(m => memberCard(m, { subtitle: `${m.tlName} · ${m.focal}`, hideTags: true })).join('')}
+        </div>
+      </div>
+    `;
+  }
+  html += '</div>';
+  return html;
+}
+
+function viewFocus() {
+  let html = '<div class="focus-grid">';
+  for (const cat of FOCUS_CATEGORIES) {
+    const members = TEAM.filter(cat.match);
+    if (members.length === 0) continue;
+    html += `
+      <div class="focus-card" style="--focus-color: ${cat.color};">
+        <div class="focus-card-head">
+          <div class="focus-card-title">${cat.icon} ${cat.label}</div>
+          <div class="focus-card-count">${members.length}</div>
+        </div>
+        <div class="focus-card-desc">${cat.desc}</div>
+        <div class="focus-card-members">
+          ${members.map(m => `
+            <div class="focus-member">
+              <div class="focus-member-avatar" style="background:${cat.color};">${m.initials}</div>
+              <div class="focus-member-info">
+                <div class="focus-member-name">${m.name}</div>
+                <div class="focus-member-meta">${SHIFTS.find(s => s.id === m.shift)?.label} · ${m.tlName}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+  html += '</div>';
+  return html;
+}
+
+let currentView = 'leadership';
+
+function setView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-pill').forEach(p => p.classList.toggle('active', p.dataset.view === view));
+  const content = document.getElementById('org-content');
+  let html = '';
+  if (view === 'leadership') html = viewLeadership();
+  else if (view === 'shift') html = viewShift();
+  else if (view === 'focus') html = viewFocus();
+  content.innerHTML = html;
+}
+
+// Initial render
+setView('leadership');
 
 // Password
 function openPwd() {
