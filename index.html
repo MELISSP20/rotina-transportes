@@ -370,9 +370,39 @@
     text-transform: uppercase;
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
   }
-  .hub-footer-sep { margin: 0 10px; opacity: .35; }
+  .hub-footer-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hub-footer-sep { margin: 0 4px; opacity: .35; }
   .hub-footer b { color: var(--text); font-weight: 800; }
+  .hub-footer-credit {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .22em;
+    color: var(--muted);
+    opacity: .7;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hub-footer-credit b {
+    color: var(--text);
+    font-weight: 900;
+    letter-spacing: .04em;
+  }
+  .hub-footer-credit::before {
+    content: '⚡';
+    color: var(--yellow);
+    font-size: 11px;
+    opacity: .8;
+  }
 
   /* MOBILE */
   @media (max-width: 900px) {
@@ -577,7 +607,8 @@
 
   <!-- Footer -->
   <div class="hub-footer">
-    ASSIGNMENTS <span class="hub-footer-sep">·</span> <b>SEMANA 26</b> <span class="hub-footer-sep">·</span> SOROCABA
+    <div class="hub-footer-main">ASSIGNMENTS <span class="hub-footer-sep">·</span> SOROCABA</div>
+    <div class="hub-footer-credit">DEVELOPED BY <b>MATHEUS LOGAN</b></div>
   </div>
 </div>
 
@@ -635,49 +666,57 @@ setInterval(updateClock, 1000);
 const TRIVIAS = [
   // Sequência intercalada — sem 2 do mesmo tipo seguidas
   'A cobertura de rotas atende <b>9 cidades</b> do interior paulista — de Sorocaba a Tapiraí.',
-  '<b>Matheus Logan</b> fez <b>26 commits de madrugada</b> — quem precisa dormir quando tem código?',
+  'O <b>criador</b> deste site fez <b>26 commits de madrugada</b> — quem precisa dormir quando tem código?',
+  '<b>Mercado Livre</b> foi fundado em <b>1999</b> em Buenos Aires por Marcos Galperin.',
   '<b>MEE</b> significa Mercado Envios Extra — não confundir com Express.',
   '<b>Sorocaba</b> é berço da indústria têxtil brasileira desde 1881.',
-  'O Assignments nasceu às <b>06:14 da manhã</b> — Matheus abriu o editor antes do café.',
+  'O Assignments nasceu às <b>06:14 da manhã</b> — o criador abriu o editor antes do café.',
   'Todas as páginas têm <b>modo escuro</b> — clica na lua/sol no canto superior direito.',
+  'O ticker do Mercado Livre na <b>Nasdaq</b> é <b>MELI</b> — listado desde 2007.',
   'A cor amarela do site é o <b>Yellow Mercado Livre</b> oficial — #FFE600.',
-  'No primeiro dia, foram <b>58 commits</b> em poucas horas. Calma, Matheus.',
+  'No primeiro dia, foram <b>58 commits</b> em poucas horas. Devagar aí, criador!',
   'O turno <b>Madrugada</b> começa às 02:30 — fecha às 10:30 com o passe de bastão.',
   'A <b>rota mais distante do SSP·20</b> vai pra Tapiraí — cerca de 58km de Sorocaba.',
-  'Matheus matou <b>54 bugs</b> pessoalmente — criou e exterminou cada um.',
+  'O criador matou <b>54 bugs</b> pessoalmente — criou e exterminou cada um.',
   '<b>DIT</b> = Delayed In Transit. Métrica chave de qualidade operacional.',
+  'Mercado Livre opera em mais de <b>18 países</b> da América Latina.',
   'Este site nasceu em <b>17 de junho de 2026</b> e já tem 10 páginas.',
-  'Matheus é o tipo de TL que, ao invés de pedir uma planilha pro time, <b>constrói o sistema inteiro</b> do zero.',
+  'O criador é o tipo de TL que, ao invés de pedir uma planilha pro time, <b>constrói o sistema inteiro</b> do zero.',
   '<b>Sorocaba</b> foi apelidada de <b>Manchester Paulista</b> no século XIX pela força industrial.',
   'As tarefas da Rotina podem ser <b>arrastadas e reordenadas</b> com drag & drop.',
-  'Matheus construiu este site nas brechas do turno — entre validar XPT e mandar report.',
+  'O <b>Brasil</b> é o maior mercado do Mercado Livre — responde pela maior fatia da receita global.',
+  'O criador construiu este site nas brechas do turno — entre validar XPT e mandar report.',
   '<b>Top 3 cidades</b> por volume: Sorocaba, Votorantim e Itu.',
   '<b>Last Mile</b> = última etapa da jornada de uma encomenda até a casa do destinatário.',
-  'Matheus reescreveu o header desta página <b>18 vezes</b>. Tem padrões, gente.',
+  'O criador reescreveu o header desta página <b>18 vezes</b>. Tem padrões, gente.',
+  'O <b>Mercado Envios</b> é o braço de logística do ML — coração do <i>last mile</i>.',
   'A cor escura é o <b>navy</b> #1A1A2E — base do contraste tipográfico do site.',
   'O <b>Query Hub</b> reúne dezenas de queries SQL prontas pro BigQuery.',
-  'O dashboard <b>ORH</b> foi refeito do zero <b>4 vezes</b> — as três primeiras versões não eram boas o suficiente.',
+  'O criador refez o dashboard <b>ORH</b> do zero <b>4 vezes</b> — as três primeiras versões não passavam no crivo.',
   'Tem mais de <b>11.000 linhas de código</b> entre HTML, JS e CSS.',
   'O turno <b>SD</b> (Same Day) opera entre 15:20 e 23:20 todos os dias.',
-  'Matheus trabalhou em <b>6 dias diferentes</b> pra entregar tudo isso. Só 6.',
+  '<b>Mercado Pago</b> é a fintech do ML — banco digital com dezenas de milhões de contas.',
+  'O criador trabalhou em <b>6 dias diferentes</b> pra entregar tudo isso. Só 6.',
   '<b>Descontainerizado</b> é um pacote retirado de rota.',
   'Salto de Pirapora é a cidade-base de pelo menos <b>7 rotas</b> dedicadas.',
-  'Matheus escreveu <b>19 mil linhas</b> e jogou fora <b>8 mil</b>. Quase metade virou refactor.',
+  'O criador escreveu <b>19 mil linhas</b> e jogou fora <b>8 mil</b>. Quase metade virou refactor.',
   'Os checks da Rotina <b>sincronizam em tempo real</b> entre todos os OPS III via Firebase.',
+  'A sede global do Mercado Livre fica em <b>Buenos Aires</b>, na Argentina.',
   '<b>Sorocaba</b> foi fundada em 1654 — uma das cidades mais antigas do interior paulista.',
-  'Matheus testou <b>4 versões do título "Assignments."</b> no Hub. Esta é a vencedora.',
+  'O criador testou <b>4 versões do título "Assignments."</b> no Hub. Esta é a vencedora.',
   'O ponto amarelo no final de <b>Assignments.</b> é a assinatura visual da marca.',
   '<b>ORH</b> = Outbound Route Hours. Mede o tempo total de uma rota em campo.',
-  'A página <b>Cidades por Rota</b> foi simplificada três vezes porque Matheus achou que "tinha gráfico demais".',
+  'A página <b>Cidades por Rota</b> foi simplificada três vezes porque o criador achou que "tinha gráfico demais".',
   'O <b>Resumo de produtos</b> reconhece mais de 70 marcas e 50 categorias.',
+  '<b>Marcos Galperin</b> fundou o Mercado Livre enquanto cursava Stanford Business School.',
+  'Filosofia do criador: <b>se não funciona bem, não fica.</b> Foi assim que tudo aqui foi parar.',
   'Mercado Livre opera <b>last mile</b> em mais de 96% do território brasileiro.',
-  'Filosofia Matheus: <b>se não funciona bem, não fica.</b> Foi assim que tudo aqui foi parar.',
   'Já passou por mais de <b>160 commits</b> em pouco mais de 10 dias de desenvolvimento.',
   'O <b>Cidades por Rota</b> agrupa rotas por prefixo — <b>AM1_131_5</b> e <b>AM1_131_8</b> viram <b>AM1_131</b>.',
-  'Matheus tirou o botão "Carregar exemplo" do Resumo de Produtos. Disse que <b>confundia</b>. Confundia quem, Matheus?',
+  'O criador tirou o botão "Carregar exemplo" do Resumo de Produtos. Disse que <b>confundia</b>. Confundia quem, criador?',
   'O pulso verde do <b>● AO VIVO</b> bate a cada 2,2 segundos — coração do site.',
-  'O subtítulo "14 pendências críticas no turno" que ficou no header? Matheus mandou tirar porque <b>"tava feio"</b>.',
-  'O carrossel que você está vendo agora tem <b>44 curiosidades</b> rotativas.',
+  'O subtítulo "14 pendências críticas no turno" que ficou no header? O criador mandou tirar porque <b>"tava feio"</b>.',
+  'O carrossel que você está vendo agora tem <b>52 curiosidades</b> rotativas.',
 ];
 
 let triviaIndex = 0;
