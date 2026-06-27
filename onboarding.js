@@ -48,7 +48,7 @@
     {
       target: '#reports-btn',
       title: 'Reports operacionais',
-      body: 'Aqui você encontra <b>DIT, ORH, Descontainerizados e Comparativo SSPs</b>. Importe um CSV e o site processa pra você.',
+      body: 'Aqui você encontra <b>DIT, ORH e Descontainerizados</b>. Importe um CSV e o site processa pra você.',
       placement: 'bottom',
       icon: '📊',
     },
