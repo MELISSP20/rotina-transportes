@@ -73,6 +73,12 @@
   .topbar-dropdown-btn.open { background: rgba(255,230,0,.1); color: var(--yellow); border-color: rgba(255,230,0,.25); }
   .topbar-dropdown-btn.open svg { opacity: 1; }
   .topbar-dropdown-btn.open .chevron { transform: rotate(180deg); opacity: 1; }
+  .topbar-dropdown-btn.active-link { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
+  .topbar-dropdown-btn.active-link svg { opacity: 1; }
+  .topbar-nav-link.active-link { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
+  .topbar-nav-link.active-link svg { opacity: 1; }
+  .topbar-dropdown-item.active-link { background: rgba(255,230,0,.08); color: var(--yellow); font-weight: 800; }
+
   .topbar-dropdown-menu { display: none; position: absolute; top: calc(100% + 9px); right: 0; background: linear-gradient(180deg, #131826 0%, #0E1320 100%); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; min-width: 170px; overflow: hidden; box-shadow: 0 14px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,230,0,.05); z-index: 999; }
   .topbar-dropdown-menu.open { display: block; animation: menuFade .15s ease-out; }
   @keyframes menuFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
@@ -762,7 +768,7 @@
             <span class="item-dot" style="background:#f0b429;"></span>
             <span>DIT Report</span>
           </a>
-          <a href="orh.html" class="topbar-dropdown-item" style="color:var(--yellow);background:rgba(255,230,0,.08);">
+          <a href="orh.html" class="topbar-dropdown-item active-link">
             <span class="item-dot" style="background:#a78bfa;"></span>
             <span>ORH</span>
           </a>
