@@ -691,6 +691,16 @@
   .cols-rota-full { grid-template-columns: 1fr 90px 60px 60px 60px; }
   .cols-cidade { grid-template-columns: 110px 1fr 80px 100px; }
 
+  /* Format bar (Rota-Cidade) */
+  .format-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 10px 14px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .format-label { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
   @media (max-width: 900px) {
     .dit-grid { grid-template-columns: 1fr; }
     .kpi-strip { grid-template-columns: repeat(3, 1fr); }
@@ -816,13 +826,9 @@
       <div class="upload-icon">📍</div>
       <div class="upload-info">
         <div id="csvLabel" style="font-size:13px;font-weight:700;color:var(--text);">Importar CSV de roteirização</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Auto-detecta colunas: rota (SHP_LG_ROUTE_ID / rota), cidade (cidade / city / municipio), ciclo (SHP_CYCLE_NAME_PLANNED / cycle)</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Detecta automaticamente as colunas de rota e cidade. Opcional: filtro por ciclo.</div>
       </div>
       <input type="file" id="fileCSV" accept=".csv" style="display:none"/>
-    </div>
-    <div class="date-field">
-      <label>DATA</label>
-      <input type="date" id="reportDate" class="field-input"/>
     </div>
   </div>
 
@@ -832,96 +838,37 @@
       <span class="filter-bar-label">🔄 Ciclo</span>
       <div class="filter-pills" id="cyclePills"></div>
     </div>
-    <div class="filter-group">
-      <span class="filter-bar-label">📍 Cidade</span>
-      <select class="field-input" id="cityFilter" style="min-width:180px;padding:6px 10px;font-size:11.5px;" onchange="applyFilters()">
-        <option value="">Todas</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <span class="filter-bar-label">🔍 Buscar rota</span>
-      <input type="text" class="field-input" id="searchRoute" placeholder="ex: AM1_47" style="width:140px;padding:6px 10px;font-size:11.5px;" oninput="applyFilters()"/>
-    </div>
     <div class="filter-info" id="filterInfo"></div>
   </div>
 
-  <!-- KPI Strip -->
-  <div class="kpi-strip">
-    <div class="kpi-card">
-      <div class="kpi-card-label">Rotas</div>
-      <div class="kpi-card-value" id="kpiRotas">—</div>
-      <div class="kpi-card-foot" id="kpiRotasFoot"></div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card-label">Cidades únicas</div>
-      <div class="kpi-card-value" id="kpiCidades">—</div>
-      <div class="kpi-card-foot" id="kpiCidadesFoot"></div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card-label">Cidade dominante</div>
-      <div class="kpi-card-value" id="kpiTopCidade">—</div>
-      <div class="kpi-card-foot" id="kpiTopCidadeFoot"></div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-card-label">Sem cidade</div>
-      <div class="kpi-card-value" id="kpiSemCidade">—</div>
-      <div class="kpi-card-foot" id="kpiSemCidadeFoot"></div>
-    </div>
-  </div>
-
   <!-- Empty state -->
-  <div class="dash-empty" id="emptyState">Importe o CSV de roteirização (ex: extração BQ por rota/cidade) para visualizar a cidade dominante de cada rota.</div>
+  <div class="dash-empty" id="emptyState">Importe o CSV de roteirização para extrair a cidade dominante de cada rota.</div>
 
-  <!-- ANÁLISE -->
-  <div id="analysisArea" style="display:none;">
+  <!-- RESULTADO -->
+  <div id="resultArea" style="display:none;">
 
-    <!-- Distribuição por cidade (barras horizontais) -->
-    <div class="compare-chart">
-      <div class="compare-title">📊 Distribuição de rotas por cidade</div>
-      <div class="compare-subtitle">Quantas rotas estão em cada cidade dominante</div>
-      <div class="compare-bars" id="cityBars"></div>
-    </div>
-
-    <!-- Tabela Rota | Cidade -->
-    <div class="data-table">
-      <div class="data-table-title">
-        <span>📋 Cidade dominante por rota</span>
-        <span class="tbl-subtitle" id="tableSubtitle"></span>
+    <!-- Toggle formato -->
+    <div class="format-bar">
+      <span class="format-label">📋 Formato de saída</span>
+      <div class="filter-pills">
+        <button class="filter-pill active" data-f="dash" onclick="setFormat(\'dash\')">Rota – Cidade</button>
+        <button class="filter-pill" data-f="tsv" onclick="setFormat(\'tsv\')">Duas colunas (Excel)</button>
       </div>
-      <div class="data-table-head cols-cidade">
-        <span>Rota</span>
-        <span>Cidade dominante</span>
-        <span class="num">Paradas</span>
-        <span class="num">% dominância</span>
-      </div>
-      <div id="tblCidades"></div>
+      <button class="btn btn-copy" onclick="copyOutput()" style="margin-left:auto;">📋 Copiar tudo</button>
+    </div>
+    <div class="status" id="copyStatus" style="margin-bottom:8px;"></div>
+
+    <!-- Output box -->
+    <pre id="outputBox" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;font-family:ui-monospace,\'SF Mono\',Menlo,monospace;font-size:12.5px;line-height:1.7;color:var(--text);max-height:560px;overflow-y:auto;white-space:pre;font-variant-numeric:tabular-nums;margin:0;"></pre>
+
+    <div style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5;" id="resultFoot"></div>
+
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn btn-secondary" onclick="clearAll()">🗑 Limpar</button>
     </div>
 
   </div>
 
-  <!-- Notas + Botões -->
-  <div class="section-label">Notas opcionais</div>
-  <div class="narrative-block">
-    <div class="narrative-header">
-      <span class="dot" style="background:#16a34a"></span> Observações
-    </div>
-    <textarea id="txtNotas" placeholder="Ex: Rota AM1_185 sem cidade preenchida — verificar dados na origem..."></textarea>
-  </div>
-
-  <div class="btn-row" style="margin-top:1rem;">
-    <button class="btn btn-primary" onclick="generateReport()" id="genBtn" disabled>⚡ Gerar report</button>
-    <button class="btn btn-secondary" onclick="exportCSV()" id="exportBtn" disabled>⬇ Exportar CSV</button>
-    <button class="btn btn-secondary" onclick="clearAll()">🗑 Limpar tudo</button>
-  </div>
-
-  <div class="output-section" id="outputSection" style="display:none;margin-top:1rem;">
-    <div class="output-label">Report gerado — pronto para copiar</div>
-    <pre id="reportOutput"></pre>
-    <div class="btn-row">
-      <button class="btn btn-copy" onclick="copyReport()">📋 Copiar</button>
-      <div class="status" id="copyStatus"></div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -951,37 +898,25 @@ document.addEventListener('click', function(e) {
   }
 });
 
-document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
-
 // ── State ──
-let csvRows = null;          // rows brutos
-let detected = null;         // { colRoute, colCity, colCycle }
-let cycles = [];             // ciclos únicos do CSV
+let csvRows = null;
+let detected = null;
+let cycles = [];
 let currentCycle = 'all';
-let aggregated = null;       // resultado de aggregate()
+let currentFormat = 'dash';
+let result = [];      // [{route, city}]
 
-// ── Helpers ──
 const fmtN = n => Number(n).toLocaleString('pt-BR');
-const fmtPct = p => p.toFixed(1).replace('.',',') + '%';
 const norm = s => (s||'').toString().trim();
 
-// Auto-detect das colunas
 function detectColumns(sample) {
   const headers = Object.keys(sample);
   const lower = headers.map(h => h.toLowerCase());
-
-  const findCol = (candidates) => {
-    for (const cand of candidates) {
-      const i = lower.findIndex(h => h === cand.toLowerCase());
-      if (i >= 0) return headers[i];
-    }
-    for (const cand of candidates) {
-      const i = lower.findIndex(h => h.includes(cand.toLowerCase()));
-      if (i >= 0) return headers[i];
-    }
+  const findCol = (cands) => {
+    for (const c of cands) { const i = lower.findIndex(h => h === c.toLowerCase()); if (i >= 0) return headers[i]; }
+    for (const c of cands) { const i = lower.findIndex(h => h.includes(c.toLowerCase())); if (i >= 0) return headers[i]; }
     return null;
   };
-
   return {
     colRoute: findCol(['SHP_LG_ROUTE_ID','ROUTE_ID','rota','ROTA','route','Rota']),
     colCity: findCol(['cidade','CIDADE','city','CITY','municipio','MUNICIPIO','município','SHP_BUYER_ADDRESS_CITY','BUYER_CITY']),
@@ -1012,7 +947,6 @@ function parseCSV(text) {
   });
 }
 
-// File handlers
 document.getElementById('fileCSV').addEventListener('change', e => handleCSV(e.target.files[0]));
 const zCSV = document.getElementById('zoneCSV');
 zCSV.addEventListener('dragover', e => { e.preventDefault(); zCSV.style.borderColor='var(--yellow)'; });
@@ -1025,45 +959,29 @@ function handleCSV(file) {
   reader.onload = e => {
     const parsed = parseCSV(e.target.result);
     if (parsed.length === 0) { alert('CSV vazio.'); return; }
-
     detected = detectColumns(parsed[0]);
     if (!detected.colRoute || !detected.colCity) {
-      const cols = Object.keys(parsed[0]).join(', ');
-      alert('Não foi possível detectar as colunas de ROTA e CIDADE.\n\nColunas encontradas no CSV:\n' + cols + '\n\nA rota deve ter um header como "SHP_LG_ROUTE_ID", "rota" ou "route_id".\nA cidade deve ter um header como "cidade", "city" ou "municipio".');
+      alert('Não consegui detectar colunas de ROTA e CIDADE no CSV.\n\nColunas encontradas:\n' + Object.keys(parsed[0]).join(', '));
       return;
     }
-
     csvRows = parsed.filter(r => norm(r[detected.colRoute]));
 
-    // Ciclos únicos
-    if (detected.colCycle) {
-      cycles = [...new Set(csvRows.map(r => norm(r[detected.colCycle])).filter(Boolean))].sort();
-    } else {
-      cycles = [];
-    }
+    cycles = detected.colCycle ? [...new Set(csvRows.map(r => norm(r[detected.colCycle])).filter(Boolean))].sort() : [];
 
-    // Cidades únicas (pra dropdown)
-    const cidades = [...new Set(csvRows.map(r => norm(r[detected.colCity])).filter(Boolean))].sort();
-    const sel = document.getElementById('cityFilter');
-    sel.innerHTML = '<option value="">Todas (' + cidades.length + ')</option>' + cidades.map(c => `<option value="${c}">${c}</option>`).join('');
-
-    // Cycle pills
     const pillsHTML = ['<button class="filter-pill active" data-c="all" onclick="setCycle(\'all\')">Todos</button>']
       .concat(cycles.map(c => `<button class="filter-pill" data-c="${c}" onclick="setCycle('${c}')">${c}</button>`))
       .join('');
     document.getElementById('cyclePills').innerHTML = pillsHTML;
 
     document.getElementById('zoneCSV').classList.add('loaded-csv');
-    const colsDetectedTxt = `📋 ${detected.colRoute} / ${detected.colCity}` + (detected.colCycle ? ` / ${detected.colCycle}` : ' (sem ciclo)');
-    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(csvRows.length)} linhas · ${colsDetectedTxt}</span>`;
+    const colsTxt = `${detected.colRoute} → ${detected.colCity}` + (detected.colCycle ? ` · ${detected.colCycle}` : '');
+    document.getElementById('csvLabel').innerHTML = `<strong>✓ ${file.name}</strong> <span style="color:var(--muted);font-weight:500;">· ${fmtN(csvRows.length)} linhas · ${colsTxt}</span>`;
     document.getElementById('filterBar').style.display = 'flex';
     document.getElementById('emptyState').style.display = 'none';
-    document.getElementById('analysisArea').style.display = 'block';
-    document.getElementById('genBtn').disabled = false;
-    document.getElementById('exportBtn').disabled = false;
+    document.getElementById('resultArea').style.display = 'block';
 
     currentCycle = 'all';
-    applyFilters();
+    process();
   };
   reader.readAsText(file, 'utf-8');
 }
@@ -1071,235 +989,79 @@ function handleCSV(file) {
 function setCycle(c) {
   currentCycle = c;
   document.querySelectorAll('.filter-pill[data-c]').forEach(p => p.classList.toggle('active', p.dataset.c === c));
-  applyFilters();
+  process();
 }
 
-function applyFilters() {
+function setFormat(f) {
+  currentFormat = f;
+  document.querySelectorAll('.filter-pill[data-f]').forEach(p => p.classList.toggle('active', p.dataset.f === f));
+  renderOutput();
+}
+
+function process() {
   if (!csvRows || !detected) return;
   let rows = csvRows;
-
-  // Filtro de ciclo
   if (currentCycle !== 'all' && detected.colCycle) {
     rows = rows.filter(r => norm(r[detected.colCycle]) === currentCycle);
   }
 
-  // Agregar por rota
+  // Agrupar por rota → cidade mais frequente
   const byRoute = {};
   rows.forEach(r => {
     const route = norm(r[detected.colRoute]);
     if (!route) return;
     const city = norm(r[detected.colCity]);
-    if (!byRoute[route]) byRoute[route] = { route, count: 0, cities: {} };
-    byRoute[route].count++;
-    if (city) byRoute[route].cities[city] = (byRoute[route].cities[city] || 0) + 1;
+    if (!byRoute[route]) byRoute[route] = {};
+    if (city) byRoute[route][city] = (byRoute[route][city] || 0) + 1;
   });
 
-  // Para cada rota, pegar cidade dominante
-  const routesAll = Object.values(byRoute).map(r => {
-    const entries = Object.entries(r.cities).sort((a,b) => b[1]-a[1]);
-    const top = entries[0];
-    const topCount = top ? top[1] : 0;
-    return {
-      route: r.route,
-      city: top ? top[0] : '—',
-      cityCount: topCount,
-      totalStops: r.count,
-      pctDominance: r.count > 0 ? (topCount/r.count*100) : 0,
-      hasCity: !!top
-    };
+  result = Object.entries(byRoute).map(([route, cities]) => {
+    const top = Object.entries(cities).sort((a,b) => b[1]-a[1])[0];
+    return { route, city: top ? top[0] : '' };
   });
 
-  // Filtros pós-agregação
-  const cityFilter = document.getElementById('cityFilter').value;
-  const searchFilter = norm(document.getElementById('searchRoute').value).toUpperCase();
+  // Sort natural (AM1_1, AM1_2, ..., AM1_10)
+  result.sort((a,b) => a.route.localeCompare(b.route, undefined, {numeric: true, sensitivity: 'base'}));
 
-  let routes = routesAll;
-  if (cityFilter) routes = routes.filter(r => r.city === cityFilter);
-  if (searchFilter) routes = routes.filter(r => r.route.toUpperCase().includes(searchFilter));
+  const semCidade = result.filter(r => !r.city).length;
+  document.getElementById('filterInfo').innerHTML = `<b>${fmtN(result.length)}</b> rotas` + (semCidade > 0 ? ` <span style="color:var(--red);">· ${semCidade} sem cidade</span>` : '');
+  document.getElementById('resultFoot').innerHTML = `${fmtN(result.length)} rotas processadas` + (semCidade > 0 ? ` · <span style="color:var(--red);">${semCidade} rotas ficaram sem cidade (sem registros válidos)</span>` : ' · todas com cidade ✓');
 
-  // Ordenar rotas pelo natural sort (AM1_1, AM1_2, ..., AM1_10, AM1_11)
-  routes.sort((a,b) => {
-    return a.route.localeCompare(b.route, undefined, {numeric: true, sensitivity: 'base'});
-  });
-
-  // Cidades agg (pra distribuição)
-  const cityAgg = {};
-  routesAll.forEach(r => {
-    if (r.hasCity) cityAgg[r.city] = (cityAgg[r.city] || 0) + 1;
-  });
-  const cityList = Object.entries(cityAgg).sort((a,b) => b[1]-a[1]);
-
-  // Sem cidade
-  const semCidade = routesAll.filter(r => !r.hasCity);
-
-  aggregated = {
-    routes, routesAll, cityList, semCidade,
-    totalRoutes: routesAll.length, filteredRoutes: routes.length
-  };
-
-  // Filter info
-  document.getElementById('filterInfo').innerHTML = `<b>${fmtN(routes.length)}</b> de ${fmtN(routesAll.length)} rotas`;
-  document.getElementById('tableSubtitle').textContent = currentCycle !== 'all' ? `Ciclo: ${currentCycle}` : 'Todos os ciclos';
-
-  render();
+  renderOutput();
 }
 
-function render() {
-  if (!aggregated) return;
-  const { routes, routesAll, cityList, semCidade, totalRoutes } = aggregated;
-
-  // === KPIs ===
-  document.getElementById('kpiRotas').textContent = fmtN(routes.length);
-  document.getElementById('kpiRotasFoot').textContent = routes.length !== totalRoutes ? `de ${fmtN(totalRoutes)} totais` : 'no filtro atual';
-
-  document.getElementById('kpiCidades').textContent = fmtN(cityList.length);
-  document.getElementById('kpiCidadesFoot').textContent = cityList.length > 0 ? `mais comum: ${cityList[0][0]}` : 'sem cidades';
-
-  if (cityList.length > 0) {
-    document.getElementById('kpiTopCidade').textContent = cityList[0][0];
-    document.getElementById('kpiTopCidade').style.fontSize = '18px';
-    document.getElementById('kpiTopCidadeFoot').innerHTML = `<b>${fmtN(cityList[0][1])}</b> rotas (${fmtPct(cityList[0][1]/totalRoutes*100)})`;
-  } else {
-    document.getElementById('kpiTopCidade').textContent = '—';
-    document.getElementById('kpiTopCidadeFoot').textContent = '';
+function renderOutput() {
+  if (!result || result.length === 0) {
+    document.getElementById('outputBox').textContent = '';
+    return;
   }
-
-  document.getElementById('kpiSemCidade').textContent = fmtN(semCidade.length);
-  document.getElementById('kpiSemCidade').style.color = semCidade.length > 0 ? 'var(--red)' : 'var(--green)';
-  document.getElementById('kpiSemCidadeFoot').textContent = semCidade.length > 0
-    ? `rotas sem cidade preenchida`
-    : 'todas com cidade ✓';
-
-  // === Distribuição (barras) ===
-  const maxCount = cityList.length > 0 ? cityList[0][1] : 1;
-  document.getElementById('cityBars').innerHTML = cityList.map(([city, count]) => {
-    const w = (count/maxCount*100).toFixed(1);
-    const pct = (count/totalRoutes*100).toFixed(1).replace('.',',');
-    return `<div class="compare-row" style="grid-template-columns: 150px 1fr 90px;">
-      <span class="compare-row-label" title="${city}">${city}</span>
-      <div class="compare-row-bars">
-        <div class="compare-bar-track"><div class="compare-bar plan" style="width:${w}%;background:var(--green);">${count} rotas</div></div>
-      </div>
-      <span class="compare-row-diff" style="color:var(--muted);">${pct}%</span>
-    </div>`;
-  }).join('');
-
-  // === Tabela ===
-  document.getElementById('tblCidades').innerHTML = routes.map(r => {
-    const cityClass = r.hasCity ? '' : 'style="color:var(--red);font-style:italic;"';
-    const cityTxt = r.hasCity ? r.city : '— sem cidade';
-    const domClass = r.pctDominance >= 90 ? 'down' : r.pctDominance >= 60 ? 'zero' : 'up';
-    return `<div class="data-table-row cols-cidade">
-      <span style="font-variant-numeric:tabular-nums;font-weight:700;">${r.route}</span>
-      <span class="cell-ellipsis" ${cityClass} title="${cityTxt}">${cityTxt}</span>
-      <span class="num">${fmtN(r.totalStops)}</span>
-      <span class="num ${domClass}">${r.hasCity ? fmtPct(r.pctDominance) : '—'}</span>
-    </div>`;
-  }).join('') || '<div style="padding:18px 18px;color:var(--muted);font-size:12px;">Nenhuma rota corresponde aos filtros aplicados.</div>';
-}
-
-function generateReport() {
-  if (!aggregated) return;
-  const { routes, cityList, semCidade, totalRoutes } = aggregated;
-
-  const dateStr = (() => {
-    const d = document.getElementById('reportDate').value;
-    if (!d) return new Date().toLocaleDateString('pt-BR').slice(0,5);
-    const [y,m,day] = d.split('-');
-    return `${day}/${m}`;
-  })();
-
-  const cycleLbl = currentCycle === 'all' ? 'Todos os ciclos' : `Ciclo ${currentCycle}`;
-  const txtNotas = document.getElementById('txtNotas').value.trim();
-
-  // Top 5 cidades
-  const topCidades = cityList.slice(0, 5).map(([c, n]) => `  ${c}: ${n} rotas (${fmtPct(n/totalRoutes*100)})`).join('\n');
-
-  // Listar rotas (todas, agrupadas por cidade)
-  const byCity = {};
-  routes.forEach(r => {
-    if (!r.hasCity) return;
-    if (!byCity[r.city]) byCity[r.city] = [];
-    byCity[r.city].push(r.route);
+  const lines = result.map(r => {
+    const city = r.city || '— sem cidade —';
+    if (currentFormat === 'tsv') return r.route + '\t' + city;
+    return r.route + ' – ' + city;
   });
-  const cityBlocks = Object.entries(byCity)
-    .sort((a,b) => b[1].length - a[1].length)
-    .map(([city, list]) => `▪️ ${city} (${list.length} rotas):\n   ${list.join(', ')}`)
-    .join('\n\n');
-
-  const semCidadeStr = semCidade.length > 0
-    ? `\n⚠️ ROTAS SEM CIDADE (${semCidade.length}):\n   ${semCidade.map(r => r.route).join(', ')}`
-    : '';
-
-  const report = `CIDADES POR ROTA – SSP20 | ${dateStr} | ${cycleLbl}
-═══════════════════════════════════════════════════════════
-RESUMO
-  Total de rotas: ${fmtN(totalRoutes)}
-  Cidades únicas: ${cityList.length}
-  Cidade dominante: ${cityList.length > 0 ? `${cityList[0][0]} (${fmtN(cityList[0][1])} rotas)` : '—'}
-  Sem cidade: ${semCidade.length}
-
-TOP 5 CIDADES
-${topCidades}
-
-DETALHAMENTO POR CIDADE
-${cityBlocks}
-${semCidadeStr}
-${txtNotas ? '\nOBSERVAÇÕES:\n' + txtNotas : ''}`;
-
-  document.getElementById('reportOutput').textContent = report;
-  document.getElementById('outputSection').style.display = 'block';
-  document.getElementById('outputSection').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('outputBox').textContent = lines.join('\n');
 }
 
-function copyReport() {
-  const text = document.getElementById('reportOutput').textContent;
+function copyOutput() {
+  const text = document.getElementById('outputBox').textContent;
+  if (!text) return;
   navigator.clipboard.writeText(text).then(() => {
-    document.getElementById('copyStatus').textContent = '✓ Copiado';
-    setTimeout(() => document.getElementById('copyStatus').textContent = '', 3000);
+    document.getElementById('copyStatus').textContent = '✓ ' + fmtN(result.length) + ' linhas copiadas — cola direto no Excel ou onde precisar';
+    setTimeout(() => document.getElementById('copyStatus').textContent = '', 4000);
   });
-}
-
-function exportCSV() {
-  if (!aggregated) return;
-  const { routes } = aggregated;
-  const header = 'rota,cidade,paradas,pct_dominancia';
-  const lines = routes.map(r => [
-    r.route,
-    r.hasCity ? r.city : 'SEM CIDADE',
-    r.totalStops,
-    r.hasCity ? r.pctDominance.toFixed(1).replace('.',',') + '%' : '-'
-  ].join(','));
-  const blob = new Blob([header + '\n' + lines.join('\n')], {type: 'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `cidades_por_rota_${currentCycle === 'all' ? 'todos' : currentCycle}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 function clearAll() {
-  if (!confirm('Limpar tudo?')) return;
-  csvRows = null; detected = null; cycles = []; aggregated = null;
-  currentCycle = 'all';
+  csvRows = null; detected = null; cycles = []; result = [];
+  currentCycle = 'all'; currentFormat = 'dash';
   document.getElementById('zoneCSV').classList.remove('loaded-csv');
   document.getElementById('csvLabel').innerHTML = 'Importar CSV de roteirização';
-  ['kpiRotas','kpiCidades','kpiTopCidade','kpiSemCidade'].forEach(id => {
-    const el = document.getElementById(id);
-    el.textContent = '—';
-    el.style.color = '';
-    el.style.fontSize = '';
-  });
-  ['txtNotas','searchRoute'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('cityFilter').innerHTML = '<option value="">Todas</option>';
-  document.getElementById('analysisArea').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'none';
   document.getElementById('filterBar').style.display = 'none';
   document.getElementById('emptyState').style.display = 'block';
-  document.getElementById('outputSection').style.display = 'none';
-  document.getElementById('genBtn').disabled = true;
-  document.getElementById('exportBtn').disabled = true;
-  document.getElementById('reportDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('outputBox').textContent = '';
+  document.getElementById('copyStatus').textContent = '';
 }
 
 
