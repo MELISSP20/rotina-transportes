@@ -132,8 +132,9 @@
     /* ANALYST GRID */
     .analyst-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 1.5rem;
     }
 
     .analyst-card {
@@ -206,58 +207,454 @@
 
     .analyst-body { padding: 14px 18px 18px; }
 
-    .criteria-group-label {
-      font-size: 9px; font-weight: 800; text-transform: uppercase;
-      letter-spacing: .14em; color: var(--muted);
-      padding: 12px 0 8px;
-      margin-bottom: 4px;
-      display: flex; align-items: center; gap: 8px;
+    /* ── CARDS COMPACTOS (preview) ── */
+    .analyst-card-mini {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s, border-color .2s;
     }
-    .criteria-group-label::after {
+    .analyst-card-mini:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,230,0,.5);
+      box-shadow: 0 12px 32px rgba(0,0,0,.1);
+    }
+    [data-theme="dark"] .analyst-card-mini:hover { box-shadow: 0 12px 32px rgba(0,0,0,.5); }
+    .analyst-card-mini::before {
       content: '';
-      flex: 1; height: 1px;
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--yellow), #F5C518);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .analyst-card-mini:hover::before { opacity: 1; }
+
+    .mini-header {
+      background: linear-gradient(135deg, var(--navy), #252A42);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mini-header::before {
+      content: '';
+      position: absolute; right: -30px; top: -30px;
+      width: 110px; height: 110px;
+      background: radial-gradient(circle, rgba(255,230,0,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .mini-av {
+      width: 42px; height: 42px;
+      border-radius: 11px;
+      background: var(--yellow);
+      color: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(255,230,0,.25);
+      letter-spacing: -.3px;
+    }
+    .mini-info { flex: 1; min-width: 0; }
+    .mini-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.2px;
+      line-height: 1.2;
+    }
+    .mini-role {
+      font-size: 10.5px;
+      color: rgba(255,255,255,.5);
+      margin-top: 2px;
+      letter-spacing: .02em;
+    }
+    .mini-avg-pill {
+      background: rgba(255,230,0,.12);
+      border: 1px solid rgba(255,230,0,.25);
+      border-radius: 9px;
+      padding: 5px 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+    .mini-avg-val {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--yellow);
+      line-height: 1;
+      letter-spacing: -.4px;
+    }
+    .mini-avg-lbl {
+      font-size: 8.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: rgba(255,230,0,.55);
+    }
+
+    .mini-body {
+      padding: 14px 18px 16px;
+    }
+    .mini-bar-wrap {
+      height: 6px;
+      background: var(--bg);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    [data-theme="dark"] .mini-bar-wrap { background: rgba(255,255,255,.06); }
+    .mini-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--yellow), #F5C518);
+      border-radius: 6px;
+      transition: width .35s cubic-bezier(.4,0,.2,1);
+    }
+    .mini-categories {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .mini-cat {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    [data-theme="dark"] .mini-cat { background: rgba(255,255,255,.04); }
+    .mini-cat-icon { font-size: 13px; line-height: 1; }
+    .mini-cat-info { flex: 1; min-width: 0; }
+    .mini-cat-lbl {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .mini-cat-val {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .mini-cat-val.empty { color: var(--muted); opacity: .55; }
+
+    .mini-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+    .mini-comment-flag {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: -.05px;
+    }
+    .mini-comment-flag.has {
+      color: var(--green);
+    }
+    .mini-comment-flag.has::before { content: '💬'; }
+    .mini-comment-flag.empty::before { content: '○'; opacity: .5; }
+    .mini-cta {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--yellow);
+      background: var(--navy);
+      padding: 6px 12px;
+      border-radius: 7px;
+      letter-spacing: -.1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: transform .2s;
+    }
+    .analyst-card-mini:hover .mini-cta { transform: translateX(2px); }
+
+    /* ── MODAL DE AVALIAÇÃO ── */
+    .eval-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(8, 10, 20, .72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: evalFadeIn .22s ease-out;
+    }
+    .eval-overlay.open { display: flex; }
+    @keyframes evalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .eval-modal {
+      background: var(--surface);
+      border-radius: 18px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.4);
+      max-width: 620px;
+      width: 100%;
+      max-height: 92vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: evalSlideUp .28s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes evalSlideUp { from { opacity: 0; transform: translateY(20px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .eval-modal-head {
+      background: linear-gradient(135deg, var(--navy), #252A42);
+      padding: 22px 26px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .eval-modal-head::before {
+      content: '';
+      position: absolute; right: -40px; top: -40px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(255,230,0,.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .eval-modal-av {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: var(--yellow);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 6px 16px rgba(255,230,0,.3);
+      flex-shrink: 0;
+    }
+    .eval-modal-info { flex: 1; min-width: 0; position: relative; }
+    .eval-modal-name {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -.4px;
+      line-height: 1.15;
+    }
+    .eval-modal-role {
+      font-size: 12px;
+      color: rgba(255,255,255,.5);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+    .eval-modal-tl {
+      font-size: 10px;
+      font-weight: 800;
+      color: rgba(255,230,0,.6);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .eval-modal-close {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.7);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all .15s;
+      position: relative;
+      z-index: 1;
+    }
+    .eval-modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+    .eval-modal-avg-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,230,0,.06);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 26px;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .eval-modal-avg-banner { background: rgba(255,230,0,.04); }
+    .eval-modal-avg-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .eval-modal-avg-num {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -.7px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .eval-modal-body {
+      padding: 18px 26px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .eval-section {
+      margin-bottom: 22px;
+    }
+    .eval-section-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .eval-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
       background: var(--border);
     }
-    .criteria-group-label:first-child { padding-top: 0; }
-    .criteria-group-label .group-icon { font-size: 12px; }
+    .eval-section-icon { font-size: 14px; }
 
+    .eval-comment-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      transition: border-color .15s;
+    }
+    [data-theme="dark"] .eval-comment-textarea { background: rgba(255,255,255,.04); }
+    .eval-comment-textarea:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,230,0,.12); }
+    .eval-comment-textarea::placeholder { color: var(--muted); font-weight: 500; opacity: .7; }
+    .eval-comment-hint {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .eval-comment-counter {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.1px;
+    }
+
+    .eval-modal-foot {
+      padding: 14px 26px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+    [data-theme="dark"] .eval-modal-foot { background: rgba(0,0,0,.15); }
+    .eval-save-status {
+      margin-right: auto;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--green);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 18px;
+    }
+    .eval-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .15s;
+      letter-spacing: -.1px;
+    }
+    .eval-btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    [data-theme="dark"] .eval-btn-secondary { background: rgba(255,255,255,.05); }
+    .eval-btn-secondary:hover { background: var(--surface); border-color: var(--text); }
+    .eval-btn-primary {
+      background: var(--navy);
+      color: var(--yellow);
+    }
+    .eval-btn-primary:hover { background: #2A2D44; transform: translateY(-1px); box-shadow: 0 6px 14px rgba(26,26,46,.2); }
+
+    @media (max-width: 600px) {
+      .eval-modal { border-radius: 14px; max-height: 100vh; height: 100%; }
+      .eval-modal-head { padding: 18px 18px; }
+      .eval-modal-body { padding: 14px 18px; }
+      .eval-modal-foot { padding: 12px 18px; flex-wrap: wrap; }
+      .mini-categories { grid-template-columns: 1fr; }
+    }
+
+    /* ── CRITÉRIOS dentro do modal ── */
     .criteria-row {
       display: grid;
-      grid-template-columns: 1fr auto 36px;
-      align-items: center; gap: 10px;
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(0,0,0,.03);
+      grid-template-columns: 1fr auto 38px;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
     }
-    [data-theme="dark"] .criteria-row { border-bottom-color: rgba(255,255,255,.04); }
     .criteria-row:last-child { border-bottom: none; }
-
-    .criteria-name { font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: -.1px; }
-
-    .stars { display: flex; gap: 3px; }
+    .criteria-name { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -.1px; }
+    .stars { display: flex; gap: 4px; }
     .star {
-      font-size: 18px; cursor: pointer;
-      color: rgba(0,0,0,.12); transition: color .15s, transform .12s;
-      line-height: 1; user-select: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: rgba(0,0,0,.12);
+      transition: color .15s, transform .12s;
+      line-height: 1;
+      user-select: none;
     }
     [data-theme="dark"] .star { color: rgba(255,255,255,.15); }
     .star:hover { transform: scale(1.25); color: rgba(255,230,0,.5); }
     .star.filled { color: var(--yellow); filter: drop-shadow(0 0 3px rgba(255,230,0,.35)); }
-
     .score-lbl {
-      font-size: 11px; font-weight: 800; color: var(--text);
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text);
       text-align: right;
       font-variant-numeric: tabular-nums;
     }
     .score-lbl.empty { color: var(--border); font-weight: 600; }
-
-    /* SAVE STATUS */
-    .save-strip {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 18px;
-      border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-    .save-status { font-size: 11px; color: var(--green); min-height: 14px; }
 
     /* SUMMARY — Leaderboard style */
     .summary-table {
@@ -531,12 +928,15 @@
     </div>
   </div>
 
-  <div class="section-label">Avaliação detalhada</div>
+  <div class="section-label">Avaliações por OPS III · clique para abrir</div>
   <div class="analyst-grid" id="analyst-grid">
     <div style="text-align:center;padding:2rem;color:var(--muted);grid-column:1/-1;">Carregando avaliações...</div>
   </div>
 
 </div>
+
+<!-- MODAL DE AVALIAÇÃO -->
+<div class="eval-overlay" id="eval-overlay" onclick="closeEval()"></div>
 
 <footer>
   <div class="footer-inner">
@@ -560,11 +960,16 @@ tbtn.addEventListener('click', () => {
 });
 
 const ANALYSTS = [
-  { id: 'matheus-campos', name: 'Matheus Campos', initials: 'MC', role: 'Madrugada · OPS III' },
-  { id: 'everton-adriano', name: 'Everton Adriano', initials: 'EA', role: 'Madrugada · OPS III' },
-  { id: 'bruno-costa',     name: 'Bruno Costa',    initials: 'BC', role: 'AM/PM · OPS III' },
-  { id: 'bruno-cardoso',   name: 'Bruno Cardoso',  initials: 'BC', role: 'AM/PM · OPS III' },
-  { id: 'bruna-larissa',   name: 'Bruna Larissa',  initials: 'BL', role: 'AM/PM · OPS III' },
+  // Time Matheus Logan · SSP·20
+  { id: 'matheus-campos',  name: 'Matheus Campos', initials: 'MC', role: 'Madrugada · OPS III', tl: 'Matheus Logan', shift: 'Madrugada' },
+  { id: 'gabriela',        name: 'Gabriela',       initials: 'GB', role: 'Madrugada · OPS III', tl: 'Matheus Logan', shift: 'Madrugada' },
+  { id: 'bruno-costa',     name: 'Bruno Costa',    initials: 'BC', role: 'AM/PM · OPS III',     tl: 'Matheus Logan', shift: 'AM/PM' },
+  { id: 'bruno-cardoso',   name: 'Bruno Cardoso',  initials: 'BC', role: 'AM/PM · OPS III',     tl: 'Matheus Logan', shift: 'AM/PM' },
+  { id: 'bruna-larissa',   name: 'Bruna Larissa',  initials: 'BL', role: 'AM/PM · OPS III',     tl: 'Matheus Logan', shift: 'AM/PM' },
+  // Time Juliana Godinho · SSP·20 + SSP·51
+  { id: 'everton-adriano', name: 'Everton Adriano',initials: 'EA', role: 'Madrugada · SSP·51',  tl: 'Juliana Godinho', shift: 'Madrugada' },
+  { id: 'caio-leme',       name: 'Caio Leme',      initials: 'CL', role: 'SD · OPS III',        tl: 'Juliana Godinho', shift: 'SD' },
+  { id: 'gislene-gomes',   name: 'Gislene Gomes',  initials: 'GG', role: 'SD · OPS III',        tl: 'Juliana Godinho', shift: 'SD' },
 ];
 
 const CRITERIA_OPS = [
@@ -618,18 +1023,26 @@ function setStar(analystId, criteriaId, val) {
     if (s) s.className = 'star'+(n<=val?' filled':'');
   }
   const lbl = document.getElementById(`lbl-${analystId}-${criteriaId}`);
-  if (lbl) lbl.textContent = val+'/5';
-  const avgEl = document.getElementById(`avg-${analystId}`);
-  if (avgEl) {
+  if (lbl) {
+    lbl.textContent = val+'/5';
+    lbl.classList.remove('empty');
+  }
+  // Atualiza média no modal
+  const avgEl = document.getElementById('eval-modal-avg');
+  if (avgEl && currentEvalId === analystId) {
     const a = avgAll(perfData[analystId]);
     avgEl.textContent = a || '—';
   }
 
   savePerf(perfData);
   updateSummary();
+  refreshMiniCard(analystId);
 
-  const status = document.getElementById('status-'+analystId);
-  if (status) { status.textContent = '✓ Salvo'; setTimeout(()=>status.textContent='', 2000); }
+  const status = document.getElementById('eval-save-status');
+  if (status) {
+    status.innerHTML = '✓ Salvo automaticamente';
+    setTimeout(()=>{ if (status) status.innerHTML = ''; }, 1800);
+  }
 }
 
 function starsHtml(analystId, criteriaId, val) {
@@ -638,41 +1051,175 @@ function starsHtml(analystId, criteriaId, val) {
   ).join('');
 }
 
-function buildCard(analyst) {
+// ── MINI CARD (preview no grid) ──
+function buildMiniCard(analyst) {
   const scores = perfData[analyst.id] || {};
-  const a = avgAll(scores) || '—';
-
-  const section = (label, criteria, icon) =>
-    `<div class="criteria-group-label"><span class="group-icon">${icon}</span>${label}</div>` +
-    criteria.map(c => `
-      <div class="criteria-row">
-        <span class="criteria-name">${c.label}</span>
-        <div class="stars">${starsHtml(analyst.id, c.id, scores[c.id]||0)}</div>
-        <span class="score-lbl${scores[c.id]?'':'  empty'}" id="lbl-${analyst.id}-${c.id}">${scores[c.id]?scores[c.id]+'/5':'—'}</span>
-      </div>`).join('');
+  const a = avgAll(scores);
+  const aDisplay = a || '—';
+  const opsAvg = avg(scores, CRITERIA_OPS.map(c=>c.id));
+  const dnaAvg = avg(scores, CRITERIA_DNA.map(c=>c.id));
+  const pct = a ? (parseFloat(a)/5*100).toFixed(0) : 0;
+  const hasComment = !!(scores.comentario && scores.comentario.trim());
 
   return `
-    <div class="analyst-card">
-      <div class="analyst-header">
-        <div class="analyst-av">${analyst.initials}</div>
-        <div>
-          <div class="analyst-name">${analyst.name}</div>
-          <div class="analyst-role">${analyst.role}</div>
+    <div class="analyst-card-mini" id="mini-${analyst.id}" onclick="openEval('${analyst.id}')">
+      <div class="mini-header">
+        <div class="mini-av">${analyst.initials}</div>
+        <div class="mini-info">
+          <div class="mini-name">${analyst.name}</div>
+          <div class="mini-role">${analyst.role}</div>
         </div>
-        <div class="analyst-avg">
-          <div class="analyst-avg-val" id="avg-${analyst.id}">${a}</div>
-          <div class="analyst-avg-lbl">Média</div>
+        <div class="mini-avg-pill">
+          <div class="mini-avg-val">${aDisplay}</div>
+          <div class="mini-avg-lbl">Média</div>
         </div>
       </div>
-      <div class="analyst-body">
-        ${section('Critérios Operacionais', CRITERIA_OPS, '⚙️')}
-        ${section('DNAs Mercado Livre', CRITERIA_DNA, '🧬')}
-      </div>
-      <div class="save-strip">
-        <span class="save-status" id="status-${analyst.id}"></span>
+      <div class="mini-body">
+        <div class="mini-bar-wrap"><div class="mini-bar" style="width:${pct}%"></div></div>
+        <div class="mini-categories">
+          <div class="mini-cat">
+            <span class="mini-cat-icon">⚙️</span>
+            <div class="mini-cat-info">
+              <div class="mini-cat-lbl">Ops</div>
+              <div class="mini-cat-val ${opsAvg?'':'empty'}">${opsAvg || '—'}</div>
+            </div>
+          </div>
+          <div class="mini-cat">
+            <span class="mini-cat-icon">🧬</span>
+            <div class="mini-cat-info">
+              <div class="mini-cat-lbl">DNAs</div>
+              <div class="mini-cat-val ${dnaAvg?'':'empty'}">${dnaAvg || '—'}</div>
+            </div>
+          </div>
+        </div>
+        <div class="mini-footer">
+          <span class="mini-comment-flag ${hasComment?'has':'empty'}">${hasComment?'Tem observações':'Sem observações'}</span>
+          <span class="mini-cta">Avaliar →</span>
+        </div>
       </div>
     </div>`;
 }
+
+function refreshMiniCard(analystId) {
+  const analyst = ANALYSTS.find(a => a.id === analystId);
+  if (!analyst) return;
+  const el = document.getElementById('mini-'+analystId);
+  if (!el) return;
+  el.outerHTML = buildMiniCard(analyst);
+}
+
+// ── MODAL DE AVALIAÇÃO ──
+let currentEvalId = null;
+
+function openEval(analystId) {
+  currentEvalId = analystId;
+  const analyst = ANALYSTS.find(a => a.id === analystId);
+  if (!analyst) return;
+  const scores = perfData[analystId] || {};
+  const a = avgAll(scores) || '—';
+
+  const sectionHtml = (label, criteria, icon) =>
+    `<div class="eval-section">
+      <div class="eval-section-title"><span class="eval-section-icon">${icon}</span>${label}</div>
+      ${criteria.map(c => `
+        <div class="criteria-row">
+          <span class="criteria-name">${c.label}</span>
+          <div class="stars">${starsHtml(analystId, c.id, scores[c.id]||0)}</div>
+          <span class="score-lbl${scores[c.id]?'':' empty'}" id="lbl-${analystId}-${c.id}">${scores[c.id]?scores[c.id]+'/5':'—'}</span>
+        </div>
+      `).join('')}
+    </div>`;
+
+  const tlBadge = analyst.tl ? `<div class="eval-modal-tl">TL · ${analyst.tl}</div>` : '';
+  const comment = scores.comentario || '';
+
+  const overlay = document.getElementById('eval-overlay');
+  overlay.innerHTML = `
+    <div class="eval-modal" onclick="event.stopPropagation()">
+      <div class="eval-modal-head">
+        <div class="eval-modal-av">${analyst.initials}</div>
+        <div class="eval-modal-info">
+          <div class="eval-modal-name">${analyst.name}</div>
+          <div class="eval-modal-role">${analyst.role}</div>
+          ${tlBadge}
+        </div>
+        <button class="eval-modal-close" onclick="closeEval()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="eval-modal-avg-banner">
+        <span class="eval-modal-avg-text">Média geral</span>
+        <span class="eval-modal-avg-num" id="eval-modal-avg">${a}</span>
+      </div>
+      <div class="eval-modal-body">
+        ${sectionHtml('Critérios Operacionais', CRITERIA_OPS, '⚙️')}
+        ${sectionHtml('DNAs Mercado Livre', CRITERIA_DNA, '🧬')}
+        <div class="eval-section">
+          <div class="eval-section-title"><span class="eval-section-icon">💬</span>Avaliação geral · observações</div>
+          <textarea class="eval-comment-textarea" id="eval-comment"
+            placeholder="Pontos fortes, áreas de melhoria, observações específicas do quarter. Ex: alta proatividade nos turnos de pico, precisa atenção em DIT etc."
+            maxlength="2000">${comment.replace(/</g,'&lt;')}</textarea>
+          <div class="eval-comment-hint">
+            <span>Salvo localmente + backup Firebase. Visível apenas pra TLs com senha.</span>
+            <span class="eval-comment-counter"><span id="eval-comment-count">${comment.length}</span>/2000</span>
+          </div>
+        </div>
+      </div>
+      <div class="eval-modal-foot">
+        <span class="eval-save-status" id="eval-save-status"></span>
+        <button class="eval-btn eval-btn-secondary" onclick="closeEval()">Fechar</button>
+        <button class="eval-btn eval-btn-primary" onclick="saveComment()">💾 Salvar observações</button>
+      </div>
+    </div>
+  `;
+  overlay.classList.add('open');
+
+  // Auto-counter no textarea
+  const ta = document.getElementById('eval-comment');
+  const counter = document.getElementById('eval-comment-count');
+  if (ta && counter) {
+    ta.addEventListener('input', () => {
+      counter.textContent = ta.value.length;
+    });
+  }
+}
+
+function closeEval() {
+  // Auto-save do comentário se foi alterado
+  if (currentEvalId) {
+    const ta = document.getElementById('eval-comment');
+    if (ta) {
+      const txt = ta.value;
+      const stored = (perfData[currentEvalId] && perfData[currentEvalId].comentario) || '';
+      if (txt !== stored) saveComment(true);
+    }
+  }
+  document.getElementById('eval-overlay').classList.remove('open');
+  currentEvalId = null;
+}
+
+function saveComment(silent) {
+  if (!currentEvalId) return;
+  const ta = document.getElementById('eval-comment');
+  if (!ta) return;
+  if (!perfData[currentEvalId]) perfData[currentEvalId] = {};
+  perfData[currentEvalId].comentario = ta.value;
+  savePerf(perfData);
+  refreshMiniCard(currentEvalId);
+
+  if (!silent) {
+    const status = document.getElementById('eval-save-status');
+    if (status) {
+      status.innerHTML = '✓ Observações salvas';
+      setTimeout(()=>{ if (status) status.innerHTML = ''; }, 2000);
+    }
+  }
+}
+
+// Tecla Esc fecha modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('eval-overlay')?.classList.contains('open')) {
+    closeEval();
+  }
+});
 
 function updateSummary() {
   const table = document.getElementById('summary-table');
@@ -700,9 +1247,9 @@ function updateSummary() {
     const allNum = parseFloat(all) || 0;
     const pct = allNum ? (allNum/5*100).toFixed(0) : 0;
     const avgColor = allNum > 4 ? 'var(--green)' : allNum > 2.5 ? 'var(--text)' : allNum > 0 ? '#E3262F' : 'var(--border)';
-    return `<div class="summary-row">
+    return `<div class="summary-row" onclick="openEval('${a.id}')" style="cursor:pointer;">
       <div class="summary-rank ${rankCls}">${rankIcon}</div>
-      <div class="summary-name"><span class="mini-av">${a.initials}</span>${a.name}</div>
+      <div class="summary-name"><span class="mini-av" style="width:28px;height:28px;font-size:11px;border-radius:7px;">${a.initials}</span>${a.name}</div>
       ${fmt(ops)}${fmt(com)}${fmt(pro)}${fmt(dna)}
       <div class="summary-avg-wrap">
         <div class="summary-avg" style="color:${avgColor}">${all || '—'}</div>
@@ -715,7 +1262,7 @@ function updateSummary() {
 
 function renderAll() {
   perfData = loadPerf();
-  document.getElementById('analyst-grid').innerHTML = ANALYSTS.map(buildCard).join('');
+  document.getElementById('analyst-grid').innerHTML = ANALYSTS.map(buildMiniCard).join('');
   updateSummary();
 }
 
