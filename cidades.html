@@ -1005,11 +1005,18 @@ function process() {
     rows = rows.filter(r => norm(r[detected.colCycle]) === currentCycle);
   }
 
-  // Agrupar por rota → cidade mais frequente
+  // Extrai prefixo da rota: AM1_131_5 → AM1_131, AM1_1 → AM1_1
+  const prefix = full => {
+    const parts = full.split('_');
+    return parts.length >= 2 ? parts[0] + '_' + parts[1] : full;
+  };
+
+  // Agrupa por PREFIXO da rota → cidade mais frequente em TODAS as sub-rotas
   const byRoute = {};
   rows.forEach(r => {
-    const route = norm(r[detected.colRoute]);
-    if (!route) return;
+    const fullRoute = norm(r[detected.colRoute]);
+    if (!fullRoute) return;
+    const route = prefix(fullRoute);
     const city = norm(r[detected.colCity]);
     if (!byRoute[route]) byRoute[route] = {};
     if (city) byRoute[route][city] = (byRoute[route][city] || 0) + 1;
@@ -1025,7 +1032,7 @@ function process() {
 
   const semCidade = result.filter(r => !r.city).length;
   document.getElementById('filterInfo').innerHTML = `<b>${fmtN(result.length)}</b> rotas` + (semCidade > 0 ? ` <span style="color:var(--red);">· ${semCidade} sem cidade</span>` : '');
-  document.getElementById('resultFoot').innerHTML = `${fmtN(result.length)} rotas processadas` + (semCidade > 0 ? ` · <span style="color:var(--red);">${semCidade} rotas ficaram sem cidade (sem registros válidos)</span>` : ' · todas com cidade ✓');
+  document.getElementById('resultFoot').innerHTML = `${fmtN(result.length)} rotas (agrupadas por prefixo)` + (semCidade > 0 ? ` · <span style="color:var(--red);">${semCidade} ficaram sem cidade</span>` : ' · todas com cidade ✓');
 
   renderOutput();
 }
