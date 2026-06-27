@@ -1355,9 +1355,6 @@ function viewLeadership() {
       </div>
     `;
   }
-  return html;
-}
-
   if (currentFilter && !html) {
     html = '<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:48px;margin-bottom:14px;">🔍</div><div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;">Nenhum resultado pra "' + currentFilter + '"</div><div style="font-size:13px;">Tenta outro termo, ou ' + '<a href="#" onclick="clearFilter();return false;" style="color:var(--yellow);font-weight:700;text-decoration:underline;">limpa o filtro</a>.</div></div>';
   }
