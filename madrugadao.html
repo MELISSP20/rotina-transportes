@@ -69,11 +69,17 @@
     .topbar-dropdown-btn.open { background: rgba(255,230,0,.1); color: var(--yellow); border-color: rgba(255,230,0,.25); }
     .topbar-dropdown-btn.open svg { opacity: 1; }
     .topbar-dropdown-btn.open .chevron { transform: rotate(180deg); opacity: 1; }
-  .topbar-dropdown-btn.active-link { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
-  .topbar-dropdown-btn.active-link svg { opacity: 1; }
-  .topbar-nav-link.active-link { background: rgba(255,230,0,.12); color: var(--yellow); border-color: rgba(255,230,0,.3); }
-  .topbar-nav-link.active-link svg { opacity: 1; }
-  .topbar-dropdown-item.active-link { background: rgba(255,230,0,.08); color: var(--yellow); font-weight: 800; }
+  /* topbar-dropdown-item link colors */
+  a.topbar-dropdown-item:link,
+  a.topbar-dropdown-item:visited { color: rgba(255,255,255,.75); }
+  a.topbar-dropdown-item:hover { color: var(--yellow); }
+  /* Active link states — !important pra garantir prioridade */
+  .topbar-dropdown-btn.active-link { background: rgba(255,230,0,.12) !important; color: var(--yellow) !important; border-color: rgba(255,230,0,.3) !important; }
+  .topbar-dropdown-btn.active-link svg { opacity: 1 !important; }
+  .topbar-nav-link.active-link { background: rgba(255,230,0,.12) !important; color: var(--yellow) !important; border-color: rgba(255,230,0,.3) !important; }
+  .topbar-nav-link.active-link svg { opacity: 1 !important; }
+  a.topbar-dropdown-item.active-link:link,
+  a.topbar-dropdown-item.active-link:visited { background: rgba(255,230,0,.08) !important; color: var(--yellow) !important; font-weight: 800; }
 
     .topbar-dropdown-menu { display: none; position: absolute; top: calc(100% + 9px); right: 0; background: linear-gradient(180deg, #131826 0%, #0E1320 100%); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; min-width: 170px; overflow: hidden; box-shadow: 0 14px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,230,0,.05); z-index: 999; }
     .topbar-dropdown-menu.open { display: block; animation: menuFade .15s ease-out; }
@@ -634,9 +640,9 @@
         </div>
         <div class="member-card">
           <div class="member-card-top">
-            <div class="member-avatar">EA</div>
+            <div class="member-avatar">GB</div>
             <div class="member-info">
-              <div class="member-name">Everton Adriano</div>
+              <div class="member-name">Gabriela</div>
               <div class="member-role">OPS III · Operações</div>
             </div>
             <span class="member-badge madrugada">Madrugada</span>
@@ -709,10 +715,67 @@
 
   <!-- TEAM JG -->
   <div class="team-panel" id="panel-jg">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;text-align:center;">
-      <div style="font-size:32px;margin-bottom:12px;">👥</div>
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Equipe Juliana Godinho · PM/SD</div>
-      <div style="font-size:13px;color:var(--muted);">OPS III serão adicionados em breve.</div>
+    <div class="shift-block">
+      <div class="shift-header">
+        <span class="shift-pill madrugada">🌙 Madrugada</span>
+        <div class="shift-line"></div>
+      </div>
+      <div class="member-grid">
+        <div class="member-card">
+          <div class="member-card-top">
+            <div class="member-avatar">EA</div>
+            <div class="member-info">
+              <div class="member-name">Everton Adriano</div>
+              <div class="member-role">OPS III · Operações</div>
+            </div>
+            <span class="member-badge madrugada">Madrugada</span>
+          </div>
+          <div class="member-tasks">
+              <div class="member-tasks-lbl">Funções principais</div>
+            <div class="task-chip">Focal Telemetria</div>
+            <div class="task-chip">Rodízio semanal — distribuição</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shift-block">
+      <div class="shift-header">
+        <span class="shift-pill am">☀️ PM/SD</span>
+        <div class="shift-line"></div>
+      </div>
+      <div class="member-grid">
+        <div class="member-card shift-am">
+          <div class="member-card-top">
+            <div class="member-avatar am">CL</div>
+            <div class="member-info">
+              <div class="member-name">Caio Leme</div>
+              <div class="member-role">OPS III · Operações</div>
+            </div>
+            <span class="member-badge am">PM/SD</span>
+          </div>
+          <div class="member-tasks">
+              <div class="member-tasks-lbl">Funções principais</div>
+            <div class="task-chip">Suporte PM/SD</div>
+            <div class="task-chip">Rodízio distribuição semanal</div>
+          </div>
+        </div>
+        <div class="member-card shift-am">
+          <div class="member-card-top">
+            <div class="member-avatar am">GO</div>
+            <div class="member-info">
+              <div class="member-name">Gislene Oliveira</div>
+              <div class="member-role">OPS III · Operações</div>
+            </div>
+            <span class="member-badge am">PM/SD</span>
+          </div>
+          <div class="member-tasks">
+              <div class="member-tasks-lbl">Funções principais</div>
+            <div class="task-chip">Suporte PM/SD</div>
+            <div class="task-chip">Rodízio distribuição semanal</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
