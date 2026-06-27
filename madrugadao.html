@@ -633,6 +633,8 @@
     [data-theme="dark"] .shift-group-pill.madrugada { background: rgba(255,255,255,.08); color: rgba(255,255,255,.8); }
     .shift-group-pill.am { background: rgba(245,158,11,.12); color: #B45309; }
     [data-theme="dark"] .shift-group-pill.am { background: rgba(245,158,11,.16); color: #FCD34D; }
+    .shift-group-pill.ampm { background: rgba(245,158,11,.12); color: #B45309; }
+    [data-theme="dark"] .shift-group-pill.ampm { background: rgba(245,158,11,.16); color: #FCD34D; }
     .shift-group-pill.pm { background: rgba(124,58,237,.1); color: var(--purple); }
     [data-theme="dark"] .shift-group-pill.pm { background: rgba(124,58,237,.16); color: #C4B5FD; }
     .shift-group-pill.sd { background: rgba(0,166,80,.1); color: #047857; }
@@ -681,6 +683,7 @@
     .member-card-new.madrugada { --member-color: var(--navy); }
     [data-theme="dark"] .member-card-new.madrugada { --member-color: var(--yellow); }
     .member-card-new.am { --member-color: #F59E0B; }
+    .member-card-new.ampm { --member-color: #F59E0B; }
     .member-card-new.pm { --member-color: var(--purple); }
     .member-card-new.sd { --member-color: var(--green); }
 
@@ -792,6 +795,7 @@
     .shift-column.madrugada { --shift-color: var(--navy); }
     [data-theme="dark"] .shift-column.madrugada { --shift-color: var(--yellow); }
     .shift-column.am { --shift-color: #F59E0B; }
+    .shift-column.ampm { --shift-color: #F59E0B; }
     .shift-column.pm { --shift-color: var(--purple); }
     .shift-column.sd { --shift-color: var(--green); }
     .shift-column-head {
@@ -1034,7 +1038,7 @@
       <div>
         <div class="header-eyebrow">TRANSPORTES <span style="margin:0 7px;opacity:.45;">·</span> LAST MILE <span style="margin:0 7px;opacity:.45;">·</span> SSP·20 + SSP·51</div>
         <div class="header-title">Organograma<span class="header-title-dot">.</span></div>
-        <div class="header-sub">Estrutura da operação · 2 lideranças · 8 OPS III · 4 turnos cobertos</div>
+        <div class="header-sub">Estrutura da operação · 2 lideranças · 8 OPS III · 3 turnos cobertos</div>
       </div>
     </div>
     <div class="header-actions">
@@ -1065,9 +1069,9 @@
       <div class="org-kpi-foot">Lideranças</div>
     </div>
     <div class="org-kpi">
-      <div class="org-kpi-val">4</div>
+      <div class="org-kpi-val">3</div>
       <div class="org-kpi-lbl">Turnos</div>
-      <div class="org-kpi-foot">Madrugada · AM · PM · SD</div>
+      <div class="org-kpi-foot">Madrugada · AM/PM · SD</div>
     </div>
     <div class="org-kpi">
       <div class="org-kpi-val">2</div>
@@ -1142,37 +1146,44 @@ tbtn.addEventListener('click', () => {
 
 // ─── TEAM DATA ───
 const TEAM = [
-  // Matheus team
-  { id:'mc', initials:'MC', name:'Matheus Campos', tl:'ml', tlName:'Matheus Logan', shift:'madrugada', focal:'XPT / ROUT', tags:['Focal XPT','Focal Calibrações ROUT','Rodízio distribuição'] },
+  // Matheus team — Madrugada
+  { id:'mc', initials:'MC', name:'Matheus Campos', tl:'ml', tlName:'Matheus Logan', shift:'madrugada', focal:'XPT / ROUT', tags:['Focal XPT','Focal ROUT','Rodízio distribuição'] },
   { id:'gb', initials:'GB', name:'Gabriela', tl:'ml', tlName:'Matheus Logan', shift:'madrugada', focal:'Telemetria', tags:['Focal Telemetria','Rodízio distribuição'] },
-  { id:'bcosta', initials:'BC', name:'Bruno Costa', tl:'ml', tlName:'Matheus Logan', shift:'am', focal:'DIT', tags:['Focal DIT','Suporte AM/PM','Rodízio distribuição'] },
-  { id:'bcard', initials:'BC', name:'Bruno Cardoso', tl:'ml', tlName:'Matheus Logan', shift:'am', focal:'Nodos', tags:['Focal Nodos','Suporte AM/PM','Rodízio distribuição'] },
-  { id:'bl', initials:'BL', name:'Bruna Larissa', tl:'ml', tlName:'Matheus Logan', shift:'pm', focal:'MEE', tags:['Focal MEE','Rodízio distribuição'] },
-  // Juliana team
-  { id:'ea', initials:'EA', name:'Everton Adriano', tl:'jg', tlName:'Juliana Godinho', shift:'madrugada', focal:'Telemetria', ssp:'SSP·51', tags:['Focal Telemetria','SSP·51 — Sorocaba'] },
-  { id:'cl', initials:'CL', name:'Caio Leme', tl:'jg', tlName:'Juliana Godinho', shift:'sd', focal:'Suporte SD', tags:['Suporte SD','Rodízio distribuição'] },
-  { id:'gg', initials:'GG', name:'Gislene Gomes', tl:'jg', tlName:'Juliana Godinho', shift:'sd', focal:'Suporte SD', tags:['Suporte SD','Rodízio distribuição'] },
+  // Matheus team — AM/PM
+  { id:'bcosta', initials:'BC', name:'Bruno Costa', tl:'ml', tlName:'Matheus Logan', shift:'ampm', focal:'MEE / DIT', tags:['Focal MEE','Focal DIT','Suporte AM/PM','Rodízio distribuição PM/SD'] },
+  { id:'bcard', initials:'BC', name:'Bruno Cardoso', tl:'ml', tlName:'Matheus Logan', shift:'ampm', focal:'DASS / VPA / NODOS', tags:['Focal DASS','Focal VPA','Focal NODOS','Suporte AM/PM','Rodízio distribuição PM/SD'] },
+  { id:'bl', initials:'BL', name:'Bruna Larissa', tl:'ml', tlName:'Matheus Logan', shift:'ampm', focal:'Monitoramento MLP', tags:['Focal Monitoramento MLP','Suporte Treinamentos','Rodízio distribuição PM/SD'] },
+  // Juliana team — Madrugada (SSP·51)
+  { id:'ea', initials:'EA', name:'Everton Adriano', tl:'jg', tlName:'Juliana Godinho', shift:'madrugada', focal:'SSP·51', ssp:'SSP·51', tags:['Focal SSP·51'] },
+  // Juliana team — SD
+  { id:'cl', initials:'CL', name:'Caio Leme', tl:'jg', tlName:'Juliana Godinho', shift:'sd', focal:'FF / Monitoramento', tags:['Focal FF','Monitoramento','Suporte PM/SD/SDE'] },
+  { id:'gg', initials:'GG', name:'Gislene Gomes', tl:'jg', tlName:'Juliana Godinho', shift:'sd', focal:'PNR / Treinamentos', tags:['Focal PNR','Suporte SD e SDE','Focal Treinamentos'] },
 ];
 
 const TLS = [
-  { id:'ml', name:'Matheus Logan', role:'Madrugada · AM · PM', ssp:'SSP·20', shifts:['madrugada','am','pm'] },
+  { id:'ml', name:'Matheus Logan', role:'Madrugada · AM/PM', ssp:'SSP·20', shifts:['madrugada','ampm'] },
   { id:'jg', name:'Juliana Godinho', role:'Madrugada · SD', ssp:'SSP·20 + SSP·51', shifts:['madrugada','sd'] },
 ];
 
 const SHIFTS = [
   { id:'madrugada', label:'Madrugada', emoji:'🌙', hours:'02:30 → 10:30' },
-  { id:'am', label:'AM', emoji:'☀️', hours:'07:00 → 15:20' },
-  { id:'pm', label:'PM', emoji:'🌤️', hours:'07:00 → 15:20' },
+  { id:'ampm', label:'AM / PM', emoji:'☀️', hours:'07:00 → 15:20' },
   { id:'sd', label:'SD', emoji:'🌅', hours:'15:20 → 23:20' },
 ];
 
 const FOCUS_CATEGORIES = [
-  { id:'dit', label:'DIT', icon:'📊', color:'#F0B429', desc:'Análise de pacotes em atraso (Delayed In Transit)', match: m => m.focal.includes('DIT') },
-  { id:'mee', label:'MEE', icon:'⚡', color:'#3483FA', desc:'Mercado Envios Extra — modal especial', match: m => m.focal.includes('MEE') },
-  { id:'nodos', label:'Nodos', icon:'🔗', color:'#7C3AED', desc:'Pontos intermediários da malha logística', match: m => m.focal.includes('Nodos') },
-  { id:'telemetria', label:'Telemetria', icon:'📡', color:'#16A34A', desc:'Monitoramento e tracking de operação', match: m => m.focal.includes('Telemetria') },
-  { id:'xpt', label:'XPT / ROUT', icon:'🚛', color:'#E3262F', desc:'Calibrações de rota e validações', match: m => m.focal.includes('XPT') || m.focal.includes('ROUT') },
-  { id:'support', label:'Suporte por turno', icon:'🤝', color:'#1A1A2E', desc:'Apoio a operações específicas do turno', match: m => m.focal.includes('Suporte') },
+  { id:'dit', label:'DIT', icon:'📊', color:'#F0B429', desc:'Análise de pacotes em atraso (Delayed In Transit)', match: m => m.tags.some(t => t.includes('DIT')) },
+  { id:'mee', label:'MEE', icon:'⚡', color:'#3483FA', desc:'Mercado Envios Extra — modal especial', match: m => m.tags.some(t => t.includes('MEE')) },
+  { id:'nodos', label:'NODOS', icon:'🔗', color:'#7C3AED', desc:'Foco em malha intermediária de operação', match: m => m.tags.some(t => t.includes('NODOS')) },
+  { id:'dass', label:'DASS / VPA', icon:'🎯', color:'#9333EA', desc:'Validações por amostragem e análise de dados', match: m => m.tags.some(t => t.includes('DASS') || t.includes('VPA')) },
+  { id:'telemetria', label:'Telemetria', icon:'📡', color:'#16A34A', desc:'Monitoramento e tracking de operação', match: m => m.tags.some(t => t.includes('Telemetria')) },
+  { id:'xpt', label:'XPT / ROUT', icon:'🚛', color:'#E3262F', desc:'Calibrações de rota e validações', match: m => m.tags.some(t => t.includes('XPT') || t.includes('ROUT')) },
+  { id:'monit', label:'Monitoramento MLP', icon:'👀', color:'#0EA5E9', desc:'Monitoramento de parceiros logísticos', match: m => m.tags.some(t => t.includes('Monitoramento MLP')) },
+  { id:'ff', label:'FF', icon:'🔄', color:'#06B6D4', desc:'Foco em FF', match: m => m.tags.some(t => t.includes('Focal FF')) },
+  { id:'pnr', label:'PNR', icon:'📦', color:'#EC4899', desc:'Pacotes não recebidos / Pacotes não retirados', match: m => m.tags.some(t => t.includes('PNR')) },
+  { id:'training', label:'Treinamentos', icon:'🎓', color:'#FB923C', desc:'Capacitação e treinamento de equipes', match: m => m.tags.some(t => t.includes('Treinamento')) },
+  { id:'ssp51', label:'SSP·51', icon:'🏢', color:'#1A1A2E', desc:'Operação dedicada à facility SSP·51', match: m => m.tags.some(t => t.includes('SSP·51')) },
+  { id:'support', label:'Suporte por turno', icon:'🤝', color:'#64748B', desc:'Apoio a operações específicas dentro do turno', match: m => m.tags.some(t => t.startsWith('Suporte')) },
 ];
 
 // ─── RENDER FUNCTIONS ───
