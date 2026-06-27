@@ -633,45 +633,51 @@ setInterval(updateClock, 1000);
 
 // ── TRIVIA CAROUSEL ──
 const TRIVIAS = [
-  // Operação
+  // Sequência intercalada — sem 2 do mesmo tipo seguidas
   'A cobertura de rotas atende <b>9 cidades</b> do interior paulista — de Sorocaba a Tapiraí.',
-  'A <b>rota mais distante do SSP·20</b> vai pra Tapiraí — cerca de 58km de Sorocaba.',
-  '<b>Top 3 cidades</b> por volume: Sorocaba, Votorantim e Itu.',
-  'Salto de Pirapora é a cidade-base de pelo menos <b>7 rotas</b> dedicadas.',
-  // Sorocaba — agora todas mencionam o nome da cidade
-  '<b>Sorocaba</b> é berço da indústria têxtil brasileira desde 1881.',
-  '<b>Sorocaba</b> foi apelidada de <b>Manchester Paulista</b> no século XIX pela força industrial.',
-  '<b>Sorocaba</b> foi fundada em 1654 — uma das cidades mais antigas do interior paulista.',
-  // ML / logística (glossário)
-  'Mercado Livre opera <b>last mile</b> em mais de 96% do território brasileiro.',
-  '<b>Last Mile</b> = última etapa da jornada de uma encomenda até a casa do destinatário.',
+  '<b>Matheus Logan</b> fez <b>26 commits de madrugada</b> — quem precisa dormir quando tem código?',
   '<b>MEE</b> significa Mercado Envios Extra — não confundir com Express.',
-  '<b>DIT</b> = Delayed In Transit. Métrica chave de qualidade operacional.',
-  '<b>ORH</b> = Outbound Route Hours. Mede o tempo total de uma rota em campo.',
-  '<b>Descontainerizado</b> é um pacote retirado de rota.',
-  // Turnos
-  'O turno <b>Madrugada</b> começa às 02:30 — fecha às 10:30 com o passe de bastão.',
-  'O turno <b>SD</b> (Same Day) opera entre 15:20 e 23:20 todos os dias.',
-  // Meta site — construção
-  'Este site nasceu em <b>17 de junho de 2026</b> e já tem 10 páginas.',
-  'Tem mais de <b>11.000 linhas de código</b> entre HTML, JS e CSS.',
-  'Já passou por mais de <b>160 commits</b> em pouco mais de 10 dias de desenvolvimento.',
-  '<b>26 commits</b> foram feitos de madrugada — vida de TL noturno.',
-  // Meta site — features
-  'O <b>Query Hub</b> reúne dezenas de queries SQL prontas pro BigQuery.',
+  '<b>Sorocaba</b> é berço da indústria têxtil brasileira desde 1881.',
+  'O Assignments nasceu às <b>06:14 da manhã</b> — Matheus abriu o editor antes do café.',
   'Todas as páginas têm <b>modo escuro</b> — clica na lua/sol no canto superior direito.',
-  'As tarefas da Rotina podem ser <b>arrastadas e reordenadas</b> com drag & drop.',
-  'Os checks da Rotina <b>sincronizam em tempo real</b> entre todos os OPS III via Firebase.',
-  'O <b>Resumo de produtos</b> reconhece mais de 70 marcas e 50 categorias.',
-  'O <b>Cidades por Rota</b> agrupa rotas por prefixo — <b>AM1_131_5</b> e <b>AM1_131_8</b> viram <b>AM1_131</b>.',
-  // Meta site — design
   'A cor amarela do site é o <b>Yellow Mercado Livre</b> oficial — #FFE600.',
+  'No primeiro dia, foram <b>58 commits</b> em poucas horas. Calma, Matheus.',
+  'O turno <b>Madrugada</b> começa às 02:30 — fecha às 10:30 com o passe de bastão.',
+  'A <b>rota mais distante do SSP·20</b> vai pra Tapiraí — cerca de 58km de Sorocaba.',
+  'Matheus matou <b>54 bugs</b> pessoalmente — criou e exterminou cada um.',
+  '<b>DIT</b> = Delayed In Transit. Métrica chave de qualidade operacional.',
+  'Este site nasceu em <b>17 de junho de 2026</b> e já tem 10 páginas.',
+  'Matheus é o tipo de TL que, ao invés de pedir uma planilha pro time, <b>constrói o sistema inteiro</b> do zero.',
+  '<b>Sorocaba</b> foi apelidada de <b>Manchester Paulista</b> no século XIX pela força industrial.',
+  'As tarefas da Rotina podem ser <b>arrastadas e reordenadas</b> com drag & drop.',
+  'Matheus construiu este site nas brechas do turno — entre validar XPT e mandar report.',
+  '<b>Top 3 cidades</b> por volume: Sorocaba, Votorantim e Itu.',
+  '<b>Last Mile</b> = última etapa da jornada de uma encomenda até a casa do destinatário.',
+  'Matheus reescreveu o header desta página <b>18 vezes</b>. Tem padrões, gente.',
   'A cor escura é o <b>navy</b> #1A1A2E — base do contraste tipográfico do site.',
+  'O <b>Query Hub</b> reúne dezenas de queries SQL prontas pro BigQuery.',
+  'O dashboard <b>ORH</b> foi refeito do zero <b>4 vezes</b> — as três primeiras versões não eram boas o suficiente.',
+  'Tem mais de <b>11.000 linhas de código</b> entre HTML, JS e CSS.',
+  'O turno <b>SD</b> (Same Day) opera entre 15:20 e 23:20 todos os dias.',
+  'Matheus trabalhou em <b>6 dias diferentes</b> pra entregar tudo isso. Só 6.',
+  '<b>Descontainerizado</b> é um pacote retirado de rota.',
+  'Salto de Pirapora é a cidade-base de pelo menos <b>7 rotas</b> dedicadas.',
+  'Matheus escreveu <b>19 mil linhas</b> e jogou fora <b>8 mil</b>. Quase metade virou refactor.',
+  'Os checks da Rotina <b>sincronizam em tempo real</b> entre todos os OPS III via Firebase.',
+  '<b>Sorocaba</b> foi fundada em 1654 — uma das cidades mais antigas do interior paulista.',
+  'Matheus testou <b>4 versões do título "Assignments."</b> no Hub. Esta é a vencedora.',
   'O ponto amarelo no final de <b>Assignments.</b> é a assinatura visual da marca.',
-  'O <b>header desta tela inicial</b> passou por mais de 18 iterações até chegar aqui.',
+  '<b>ORH</b> = Outbound Route Hours. Mede o tempo total de uma rota em campo.',
+  'A página <b>Cidades por Rota</b> foi simplificada três vezes porque Matheus achou que "tinha gráfico demais".',
+  'O <b>Resumo de produtos</b> reconhece mais de 70 marcas e 50 categorias.',
+  'Mercado Livre opera <b>last mile</b> em mais de 96% do território brasileiro.',
+  'Filosofia Matheus: <b>se não funciona bem, não fica.</b> Foi assim que tudo aqui foi parar.',
+  'Já passou por mais de <b>160 commits</b> em pouco mais de 10 dias de desenvolvimento.',
+  'O <b>Cidades por Rota</b> agrupa rotas por prefixo — <b>AM1_131_5</b> e <b>AM1_131_8</b> viram <b>AM1_131</b>.',
+  'Matheus tirou o botão "Carregar exemplo" do Resumo de Produtos. Disse que <b>confundia</b>. Confundia quem, Matheus?',
   'O pulso verde do <b>● AO VIVO</b> bate a cada 2,2 segundos — coração do site.',
-  // Meta site — carrossel
-  'O carrossel que você está vendo agora tem <b>30 curiosidades</b> rotativas.',
+  'O subtítulo "14 pendências críticas no turno" que ficou no header? Matheus mandou tirar porque <b>"tava feio"</b>.',
+  'O carrossel que você está vendo agora tem <b>44 curiosidades</b> rotativas.',
 ];
 
 let triviaIndex = 0;
