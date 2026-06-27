@@ -191,9 +191,11 @@
     min-height: 86px;
     display: flex;
     align-items: center;
+    gap: 14px;
     position: relative;
   }
   .trivia-text {
+    flex: 1;
     font-size: 22px;
     font-weight: 500;
     line-height: 1.45;
@@ -203,6 +205,35 @@
   }
   .trivia-text.fading { opacity: 0; transform: translateY(8px); }
   .trivia-text b { color: var(--yellow); font-weight: 800; }
+
+  /* Navigation arrows */
+  .trivia-arrow {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.7);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+    font-family: inherit;
+    padding: 0;
+    padding-bottom: 2px;
+  }
+  .trivia-arrow:hover {
+    background: var(--yellow);
+    color: var(--navy);
+    border-color: var(--yellow);
+    transform: scale(1.08);
+    box-shadow: 0 4px 14px rgba(255,230,0,.35);
+  }
+  .trivia-arrow:active { transform: scale(.95); }
   .trivia-dots {
     display: flex;
     gap: 6px;
@@ -423,7 +454,8 @@
     .hub-sub { font-size: 11px; letter-spacing: .1em; }
     .hub-trivia { padding: 26px 24px; border-radius: 18px; }
     .trivia-text { font-size: 17px; }
-    .trivia-content { min-height: 72px; }
+    .trivia-content { min-height: 72px; gap: 10px; }
+    .trivia-arrow { width: 30px; height: 30px; font-size: 18px; }
     .hub-card { padding: 18px 16px; border-radius: 14px; }
     .hub-card-icon { font-size: 26px; }
     .hub-card-title { font-size: 14px; }
@@ -534,7 +566,9 @@
     <div class="hub-trivia">
       <div class="trivia-eyebrow">✨ Você sabia?</div>
       <div class="trivia-content">
+        <button class="trivia-arrow trivia-arrow-prev" onclick="prevTrivia()" aria-label="Anterior">‹</button>
         <div class="trivia-text" id="trivia-text">…</div>
+        <button class="trivia-arrow trivia-arrow-next" onclick="nextTriviaManual()" aria-label="Próxima">›</button>
       </div>
       <div class="trivia-dots" id="trivia-dots"></div>
     </div>
@@ -751,6 +785,16 @@ function nextTrivia() {
   showTrivia((triviaIndex + 1) % TRIVIAS.length);
 }
 
+function nextTriviaManual() {
+  nextTrivia();
+  resetTriviaTimer();
+}
+
+function prevTrivia() {
+  showTrivia((triviaIndex - 1 + TRIVIAS.length) % TRIVIAS.length);
+  resetTriviaTimer();
+}
+
 function jumpTrivia(dotIdx) {
   const targetIdx = Math.floor(dotIdx * (TRIVIAS.length / DOT_COUNT));
   showTrivia(targetIdx);
@@ -761,6 +805,14 @@ function resetTriviaTimer() {
   if (triviaTimer) clearInterval(triviaTimer);
   triviaTimer = setInterval(nextTrivia, 8000);
 }
+
+// Keyboard arrows
+document.addEventListener('keydown', (e) => {
+  // Não interceptar quando estiver em input/textarea
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowLeft') prevTrivia();
+  else if (e.key === 'ArrowRight') nextTriviaManual();
+});
 
 // Iniciar com um trivia aleatório
 triviaIndex = Math.floor(Math.random() * TRIVIAS.length);
