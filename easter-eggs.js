@@ -297,6 +297,174 @@
     .ee-progress-item.found { color: #FFE600; background: rgba(255,230,0,.06); border-color: rgba(255,230,0,.2); }
     .ee-progress-item.locked { color: rgba(255,255,255,.32); }
     .ee-progress-item-emoji { font-size: 12px; }
+
+    /* ━━━ MEE · DELIVERY RUSH ━━━ */
+    .ee-mee-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 99996;
+      pointer-events: none;
+      overflow: hidden;
+      animation: eeFadeIn .35s ease-out;
+    }
+    .ee-mee-stage.fading {
+      animation: eeFadeOut .55s ease-in forwards;
+    }
+    @keyframes eeFadeOut { to { opacity: 0; } }
+
+    /* CAMINHÃO atravessando a tela */
+    .ee-mee-truck {
+      position: absolute;
+      bottom: 36px;
+      left: -360px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      animation: eeTruckCross 5.5s cubic-bezier(.22, .61, .36, 1) forwards;
+      filter: drop-shadow(0 18px 32px rgba(0,0,0,.32));
+    }
+    @keyframes eeTruckCross {
+      0%   { left: -360px; transform: translateY(0); }
+      8%   { transform: translateY(-2px); }
+      12%  { transform: translateY(0); }
+      24%  { transform: translateY(-2px); }
+      28%  { transform: translateY(0); }
+      100% { left: calc(100vw + 80px); transform: translateY(0); }
+    }
+    .ee-mee-truck-cab {
+      font-size: 86px;
+      line-height: 1;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,.25));
+      order: 2;
+    }
+    .ee-mee-truck-cargo {
+      background: linear-gradient(135deg, #1A1A2E 0%, #2A2D44 100%);
+      color: #FFE600;
+      border-radius: 10px 10px 12px 12px;
+      padding: 8px 14px 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.4), inset 0 -3px 8px rgba(0,0,0,.2);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      order: 1;
+      height: 72px;
+      border-bottom: 6px solid #14172B;
+    }
+    .ee-mee-truck-cargo::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 12px;
+      right: 12px;
+      height: 12px;
+      background:
+        radial-gradient(circle 7px at 14px 6px, #1A1A2E 50%, transparent 51%),
+        radial-gradient(circle 7px at calc(100% - 14px) 6px, #1A1A2E 50%, transparent 51%);
+    }
+    .ee-mee-cargo-label {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .22em;
+      margin-bottom: 1px;
+      background: #FFE600;
+      color: #1A1A2E;
+      padding: 1px 7px;
+      border-radius: 3px;
+    }
+    .ee-mee-cargo-pack {
+      font-size: 14px;
+      line-height: 1;
+      animation: eeCargoShake 0.35s ease-in-out infinite alternate;
+    }
+    .ee-mee-cargo-pack:nth-child(3) { animation-delay: .12s; }
+    .ee-mee-cargo-pack:nth-child(4) { animation-delay: .24s; }
+    @keyframes eeCargoShake {
+      from { transform: translateY(0) rotate(-1deg); }
+      to   { transform: translateY(-1px) rotate(1deg); }
+    }
+
+    /* PACOTES caindo */
+    .ee-mee-falling-pack {
+      position: absolute;
+      top: -50px;
+      line-height: 1;
+      animation: eeFallingPack 2s cubic-bezier(.55, .085, .68, .53) forwards;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,.2));
+    }
+    @keyframes eeFallingPack {
+      0%   { top: -60px; transform: rotate(0deg) scale(.6); opacity: 0; }
+      10%  { opacity: 1; }
+      85%  { transform: rotate(var(--ee-rot, 360deg)) scale(1); opacity: 1; }
+      90%  { transform: translateY(-12px) rotate(var(--ee-rot, 360deg)) scale(1.1); opacity: 1; }
+      100% { top: calc(100vh - 80px); transform: rotate(var(--ee-rot, 360deg)) scale(1); opacity: .85; }
+    }
+
+    /* KPI no canto superior direito */
+    .ee-mee-kpi {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      background: linear-gradient(135deg, #1A1A2E 0%, #14172B 100%);
+      border: 1px solid rgba(255,230,0,.32);
+      border-radius: 14px;
+      padding: 14px 20px 16px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 20px 48px rgba(0,0,0,.45);
+      animation: eeKpiIn .55s cubic-bezier(.34, 1.56, .64, 1);
+      min-width: 240px;
+    }
+    @keyframes eeKpiIn {
+      from { opacity: 0; transform: translateY(-20px) scale(.85); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .ee-mee-kpi-eyebrow {
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: .2em;
+      color: #FFE600;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .ee-mee-kpi-grid {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .ee-mee-kpi-val {
+      font-size: 36px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -1.5px;
+      font-variant-numeric: tabular-nums;
+    }
+    .ee-mee-kpi-val-pct {
+      color: #4DDD9A;
+    }
+    .ee-mee-kpi-lbl {
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+    .ee-mee-kpi-sep {
+      width: 1px;
+      align-self: stretch;
+      background: rgba(255,255,255,.12);
+    }
+
+    @media (max-width: 600px) {
+      .ee-mee-kpi { right: 16px; top: 24px; padding: 10px 14px 12px; min-width: 0; }
+      .ee-mee-kpi-val { font-size: 28px; }
+      .ee-mee-truck-cab { font-size: 64px; }
+      .ee-mee-truck-cargo { height: 56px; padding: 6px 10px 10px; }
+      .ee-mee-cargo-label { font-size: 9px; }
+    }
   `;
   document.head.appendChild(style);
 
@@ -489,10 +657,80 @@
     showCustomToast('🏭 MANCHESTER PAULISTA', 'Sorocaba foi apelidada de Manchester Paulista no séc. XIX pela força das suas indústrias têxteis. Berço do interior.');
   }
 
-  // ── 11. MEE ──
+  // ── 11. MEE · DELIVERY RUSH (caminhão + pacotes caindo) ──
   function eeMEE() {
     markFound('mee');
-    showCustomToast('📦 MEE = MERCADO ENVIOS EXTRA', 'Não confundir com Express! Modal de entrega especial pro 1CR.');
+
+    // Container do show
+    const stage = document.createElement('div');
+    stage.className = 'ee-mee-stage';
+    document.body.appendChild(stage);
+
+    // Caminhão
+    const truck = document.createElement('div');
+    truck.className = 'ee-mee-truck';
+    truck.innerHTML = `
+      <div class="ee-mee-truck-cargo">
+        <div class="ee-mee-cargo-label">MEE</div>
+        <div class="ee-mee-cargo-pack">📦</div>
+        <div class="ee-mee-cargo-pack">📦</div>
+        <div class="ee-mee-cargo-pack">📦</div>
+      </div>
+      <div class="ee-mee-truck-cab">🚚</div>
+    `;
+    stage.appendChild(truck);
+
+    // Pacotes caindo (10 com posições e atrasos aleatórios)
+    const packEmojis = ['📦','📦','📦','📦','📦','✉️','📮'];
+    for (let i = 0; i < 14; i++) {
+      const pack = document.createElement('div');
+      pack.className = 'ee-mee-falling-pack';
+      pack.textContent = packEmojis[Math.floor(Math.random() * packEmojis.length)];
+      pack.style.left = (5 + Math.random() * 90) + 'vw';
+      pack.style.animationDelay = (Math.random() * 3) + 's';
+      pack.style.animationDuration = (1.6 + Math.random() * 1.4) + 's';
+      pack.style.fontSize = (24 + Math.random() * 16) + 'px';
+      pack.style.setProperty('--ee-rot', (Math.random() * 720 - 360) + 'deg');
+      stage.appendChild(pack);
+    }
+
+    // KPI flutuante no canto
+    const kpi = document.createElement('div');
+    kpi.className = 'ee-mee-kpi';
+    const count = 37 + Math.floor(Math.random() * 22);
+    kpi.innerHTML = `
+      <div class="ee-mee-kpi-eyebrow">📦 MEE · MERCADO ENVIOS EXTRA</div>
+      <div class="ee-mee-kpi-grid">
+        <div>
+          <div class="ee-mee-kpi-val" data-target="${count}">0</div>
+          <div class="ee-mee-kpi-lbl">Unidades</div>
+        </div>
+        <div class="ee-mee-kpi-sep"></div>
+        <div>
+          <div class="ee-mee-kpi-val ee-mee-kpi-val-pct">100%</div>
+          <div class="ee-mee-kpi-lbl">Em rota</div>
+        </div>
+      </div>
+    `;
+    stage.appendChild(kpi);
+
+    // Animar contador
+    setTimeout(() => {
+      const valEl = kpi.querySelector('[data-target]');
+      const target = parseInt(valEl.dataset.target);
+      let cur = 0;
+      const step = setInterval(() => {
+        cur += Math.ceil(target / 22);
+        if (cur >= target) { cur = target; clearInterval(step); }
+        valEl.textContent = cur;
+      }, 40);
+    }, 500);
+
+    // Cleanup
+    setTimeout(() => {
+      stage.classList.add('fading');
+      setTimeout(() => stage.remove(), 600);
+    }, 5800);
   }
 
   // ── 12. CLICK 5x no título → modal de créditos (sem sparkles) ──
