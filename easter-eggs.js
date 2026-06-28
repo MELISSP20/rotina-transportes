@@ -11,10 +11,25 @@
 
   // ── Persistência de descobertas ──
   function getFound() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-    catch { return []; }
+    try {
+      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      // Migração: eggs antigos viram os novos equivalentes
+      const migrated = raw.map(name => {
+        if (name === 'tapirai' || name === 'zen') return 'madrugada';
+        if (name === 'disco') return 'boost';
+        return name;
+      });
+      // Filtrar só eggs que ainda existem em EGG_META (remove obsoletos como 'sparkle')
+      const valid = [...new Set(migrated.filter(n => EGG_META[n]))];
+      // Persistir limpo se mudou
+      if (JSON.stringify(valid) !== JSON.stringify(raw)) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(valid)); } catch(_){}
+      }
+      return valid;
+    } catch { return []; }
   }
   function markFound(name) {
+    if (!EGG_META[name]) return false;
     const f = getFound();
     if (f.includes(name)) return false;
     f.push(name);
