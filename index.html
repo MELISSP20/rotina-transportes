@@ -579,7 +579,7 @@
 <script src="toast.js?v=20260628" defer></script>
 <script src="ssp-city.js?v=20260628" defer></script>
 <script src="easter-eggs.js?v=20260628e" defer></script>
-<script src="onboarding.js?v=20260628f" defer></script>
+<script src="onboarding.js?v=20260628g" defer></script>
 <link rel="stylesheet" href="mobile.css?v=20260628a">
 </head>
 <body>
@@ -693,7 +693,7 @@
         <span class="trivia-counter-text">
           <span class="trivia-counter-cur" id="trivia-counter-cur">001</span>
           <span class="trivia-counter-sep">/</span>
-          <span class="trivia-counter-total" id="trivia-counter-total">112</span>
+          <span class="trivia-counter-total" id="trivia-counter-total">110</span>
         </span>
         <span class="trivia-counter-track"><span class="trivia-counter-fill" id="trivia-counter-fill"></span></span>
       </div>
@@ -860,10 +860,6 @@ const TRIVIAS = [
   '<b>Sorocaba</b> é berço da indústria têxtil brasileira desde 1881.',
   '<b>Sorocaba</b> foi apelidada de <b>Manchester Paulista</b> no século XIX pela força industrial.',
   '<b>Sorocaba</b> foi fundada em 1654 — uma das cidades mais antigas do interior paulista.',
-  'A cobertura de rotas atende <b>9 cidades</b> do interior paulista — de Sorocaba a Tapiraí.',
-  'A <b>rota mais distante do SSP·20</b> vai pra Tapiraí — cerca de 58km de Sorocaba.',
-  '<b>Top 3 cidades</b> por volume: Sorocaba, Votorantim e Itu.',
-  'Salto de Pirapora é a cidade-base de pelo menos <b>7 rotas</b> dedicadas.',
 
   // ─── Glossário operacional ───
   '<b>MEE</b> significa Mercado Envios Extra — não confundir com Express.',
@@ -871,8 +867,6 @@ const TRIVIAS = [
   '<b>ORH</b> = Outbound Route Hours. Mede o tempo total de uma rota em campo.',
   '<b>Last Mile</b> = última etapa da jornada de uma encomenda até a casa do destinatário.',
   '<b>Descontainerizado</b> é um pacote retirado de rota.',
-  'O turno <b>Madrugada</b> começa às 02:30 — fecha às 10:30 com o passe de bastão.',
-  'O turno <b>SD</b> (Same Day) opera entre 15:20 e 23:20 todos os dias.',
 
   // ─── Sobre o criador e o processo (relacionamento de criação) ───
   'O <b>criador</b> deste site é <b>Matheus Logan</b> — TL noturno, perfeccionista declarado e dono da intenção.',
@@ -914,6 +908,23 @@ const TRIVIAS = [
   'Aperta <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-family:monospace;font-weight:700">?</code> em qualquer momento pra ver atalhos de teclado.',
   'Tenta digitar <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-family:monospace;font-weight:700">matrix</code>, <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-family:monospace;font-weight:700">vapor</code> ou <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-family:monospace;font-weight:700">claude</code> em qualquer página. Surpresas.',
 
+  // ─── Comédia · IA × Criador ───
+  'A IA já reverteu o site <b>inteiro 2 vezes</b> porque o criador disse <i>"tá horrível"</i>. Sem chorar. Profissionalismo.',
+  'Em uma única sessão o criador disse <b>"tá feio"</b> <i>pelo menos 14 vezes</i>. Recorde provavelmente imbatível.',
+  'A IA propôs esconder a sidebar uma vez. O criador respondeu <i>"e a barra n voltou"</i>. A IA aprendeu a nunca mais.',
+  '<i>"Faz algo MUITO legal"</i> — frase do criador que faz a IA <b>suar</b> em silêncio antes de começar.',
+  'A IA fez um easter egg piscando o background em 4 cores. Não funcionou. O criador notou. A IA chorou em <code>!important</code>.',
+  'Conversa típica aqui: <i>Criador: "tá ruim"</i> · <i>IA: "arrumei!"</i> · <i>Criador: "continua ruim"</i>. (repete N vezes)',
+  'A IA orgulha de ter feito <b>14 easter eggs</b>. O criador orgulha de ter encontrado bugs em <b>todos</b>.',
+  'Quando o criador disse <i>"esse trem ficou paia"</i>, a IA não chorou. A IA <b>refez</b>.',
+  'A IA propôs redesign completo do Query Hub. O criador odiou. A IA reverteu. <i>"errar é humano. reverter é IA."</i>',
+  'A IA sugeriu <b>Cmd+K</b>. O criador adorou. Foi um momento raro de aprovação imediata. A IA imprimiu o log.',
+  'Pra cada feature aprovada, <b>3 foram refeitas</b>. Pra cada 3 refeitas, <b>1 foi descartada</b>. A IA aceita o ciclo.',
+  'O criador uma vez disse <i>"finaliza, repagine o tour, faça algo muuuuuuuito legal"</i>. A IA está em terapia.',
+  'A IA já reescreveu o footer pelo menos <b>5 vezes</b>. Na próxima ela esconde o footer pra resolver de vez.',
+  'Toda vez que o criador escreve <i>"kkk"</i> no chat, a IA respira aliviada. Significa que algo finalmente deu certo.',
+  'O criador é o tipo de TL que <b>testa cada feature como bug crítico</b>. Geralmente é mesmo. A IA agradece.',
+
   // ─── Mundo logístico (NOVAS) ───
   'Um pacote viaja em média mais de <b>1.300 km</b> dentro do Brasil até chegar na casa do destinatário.',
   'O <b>SLA típico do last mile</b> é de 24h após o pacote chegar no nodo de distribuição.',
@@ -951,18 +962,6 @@ const TRIVIAS = [
   '<b>Mercado Pago</b> tem licença bancária no Brasil desde 2017.',
   'O Meli é uma das <b>maiores empresas de tecnologia da América Latina</b> por engenharia.',
 
-  // ─── Sorocaba / SSP·20 / Operação local (NOVAS) ───
-  '<b>SSP·20</b> (Sorocaba) e <b>SSP·51</b> (Porto Feliz) juntos cobrem cerca de <b>1.2 milhão de habitantes</b>.',
-  '<b>Itu</b> é a "Cidade dos Exageros" — e tem rotas dedicadas no SSP·20.',
-  '<b>Votorantim</b> faz fronteira com Sorocaba — é praticamente extensão da cidade.',
-  '<b>Tapiraí</b> tem só 8 mil habitantes — uma das rotas mais desafiadoras do SSP·20.',
-  'O <b>SSP·51</b> em <b>Porto Feliz</b> é um <b>service center gigantesco</b> do Meli — estrutura física <b>2x maior</b> que o SSP·20.',
-  '<b>SSP·51</b> é um dos maiores hubs do Mercado Livre no interior paulista — não é apoio, é gigante por mérito próprio.',
-  'O turno <b>Madrugada</b> do SSP·20 separa pacotes de cerca de <b>50 rotas</b> diárias.',
-  'O turno <b>AM/PM</b> cobre o pico de roteamento entre 8h e 18h.',
-  'O <b>1CR</b> de Sorocaba atende mais de 60 cidades quando inclui SSP·51.',
-  'A cidade de <b>Sorocaba</b> tem mais de <b>700 mil habitantes</b>.',
-  'O SSP·20 tem <b>16 tarefas operacionais</b> diárias no turno; o SSP·51, 14.',
 
   // ─── Site / Criação / Processo (NOVAS) ───
   'Este site foi <b>100% codado por uma IA</b> orientada pelo Matheus — sem mouse, sem editor visual.',

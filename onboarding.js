@@ -43,7 +43,7 @@
       kind: 'step',
       chapter: 'cap1',
       target: '.hub-trivia',
-      title: '112 curiosidades rotativas.',
+      title: '110 curiosidades rotativas.',
       body: 'Setas pra navegar. Trocar a cada 8 segundos. Tem fato sobre operação, MELI, last mile e mais.',
       placement: 'bottom',
       icon: '✨',
@@ -835,6 +835,7 @@
   let currentStep = 0;
   let overlay, spotlight, tooltip, particles = [];
   let typewriterTimer = null;
+  let originalScrollY = 0;
 
   // ── BOOT ──
   function shouldRun() {
@@ -1022,7 +1023,17 @@
   }
 
   function positionOnElement(el, placement) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+    // Só scrolla se o elemento estiver FORA da viewport visível
+    const rect0 = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const margin = 80; // margem mínima do topo/fundo
+    const isFullyVisible = rect0.top >= margin && rect0.bottom <= (vh - margin);
+    const scrollDelay = isFullyVisible ? 60 : 380;
+
+    if (!isFullyVisible) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+    }
+
     setTimeout(() => {
       const rect = el.getBoundingClientRect();
       const pad = 10;
@@ -1052,33 +1063,33 @@
       // Tooltip
       tooltip.classList.remove('center');
       const tipRect = tooltip.getBoundingClientRect();
-      const margin = 22;
+      const tipMargin = 22;
       let top, left;
 
       if (placement === 'top') {
-        top = rect.top - tipRect.height - margin;
+        top = rect.top - tipRect.height - tipMargin;
         left = rect.left + rect.width / 2 - tipRect.width / 2;
       } else if (placement === 'left') {
         top = rect.top + rect.height / 2 - tipRect.height / 2;
-        left = rect.left - tipRect.width - margin;
+        left = rect.left - tipRect.width - tipMargin;
       } else if (placement === 'right') {
         top = rect.top + rect.height / 2 - tipRect.height / 2;
-        left = rect.right + margin;
+        left = rect.right + tipMargin;
       } else { // bottom (padrão)
-        top = rect.bottom + margin;
+        top = rect.bottom + tipMargin;
         left = rect.left + rect.width / 2 - tipRect.width / 2;
       }
 
-      const vw = window.innerWidth, vh = window.innerHeight, mm = 14;
+      const vw = window.innerWidth, vhInner = window.innerHeight, mm = 14;
       if (left < mm) left = mm;
       if (left + tipRect.width > vw - mm) left = vw - tipRect.width - mm;
-      if (top < mm) top = rect.bottom + margin;
-      if (top + tipRect.height > vh - mm) top = rect.top - tipRect.height - margin;
+      if (top < mm) top = rect.bottom + tipMargin;
+      if (top + tipRect.height > vhInner - mm) top = rect.top - tipRect.height - tipMargin;
       if (top < mm) top = mm;
 
       tooltip.style.top = top + 'px';
       tooltip.style.left = left + 'px';
-    }, 320);
+    }, scrollDelay);
   }
 
   // ── FINALE ──
@@ -1105,7 +1116,7 @@
           <div class="onb-finale-stat-lbl">Easter Eggs</div>
         </div>
         <div class="onb-finale-stat">
-          <div class="onb-finale-stat-val">112</div>
+          <div class="onb-finale-stat-val">110</div>
           <div class="onb-finale-stat-lbl">Curiosidades</div>
         </div>
       </div>
@@ -1146,6 +1157,7 @@
   function start() {
     ensureElements();
     currentStep = 0;
+    originalScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     requestAnimationFrame(() => {
       overlay.classList.add('visible');
       renderCurrentStep();
@@ -1211,7 +1223,11 @@
     if (overlay) overlay.classList.remove('visible');
     document.querySelector('.onb-welcome')?.classList.add('fading');
     document.querySelector('.onb-finale')?.classList.add('fading');
-    setTimeout(removeElements, 380);
+    // Restaurar scroll original imediatamente
+    setTimeout(() => {
+      window.scrollTo({ top: originalScrollY, left: 0, behavior: 'instant' });
+    }, 100);
+    setTimeout(removeElements, 420);
   }
 
   // ── TECLAS ──
