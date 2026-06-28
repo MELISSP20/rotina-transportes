@@ -301,24 +301,65 @@
     box-shadow: 0 4px 14px rgba(255,230,0,.35);
   }
   .trivia-arrow:active { transform: scale(.95); }
-  .trivia-dots {
+
+  /* Contador editorial (substitui dots) */
+  .trivia-counter {
     display: flex;
-    gap: 6px;
+    align-items: center;
+    gap: 14px;
     margin-top: 22px;
     justify-content: flex-end;
+    color: rgba(255,255,255,.6);
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+  }
+  .trivia-counter-track {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,.08);
+    border-radius: 2px;
+    overflow: hidden;
+    max-width: 220px;
     position: relative;
   }
-  .trivia-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.2);
-    border: none;
-    cursor: pointer;
-    transition: all .2s;
-    padding: 0;
+  .trivia-counter-fill {
+    height: 100%;
+    background: var(--yellow);
+    border-radius: 2px;
+    transition: width .45s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 0 8px rgba(255,230,0,.5);
   }
-  .trivia-dot:hover { background: rgba(255,255,255,.45); }
-  .trivia-dot.active { background: var(--yellow); width: 22px; border-radius: 3px; box-shadow: 0 0 8px rgba(255,230,0,.4); }
+  .trivia-counter-text {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .trivia-counter-cur {
+    color: var(--yellow);
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: .04em;
+  }
+  .trivia-counter-sep {
+    color: rgba(255,255,255,.3);
+    font-weight: 500;
+    margin: 0 1px;
+  }
+  .trivia-counter-total {
+    color: rgba(255,255,255,.5);
+    font-size: 11px;
+  }
+  .trivia-counter-label {
+    color: rgba(255,255,255,.4);
+    text-transform: uppercase;
+    margin-right: 4px;
+    font-size: 9.5px;
+    letter-spacing: .22em;
+  }
 
   /* Section divider */
   .hub-divider {
@@ -647,7 +688,15 @@
         <div class="trivia-text" id="trivia-text">…</div>
         <button class="trivia-arrow trivia-arrow-next" onclick="nextTriviaManual()" aria-label="Próxima">›</button>
       </div>
-      <div class="trivia-dots" id="trivia-dots"></div>
+      <div class="trivia-counter" id="trivia-counter">
+        <span class="trivia-counter-label">Curiosidade</span>
+        <span class="trivia-counter-text">
+          <span class="trivia-counter-cur" id="trivia-counter-cur">001</span>
+          <span class="trivia-counter-sep">/</span>
+          <span class="trivia-counter-total" id="trivia-counter-total">112</span>
+        </span>
+        <span class="trivia-counter-track"><span class="trivia-counter-fill" id="trivia-counter-fill"></span></span>
+      </div>
     </div>
 
     <!-- Divider -->
@@ -929,19 +978,14 @@ const TRIVIAS = [
 let triviaIndex = 0;
 let triviaTimer = null;
 const triviaTextEl = document.getElementById('trivia-text');
-const triviaDotsEl = document.getElementById('trivia-dots');
+const triviaCurEl = document.getElementById('trivia-counter-cur');
+const triviaTotalEl = document.getElementById('trivia-counter-total');
+const triviaFillEl = document.getElementById('trivia-counter-fill');
 
-// Para o carrossel, só mostro 5 dots de navegação (representam grupos)
-const DOT_COUNT = Math.min(5, TRIVIAS.length);
-
-function renderDots() {
-  // Dots = grupos de TRIVIAS / DOT_COUNT
-  let html = '';
-  for (let i = 0; i < DOT_COUNT; i++) {
-    const isActive = Math.floor(triviaIndex / (TRIVIAS.length / DOT_COUNT)) === i;
-    html += `<button class="trivia-dot${isActive ? ' active' : ''}" onclick="jumpTrivia(${i})" aria-label="Trivia ${i+1}"></button>`;
-  }
-  triviaDotsEl.innerHTML = html;
+function renderCounter() {
+  if (triviaCurEl) triviaCurEl.textContent = String(triviaIndex + 1).padStart(3, '0');
+  if (triviaTotalEl) triviaTotalEl.textContent = TRIVIAS.length;
+  if (triviaFillEl) triviaFillEl.style.width = ((triviaIndex + 1) / TRIVIAS.length * 100) + '%';
 }
 
 function showTrivia(idx) {
@@ -950,7 +994,7 @@ function showTrivia(idx) {
   setTimeout(() => {
     triviaTextEl.innerHTML = TRIVIAS[triviaIndex];
     triviaTextEl.classList.remove('fading');
-    renderDots();
+    renderCounter();
   }, 400);
 }
 
@@ -968,12 +1012,6 @@ function prevTrivia() {
   resetTriviaTimer();
 }
 
-function jumpTrivia(dotIdx) {
-  const targetIdx = Math.floor(dotIdx * (TRIVIAS.length / DOT_COUNT));
-  showTrivia(targetIdx);
-  resetTriviaTimer();
-}
-
 function resetTriviaTimer() {
   if (triviaTimer) clearInterval(triviaTimer);
   triviaTimer = setInterval(nextTrivia, 8000);
@@ -981,7 +1019,6 @@ function resetTriviaTimer() {
 
 // Keyboard arrows
 document.addEventListener('keydown', (e) => {
-  // Não interceptar quando estiver em input/textarea
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === 'ArrowLeft') prevTrivia();
   else if (e.key === 'ArrowRight') nextTriviaManual();
@@ -990,7 +1027,7 @@ document.addEventListener('keydown', (e) => {
 // Iniciar com um trivia aleatório
 triviaIndex = Math.floor(Math.random() * TRIVIAS.length);
 triviaTextEl.innerHTML = TRIVIAS[triviaIndex];
-renderDots();
+renderCounter();
 resetTriviaTimer();
 
 // ─── EASTER EGGS ───
