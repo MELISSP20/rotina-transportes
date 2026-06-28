@@ -124,18 +124,229 @@
       backdrop-filter: blur(8px);
     }
 
-    /* ── DISCO ── */
-    body.ee-disco {
-      animation: eeDisco .25s linear infinite !important;
+    /* ── BOOST (substitui DISCO) — speedlines + velocímetro ── */
+    .ee-boost-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 99996;
+      pointer-events: none;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, rgba(26,26,46,.4) 0%, rgba(8,10,20,.85) 100%);
+      animation: eeFadeIn .25s ease-out;
     }
-    @keyframes eeDisco {
-      0%, 100% { background: #ff0080 !important; }
-      25% { background: #00ff80 !important; }
-      50% { background: #0080ff !important; }
-      75% { background: #ff8000 !important; }
+    .ee-boost-stage.fading { animation: eeFadeOut .45s ease-in forwards; }
+    .ee-boost-line {
+      position: absolute;
+      left: -250px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent 0%, #FFE600 50%, transparent 100%);
+      border-radius: 4px;
+      animation: eeBoostLine linear infinite;
+      box-shadow: 0 0 10px rgba(255,230,0,.5);
+    }
+    @keyframes eeBoostLine {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(calc(100vw + 250px)); }
+    }
+    .ee-boost-speedo {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #1A1A2E 0%, #14172B 100%);
+      border: 2px solid #FFE600;
+      border-radius: 22px;
+      padding: 26px 38px 22px;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      min-width: 280px;
+      box-shadow: 0 0 60px rgba(255,230,0,.4), 0 24px 64px rgba(0,0,0,.5);
+      animation: eeBoostSpeedoIn .4s cubic-bezier(.34,1.56,.64,1), eeBoostShake 0.08s linear .4s infinite;
+    }
+    @keyframes eeBoostSpeedoIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(.7); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes eeBoostShake {
+      0%, 100% { transform: translate(-50%, -50%); }
+      25% { transform: translate(calc(-50% + 1px), calc(-50% - 1px)); }
+      50% { transform: translate(calc(-50% - 1px), calc(-50% + 1px)); }
+      75% { transform: translate(calc(-50% + 1px), calc(-50% + 1px)); }
+    }
+    .ee-boost-eyebrow {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .24em;
+      color: #FFE600;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    .ee-boost-val {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .ee-boost-num {
+      font-size: 84px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -3.5px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 20px rgba(255,230,0,.6);
+    }
+    .ee-boost-unit {
+      font-size: 18px;
+      font-weight: 800;
+      color: rgba(255,255,255,.5);
+      letter-spacing: -.3px;
+    }
+    .ee-boost-bar-wrap {
+      width: 240px;
+      height: 8px;
+      background: rgba(255,255,255,.08);
+      border-radius: 100px;
+      overflow: hidden;
+      margin: 0 auto 12px;
+    }
+    .ee-boost-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FFE600, #F5C518);
+      box-shadow: 0 0 12px rgba(255,230,0,.7);
+      border-radius: 100px;
+      transition: width .04s linear;
+    }
+    .ee-boost-lbl {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      color: rgba(255,230,0,.7);
+      text-transform: uppercase;
     }
 
-    /* ── MOON · força modo escuro com lua flutuando ── */
+    /* ── MADRUGADA (substitui ZEN) — noite estrelada ── */
+    .ee-mad-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 99996;
+      pointer-events: none;
+      overflow: hidden;
+      background: radial-gradient(ellipse at top, #1A1F3D 0%, #06080F 70%);
+      animation: eeFadeIn .55s ease-out;
+    }
+    .ee-mad-stage.fading { animation: eeFadeOut .7s ease-in forwards; }
+    .ee-mad-star {
+      position: absolute;
+      color: #FFE600;
+      animation: eeStarTwinkle ease-in-out infinite;
+      text-shadow: 0 0 8px rgba(255,230,0,.5);
+    }
+    @keyframes eeStarTwinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.2; transform: scale(0.7); }
+    }
+    .ee-mad-moon {
+      position: absolute;
+      top: 8vh; right: 10vw;
+      font-size: 160px;
+      line-height: 1;
+      animation: eeMadMoonFloat 8s ease-in-out infinite;
+      filter: drop-shadow(0 0 40px rgba(255,230,0,.45));
+    }
+    @keyframes eeMadMoonFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%      { transform: translateY(-18px) rotate(3deg); }
+    }
+    .ee-mad-shoot {
+      position: absolute;
+      top: 12%;
+      left: -50px;
+      font-size: 28px;
+      filter: drop-shadow(0 0 12px rgba(255,230,0,.8));
+      animation: eeShoot 1.4s ease-out forwards;
+    }
+    .ee-mad-shoot::after {
+      content: '';
+      position: absolute;
+      right: 100%; top: 50%;
+      width: 140px; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,230,0,.8));
+      transform: translateY(-50%);
+    }
+    .ee-mad-shoot-2 {
+      top: 30%;
+      animation: eeShoot2 1.4s ease-out forwards;
+    }
+    @keyframes eeShoot {
+      0%   { left: -50px; top: 12%; opacity: 1; }
+      100% { left: calc(100vw + 50px); top: 38%; opacity: 0; }
+    }
+    @keyframes eeShoot2 {
+      0%   { left: -50px; top: 30%; opacity: 1; }
+      100% { left: calc(100vw + 50px); top: 55%; opacity: 0; }
+    }
+    .ee-mad-card {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(26,26,46,.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,230,0,.22);
+      border-radius: 22px;
+      padding: 28px 38px 30px;
+      color: #fff;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 24px 68px rgba(0,0,0,.5);
+      animation: eeMadCardIn .65s cubic-bezier(.34,1.56,.64,1) .25s both;
+      max-width: 88vw;
+    }
+    @keyframes eeMadCardIn {
+      from { opacity: 0; transform: translate(-50%, -45%) scale(.85); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .ee-mad-card-emoji {
+      font-size: 50px;
+      line-height: 1;
+      margin-bottom: 12px;
+      animation: eeMadMoonFloat 4s ease-in-out infinite;
+      display: inline-block;
+    }
+    .ee-mad-card-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .ee-mad-card-title span {
+      color: #FFE600;
+    }
+    .ee-mad-card-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,.55);
+      letter-spacing: .04em;
+      margin-bottom: 16px;
+    }
+    .ee-mad-card-sub b {
+      color: #FFE600;
+      font-weight: 800;
+    }
+    .ee-mad-card-quote {
+      font-size: 13.5px;
+      font-style: italic;
+      color: rgba(255,255,255,.78);
+      line-height: 1.5;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-weight: 500;
+    }
     body.ee-moon::before {
       content: '🌙';
       position: fixed;
@@ -488,19 +699,19 @@
   }
 
   const EGG_META = {
-    'click5x':  { emoji: '🏆', title: 'Easter Egg #1' },
-    'konami':   { emoji: '🌈', title: 'Konami Code' },
-    'matrix':   { emoji: '🌧', title: 'Matrix Rain' },
-    'vapor':    { emoji: '🌸', title: 'Vaporwave Mode' },
-    'disco':    { emoji: '🪩', title: 'Disco Mode' },
-    'claude':   { emoji: '🤝', title: 'Pair Programming' },
-    'tapirai':  { emoji: '🧘', title: 'Zen Mode' },
-    'moon':     { emoji: '🌙', title: 'Moon Mode' },
-    'meli':     { emoji: '⭐', title: 'Meli Confetti' },
-    'sql':      { emoji: '💎', title: 'SQL Secret' },
-    'sorocaba': { emoji: '🏭', title: 'Manchester Paulista' },
-    'mee':      { emoji: '📦', title: 'MEE Decoded' },
-    'eggs':     { emoji: '🔍', title: 'Egg Hunter' },
+    'click5x':   { emoji: '🏆', title: 'Easter Egg #1' },
+    'konami':    { emoji: '🌈', title: 'Konami Code' },
+    'matrix':    { emoji: '🌧', title: 'Matrix Rain' },
+    'vapor':     { emoji: '🌸', title: 'Vaporwave Mode' },
+    'boost':     { emoji: '🚀', title: 'Turbo Boost' },
+    'claude':    { emoji: '🤝', title: 'Pair Programming' },
+    'madrugada': { emoji: '🌙', title: 'Boa Madrugada' },
+    'moon':      { emoji: '🌙', title: 'Moon Mode' },
+    'meli':      { emoji: '⭐', title: 'Meli Confetti' },
+    'sql':       { emoji: '💎', title: 'SQL Secret' },
+    'sorocaba':  { emoji: '🏭', title: 'Manchester Paulista' },
+    'mee':       { emoji: '📦', title: 'Delivery Rush' },
+    'eggs':      { emoji: '🔍', title: 'Egg Hunter' },
   };
 
   // ───────────────────────────────────────────────────────────────────────
@@ -532,16 +743,16 @@
     // Dispatch
     const endsWith = (s) => typedBuffer.endsWith(s);
     if (endsWith('matrix'))   { typedBuffer=''; eeMatrix(); }
-    else if (endsWith('vapor'))    { typedBuffer=''; eeVapor(); }
-    else if (endsWith('disco'))    { typedBuffer=''; eeDisco(); }
-    else if (endsWith('claude'))   { typedBuffer=''; eeClaude(); }
-    else if (endsWith('tapirai') || endsWith('zen')) { typedBuffer=''; eeZen(); }
-    else if (endsWith('moon'))     { typedBuffer=''; eeMoon(); }
-    else if (endsWith('meli'))     { typedBuffer=''; eeMeli(); }
-    else if (endsWith('sql'))      { typedBuffer=''; eeSql(); }
-    else if (endsWith('sorocaba')) { typedBuffer=''; eeSorocaba(); }
-    else if (endsWith('mee'))      { typedBuffer=''; eeMEE(); }
-    else if (endsWith('eggs'))     { typedBuffer=''; eeProgress(); }
+    else if (endsWith('vapor'))     { typedBuffer=''; eeVapor(); }
+    else if (endsWith('boost'))     { typedBuffer=''; eeBoost(); }
+    else if (endsWith('claude'))    { typedBuffer=''; eeClaude(); }
+    else if (endsWith('madrugada')) { typedBuffer=''; eeMadrugada(); }
+    else if (endsWith('moon'))      { typedBuffer=''; eeMoon(); }
+    else if (endsWith('meli'))      { typedBuffer=''; eeMeli(); }
+    else if (endsWith('sql'))       { typedBuffer=''; eeSql(); }
+    else if (endsWith('sorocaba'))  { typedBuffer=''; eeSorocaba(); }
+    else if (endsWith('mee'))       { typedBuffer=''; eeMEE(); }
+    else if (endsWith('eggs'))      { typedBuffer=''; eeProgress(); }
   });
 
   // ── 1. KONAMI ──
@@ -599,11 +810,61 @@
     setTimeout(() => document.body.classList.remove('ee-vapor'), 7500);
   }
 
-  // ── 4. DISCO ──
-  function eeDisco() {
-    document.body.classList.add('ee-disco');
-    markFound('disco');
-    setTimeout(() => document.body.classList.remove('ee-disco'), 3000);
+  // ── 4. BOOST (substitui disco) — turbo com speedlines + velocímetro ──
+  function eeBoost() {
+    markFound('boost');
+
+    const stage = document.createElement('div');
+    stage.className = 'ee-boost-stage';
+    document.body.appendChild(stage);
+
+    // Speedlines (32 linhas amarelas atravessando)
+    for (let i = 0; i < 32; i++) {
+      const line = document.createElement('div');
+      line.className = 'ee-boost-line';
+      line.style.top = (Math.random() * 100) + 'vh';
+      line.style.animationDelay = (Math.random() * 0.6) + 's';
+      line.style.animationDuration = (0.45 + Math.random() * 0.4) + 's';
+      line.style.width = (60 + Math.random() * 180) + 'px';
+      line.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+      stage.appendChild(line);
+    }
+
+    // Velocímetro central
+    const speedo = document.createElement('div');
+    speedo.className = 'ee-boost-speedo';
+    speedo.innerHTML = `
+      <div class="ee-boost-eyebrow">🚀 TURBO BOOST</div>
+      <div class="ee-boost-val">
+        <span class="ee-boost-num" id="ee-boost-num">0</span>
+        <span class="ee-boost-unit">km/h</span>
+      </div>
+      <div class="ee-boost-bar-wrap">
+        <div class="ee-boost-bar" id="ee-boost-bar"></div>
+      </div>
+      <div class="ee-boost-lbl">ROTAS ACELERADAS</div>
+    `;
+    stage.appendChild(speedo);
+
+    // Anima velocímetro 0 → 287
+    setTimeout(() => {
+      const numEl = document.getElementById('ee-boost-num');
+      const barEl = document.getElementById('ee-boost-bar');
+      const target = 287;
+      let cur = 0;
+      const step = setInterval(() => {
+        cur += Math.ceil((target - cur) / 8) + 1;
+        if (cur >= target) { cur = target; clearInterval(step); }
+        if (numEl) numEl.textContent = cur;
+        if (barEl) barEl.style.width = (cur / target * 100) + '%';
+      }, 30);
+    }, 100);
+
+    // Cleanup
+    setTimeout(() => {
+      stage.classList.add('fading');
+      setTimeout(() => stage.remove(), 500);
+    }, 3800);
   }
 
   // ── 5. CLAUDE (pair programming) ──
@@ -612,11 +873,65 @@
     showCustomToast('🤝 PAIR PROGRAMMING', 'Esse site foi feito em duo: Matheus dirigindo, IA executando. A intenção é dele, o código sai daqui. Conversa por conversa.');
   }
 
-  // ── 6. ZEN MODE (digite "tapirai" ou "zen") ──
-  function eeZen() {
-    document.body.classList.add('ee-zen');
-    markFound('tapirai');
-    setTimeout(() => document.body.classList.remove('ee-zen'), 8000);
+  // ── 6. MADRUGADA (substitui zen) — noite estrelada com lua e estrela cadente ──
+  function eeMadrugada() {
+    markFound('madrugada');
+
+    const stage = document.createElement('div');
+    stage.className = 'ee-mad-stage';
+    document.body.appendChild(stage);
+
+    // Estrelas (40)
+    for (let i = 0; i < 40; i++) {
+      const star = document.createElement('div');
+      star.className = 'ee-mad-star';
+      star.textContent = ['✦','✧','⋆','✨'][Math.floor(Math.random() * 4)];
+      star.style.left = (Math.random() * 100) + 'vw';
+      star.style.top = (Math.random() * 80) + 'vh';
+      star.style.fontSize = (8 + Math.random() * 14) + 'px';
+      star.style.animationDelay = (Math.random() * 3) + 's';
+      star.style.animationDuration = (1.5 + Math.random() * 2.5) + 's';
+      star.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+      stage.appendChild(star);
+    }
+
+    // Lua grande
+    const moon = document.createElement('div');
+    moon.className = 'ee-mad-moon';
+    moon.textContent = '🌙';
+    stage.appendChild(moon);
+
+    // Estrela cadente (atravessa diagonal)
+    setTimeout(() => {
+      const shoot = document.createElement('div');
+      shoot.className = 'ee-mad-shoot';
+      shoot.innerHTML = '✨';
+      stage.appendChild(shoot);
+      setTimeout(() => shoot.remove(), 1400);
+    }, 1500);
+    setTimeout(() => {
+      const shoot = document.createElement('div');
+      shoot.className = 'ee-mad-shoot ee-mad-shoot-2';
+      shoot.innerHTML = '⭐';
+      stage.appendChild(shoot);
+      setTimeout(() => shoot.remove(), 1400);
+    }, 3200);
+
+    // Card central com mensagem
+    const card = document.createElement('div');
+    card.className = 'ee-mad-card';
+    card.innerHTML = `
+      <div class="ee-mad-card-emoji">🌙</div>
+      <div class="ee-mad-card-title">Boa madrugada<span>.</span></div>
+      <div class="ee-mad-card-sub">Turno <b>02:30 — 10:30</b> · SSP·20</div>
+      <div class="ee-mad-card-quote">"Enquanto a cidade dorme,<br>a operação corre."</div>
+    `;
+    stage.appendChild(card);
+
+    setTimeout(() => {
+      stage.classList.add('fading');
+      setTimeout(() => stage.remove(), 700);
+    }, 6500);
   }
 
   // ── 7. MOON ──
@@ -793,7 +1108,7 @@
     const found = getFound();
     const total = TOTAL_EGGS;
     const pct = (found.length / total * 100).toFixed(0);
-    const order = ['click5x','konami','matrix','vapor','disco','claude','tapirai','moon','meli','sql','sorocaba','mee','eggs'];
+    const order = ['click5x','konami','matrix','vapor','boost','claude','madrugada','moon','meli','sql','sorocaba','mee','eggs'];
     const itemsHtml = order.map(k => {
       const meta = EGG_META[k];
       const isFound = found.includes(k);
