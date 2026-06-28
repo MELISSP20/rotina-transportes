@@ -1,0 +1,273 @@
+/* mobile.css — Revisão completa de layout mobile
+   Carregado em todas as páginas via <link rel="stylesheet" href="mobile.css?v=...">
+   Aplica fixes responsivos cross-page. Não interfere em desktop. */
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE (≤ 768px) · ajustes globais
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* Body geral — text scale e padding */
+  body {
+    font-size: 13.5px !important;
+  }
+
+  /* ── TOPBAR (rt-topbar usado em quase todas) ── */
+  .rt-topbar {
+    padding: 8px 12px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .rt-topbar-left {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  .rt-topbar-right {
+    flex-shrink: 0 !important;
+    gap: 6px !important;
+  }
+  .rt-nav-link {
+    padding: 5px 8px !important;
+    font-size: 11px !important;
+  }
+  .rt-clock-block { display: none !important; }
+  .rt-topbar-divider { display: none !important; }
+  .rt-topbar-logo,
+  .rt-topbar-title {
+    font-size: 12.5px !important;
+  }
+  .rt-topbar-title-dot { display: none !important; }
+  /* Dropdowns ficam mais largos pra clicar */
+  .topbar-dropdown-menu {
+    min-width: 180px !important;
+    right: 8px !important;
+    left: auto !important;
+  }
+  .topbar-dropdown-item {
+    padding: 11px 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* ── HEADERS / HEROES das páginas ── */
+  .hub-hero,
+  .header,
+  .page-header,
+  .madrugadao-hero {
+    padding: 22px 16px !important;
+    border-radius: 12px !important;
+  }
+  .hub-title,
+  .header-title,
+  .page-title {
+    font-size: 28px !important;
+    letter-spacing: -.9px !important;
+    line-height: 1.05 !important;
+  }
+  .hub-sub,
+  .header-sub,
+  .page-sub {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+  .hub-meta,
+  .header-meta {
+    font-size: 11px !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  /* ── CARDS / GRIDS ── */
+  .cards-grid,
+  .hub-cards,
+  .grid-cards,
+  .org-grid,
+  .stats-grid,
+  .cards {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .card,
+  .hub-card {
+    padding: 16px 18px !important;
+    border-radius: 12px !important;
+  }
+  .hub-card-title,
+  .card-title {
+    font-size: 15px !important;
+  }
+  .hub-card-desc,
+  .card-desc {
+    font-size: 12.5px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* ── BUTTONS pra toque (44px min recomendado) ── */
+  .btn, button:not(.kbd-close):not(.qh-trivia-arrow):not(.rt-theme-btn):not(.ee-cur-close):not(.ee-progress-close):not(.ee-credits-close) {
+    min-height: 38px;
+    padding: 9px 14px !important;
+    font-size: 13px !important;
+  }
+  input, select, textarea {
+    font-size: 16px !important; /* evita zoom-in no iOS */
+    min-height: 40px !important;
+  }
+  textarea {
+    min-height: 80px !important;
+  }
+
+  /* ── MODAIS · ocupam mais da tela ── */
+  .modal,
+  .modal-content,
+  .overlay-modal,
+  .qh-credits-overlay > div,
+  .ee-credits-box {
+    max-width: 95vw !important;
+    padding: 22px 20px !important;
+  }
+  .modal-header,
+  .modal-title {
+    font-size: 17px !important;
+  }
+
+  /* ── TRIVIA card ── */
+  .trivia-card { padding: 14px 16px !important; border-radius: 12px !important; }
+  .trivia-text { font-size: 13px !important; line-height: 1.5 !important; }
+  .trivia-arrow { width: 30px !important; height: 30px !important; font-size: 16px !important; }
+
+  /* ── TABELAS ─ scroll horizontal automático ── */
+  table {
+    font-size: 12px !important;
+  }
+  .table-wrap,
+  .table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  /* ── DOCAS / TAREFAS ── */
+  .doca-list,
+  .tasks-list,
+  .task-item {
+    padding: 12px !important;
+    font-size: 13px !important;
+  }
+
+  /* ── ORGANOGRAMA ── */
+  .org-cards-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .org-card {
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+  .org-card-name {
+    font-size: 15px !important;
+  }
+
+  /* ── DIT REPORT · seções compactas ── */
+  .dit-section { padding: 18px 16px !important; }
+  .dit-table { font-size: 11.5px !important; }
+
+  /* ── ORH · stat cards ── */
+  .orh-cards,
+  .orh-stats {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .orh-stat-val,
+  .stat-val {
+    font-size: 22px !important;
+  }
+  .orh-stat-lbl,
+  .stat-lbl {
+    font-size: 10px !important;
+  }
+
+  /* ── CIDADES · cards ── */
+  .city-card { padding: 14px !important; }
+  .city-name { font-size: 14px !important; }
+
+  /* ── PERFORMANCE · modal grande vira full-screen ── */
+  #eval-overlay > div {
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    height: 100vh !important;
+  }
+  #eval-overlay .header-eval { padding: 14px 18px !important; }
+  .star-row { font-size: 18px !important; gap: 3px !important; }
+
+  /* ── PRODUTOS · textarea grande ── */
+  .produtos-textarea { min-height: 140px !important; }
+
+  /* ── FOOTERS / blocos finais ── */
+  .footer,
+  .footer-credit {
+    padding: 18px 16px !important;
+    font-size: 11px !important;
+  }
+
+  /* ── EASTER EGGS · ajustes pra mobile ── */
+  .ee-egg-toast {
+    right: 14px !important;
+    left: 14px !important;
+    bottom: 14px !important;
+    max-width: none !important;
+    padding: 11px 14px !important;
+  }
+  .ee-credits-box {
+    padding: 28px 24px !important;
+  }
+  .ee-credits-name { font-size: 28px !important; }
+  .ee-credits-title { font-size: 20px !important; }
+  .ee-credits-stats { gap: 14px !important; }
+  .ee-credits-stat-val { font-size: 18px !important; }
+
+  /* ── ONBOARDING tour ── */
+  .onb-popover {
+    max-width: 92vw !important;
+    padding: 18px 20px !important;
+  }
+
+  /* ── KEYBOARD modal ── */
+  .kbd-box {
+    padding: 22px 20px !important;
+  }
+  .kbd-title { font-size: 17px !important; }
+  .kbd-item-label { font-size: 12px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PHONES PEQUENOS (≤ 480px) · ajustes finos
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  body { font-size: 13px !important; }
+
+  .rt-topbar { padding: 6px 10px !important; }
+  .rt-topbar-title { font-size: 12px !important; }
+  .rt-nav-link { padding: 4px 7px !important; font-size: 10.5px !important; }
+
+  .hub-title,
+  .header-title { font-size: 22px !important; letter-spacing: -.7px !important; }
+  .hub-sub,
+  .header-sub { font-size: 12px !important; }
+
+  .hub-hero,
+  .header,
+  .page-header { padding: 18px 14px !important; }
+
+  .card,
+  .hub-card { padding: 14px 14px !important; }
+  .hub-card-title { font-size: 14px !important; }
+  .hub-card-desc { font-size: 12px !important; }
+
+  .orh-cards,
+  .orh-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Curiosidades modal mobile já tem media @ 700px */
+}
