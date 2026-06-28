@@ -7,7 +7,7 @@
   window.__eeInit = true;
 
   const STORAGE_KEY = 'ee_found_v1';
-  const TOTAL_EGGS = 13;
+  const TOTAL_EGGS = 14;
 
   // ── Persistência de descobertas ──
   function getFound() {
@@ -676,6 +676,344 @@
       .ee-mee-truck-cargo { height: 56px; padding: 6px 10px 10px; }
       .ee-mee-cargo-label { font-size: 9px; }
     }
+
+    /* ━━━ CURIOSIDADES · Modal news/blog tela cheia ━━━ */
+    .ee-cur-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(8, 10, 20, .75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      padding: 24px;
+      animation: eeFadeIn .25s ease-out;
+    }
+    .ee-cur-overlay.open { display: flex; align-items: center; justify-content: center; }
+    .ee-cur-modal {
+      background: var(--surface, #fff);
+      color: var(--text, #1A1A2E);
+      border-radius: 22px;
+      max-width: 1100px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 32px 84px rgba(0,0,0,.4);
+      border: 1px solid var(--border, #E5E7EB);
+      overflow: hidden;
+      animation: eeCurIn .35s cubic-bezier(.4,0,.2,1);
+      font-family: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] .ee-cur-modal {
+      background: #14172B;
+      color: #fff;
+      border-color: rgba(255,255,255,.08);
+    }
+    @keyframes eeCurIn {
+      from { opacity: 0; transform: translateY(20px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Header editorial */
+    .ee-cur-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 32px 36px 24px;
+      border-bottom: 1px solid var(--border, #E5E7EB);
+      background: linear-gradient(135deg, rgba(255,230,0,.04) 0%, transparent 60%);
+      position: relative;
+    }
+    [data-theme="dark"] .ee-cur-header {
+      border-bottom-color: rgba(255,255,255,.08);
+      background: linear-gradient(135deg, rgba(255,230,0,.06) 0%, transparent 60%);
+    }
+    .ee-cur-header::before {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 36px;
+      width: 80px; height: 3px;
+      background: #FFE600;
+      border-radius: 2px;
+    }
+    .ee-cur-eyebrow {
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: .22em;
+      color: #FFE600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    [data-theme="dark"] .ee-cur-eyebrow { color: #FFE600; }
+    .ee-cur-title {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      margin: 0 0 8px;
+      color: var(--text, #1A1A2E);
+    }
+    [data-theme="dark"] .ee-cur-title { color: #fff; }
+    .ee-cur-title span { color: #FFE600; }
+    .ee-cur-sub {
+      font-size: 12.5px;
+      color: var(--muted, #666);
+      font-weight: 600;
+      letter-spacing: -.1px;
+    }
+    [data-theme="dark"] .ee-cur-sub { color: rgba(255,255,255,.55); }
+    .ee-cur-close {
+      background: var(--bg, #F5F5F5);
+      border: 1px solid var(--border, #E5E7EB);
+      color: var(--muted, #666);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .ee-cur-close:hover {
+      background: #E3262F;
+      color: #fff;
+      border-color: #E3262F;
+      transform: rotate(90deg);
+    }
+    [data-theme="dark"] .ee-cur-close {
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.7);
+    }
+
+    /* Toolbar com busca e chips */
+    .ee-cur-toolbar {
+      padding: 20px 36px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border, #E5E7EB);
+    }
+    [data-theme="dark"] .ee-cur-toolbar { border-bottom-color: rgba(255,255,255,.06); }
+    .ee-cur-search {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+    }
+    .ee-cur-search input {
+      width: 100%;
+      background: var(--bg, #F5F5F5);
+      border: 1px solid var(--border, #E5E7EB);
+      border-radius: 100px;
+      padding: 9px 16px 9px 38px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text, #1A1A2E);
+      outline: none;
+      transition: all .15s;
+      font-weight: 500;
+    }
+    .ee-cur-search input::placeholder { color: var(--muted, #999); }
+    .ee-cur-search input:focus {
+      border-color: #FFE600;
+      box-shadow: 0 0 0 3px rgba(255,230,0,.18);
+    }
+    [data-theme="dark"] .ee-cur-search input {
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.1);
+      color: #fff;
+    }
+    [data-theme="dark"] .ee-cur-search input::placeholder { color: rgba(255,255,255,.4); }
+    .ee-cur-search-icon {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted, #999);
+      font-size: 14px;
+      pointer-events: none;
+    }
+    [data-theme="dark"] .ee-cur-search-icon { color: rgba(255,255,255,.4); }
+    .ee-cur-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .ee-cur-chip {
+      background: var(--bg, #F5F5F5);
+      border: 1px solid var(--border, #E5E7EB);
+      color: var(--text, #1A1A2E);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: inherit;
+      letter-spacing: -.1px;
+    }
+    .ee-cur-chip:hover {
+      border-color: var(--ch-color, #FFE600);
+      color: var(--ch-color, #1A1A2E);
+    }
+    .ee-cur-chip.active {
+      background: var(--text, #1A1A2E);
+      color: var(--ch-color, #FFE600);
+      border-color: var(--text, #1A1A2E);
+    }
+    [data-theme="dark"] .ee-cur-chip {
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.78);
+    }
+    [data-theme="dark"] .ee-cur-chip.active {
+      background: #FFE600;
+      color: #1A1A2E;
+      border-color: #FFE600;
+    }
+
+    /* Body com grid de cards */
+    .ee-cur-body {
+      overflow-y: auto;
+      flex: 1;
+      padding: 24px 36px;
+      scrollbar-width: thin;
+    }
+    .ee-cur-body::-webkit-scrollbar { width: 8px; }
+    .ee-cur-body::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,.15);
+      border-radius: 4px;
+    }
+    [data-theme="dark"] .ee-cur-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); }
+    .ee-cur-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .ee-cur-card {
+      background: var(--bg2, #FAFAFA);
+      border: 1px solid var(--border, #E5E7EB);
+      border-radius: 14px;
+      padding: 16px 18px 18px;
+      transition: all .2s cubic-bezier(.4,0,.2,1);
+      cursor: default;
+      animation: eeCardIn .35s ease-out backwards;
+    }
+    [data-theme="dark"] .ee-cur-card {
+      background: rgba(255,255,255,.025);
+      border-color: rgba(255,255,255,.06);
+    }
+    @keyframes eeCardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .ee-cur-card:hover {
+      border-color: rgba(255,230,0,.5);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+    }
+    [data-theme="dark"] .ee-cur-card:hover { box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+    .ee-cur-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .ee-cur-card-badge {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .ee-cur-card-num {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--muted, #999);
+      letter-spacing: .04em;
+      font-family: ui-monospace, 'SF Mono', monospace;
+    }
+    [data-theme="dark"] .ee-cur-card-num { color: rgba(255,255,255,.35); }
+    .ee-cur-card-body {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text, #1A1A2E);
+      letter-spacing: -.1px;
+      font-weight: 500;
+    }
+    [data-theme="dark"] .ee-cur-card-body { color: rgba(255,255,255,.86); }
+    .ee-cur-card-body b {
+      font-weight: 800;
+      color: var(--text, #1A1A2E);
+      background: linear-gradient(180deg, transparent 55%, rgba(255,230,0,.42) 55%);
+      padding: 0 2px;
+    }
+    [data-theme="dark"] .ee-cur-card-body b {
+      color: #fff;
+      background: linear-gradient(180deg, transparent 55%, rgba(255,230,0,.32) 55%);
+    }
+    .ee-cur-card-body code {
+      background: rgba(255,230,0,.16);
+      color: var(--text, #1A1A2E);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    [data-theme="dark"] .ee-cur-card-body code {
+      background: rgba(255,230,0,.16);
+      color: #FFE600;
+    }
+    .ee-cur-empty {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--muted, #999);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    [data-theme="dark"] .ee-cur-empty { color: rgba(255,255,255,.45); }
+    .ee-cur-empty-emoji { font-size: 42px; opacity: .35; margin-bottom: 10px; }
+
+    /* Footer */
+    .ee-cur-footer {
+      padding: 14px 36px;
+      border-top: 1px solid var(--border, #E5E7EB);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted, #666);
+      text-align: center;
+      letter-spacing: -.05px;
+      background: var(--bg, #F5F5F5);
+    }
+    .ee-cur-footer b { color: var(--text, #1A1A2E); font-weight: 800; }
+    [data-theme="dark"] .ee-cur-footer {
+      background: rgba(0,0,0,.18);
+      border-top-color: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.55);
+    }
+    [data-theme="dark"] .ee-cur-footer b { color: #fff; }
+
+    @media (max-width: 700px) {
+      .ee-cur-overlay { padding: 0; }
+      .ee-cur-modal { max-height: 100vh; max-width: 100%; border-radius: 0; height: 100vh; }
+      .ee-cur-header { padding: 20px 22px 16px; }
+      .ee-cur-header::before { left: 22px; }
+      .ee-cur-title { font-size: 28px; }
+      .ee-cur-toolbar { padding: 14px 22px 14px; gap: 10px; }
+      .ee-cur-body { padding: 16px 22px; }
+      .ee-cur-grid { grid-template-columns: 1fr; gap: 10px; }
+      .ee-cur-footer { padding: 12px 22px; font-size: 10.5px; }
+      .ee-cur-chips { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+      .ee-cur-chip { flex-shrink: 0; }
+    }
   `;
   document.head.appendChild(style);
 
@@ -709,9 +1047,10 @@
     'moon':      { emoji: '🌙', title: 'Moon Mode' },
     'meli':      { emoji: '⭐', title: 'Meli Confetti' },
     'sql':       { emoji: '💎', title: 'SQL Secret' },
-    'sorocaba':  { emoji: '🏭', title: 'Manchester Paulista' },
-    'mee':       { emoji: '📦', title: 'Delivery Rush' },
-    'eggs':      { emoji: '🔍', title: 'Egg Hunter' },
+    'sorocaba':    { emoji: '🏭', title: 'Manchester Paulista' },
+    'mee':         { emoji: '📦', title: 'Delivery Rush' },
+    'curiosidades':{ emoji: '📰', title: 'Reader Mode' },
+    'eggs':        { emoji: '🔍', title: 'Egg Hunter' },
   };
 
   // ───────────────────────────────────────────────────────────────────────
@@ -736,7 +1075,7 @@
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (!/^[a-zA-Z]$/.test(e.key)) return;
     typedBuffer += e.key.toLowerCase();
-    if (typedBuffer.length > 14) typedBuffer = typedBuffer.slice(-14);
+    if (typedBuffer.length > 16) typedBuffer = typedBuffer.slice(-16);
     if (typedTimer) clearTimeout(typedTimer);
     typedTimer = setTimeout(() => { typedBuffer = ''; }, 2000);
 
@@ -752,6 +1091,7 @@
     else if (endsWith('sql'))       { typedBuffer=''; eeSql(); }
     else if (endsWith('sorocaba'))  { typedBuffer=''; eeSorocaba(); }
     else if (endsWith('mee'))       { typedBuffer=''; eeMEE(); }
+    else if (endsWith('curiosidades')) { typedBuffer=''; eeCuriosidades(); }
     else if (endsWith('eggs'))      { typedBuffer=''; eeProgress(); }
   });
 
@@ -1108,7 +1448,7 @@
     const found = getFound();
     const total = TOTAL_EGGS;
     const pct = (found.length / total * 100).toFixed(0);
-    const order = ['click5x','konami','matrix','vapor','boost','claude','madrugada','moon','meli','sql','sorocaba','mee','eggs'];
+    const order = ['click5x','konami','matrix','vapor','boost','claude','madrugada','moon','meli','sql','sorocaba','mee','curiosidades','eggs'];
     const itemsHtml = order.map(k => {
       const meta = EGG_META[k];
       const isFound = found.includes(k);
@@ -1140,6 +1480,144 @@
       const bar = overlay.querySelector('.ee-progress-bar');
       if (bar) bar.style.width = pct + '%';
     }, 80);
+  }
+
+  // ── 13. CURIOSIDADES · Modal news/blog em tela cheia ──
+  // Lista as curiosidades do site (pega do array TRIVIAS no index.html, ou fallback)
+  function eeCuriosidades() {
+    markFound('curiosidades');
+
+    // Obter trivias — do array TRIVIAS global se existir, senão fallback curto
+    const trivias = (typeof TRIVIAS !== 'undefined' && Array.isArray(TRIVIAS) && TRIVIAS.length > 0)
+      ? TRIVIAS
+      : ['Volte ao Hub pra ler todas as curiosidades.'];
+
+    // Se já existe, só reabre
+    let overlay = document.getElementById('ee-cur-overlay');
+    if (overlay) { overlay.classList.add('open'); return; }
+
+    overlay = document.createElement('div');
+    overlay.className = 'ee-cur-overlay open';
+    overlay.id = 'ee-cur-overlay';
+
+    // Categorizar visualmente (baseado no texto)
+    function pickCat(t) {
+      const s = t.toLowerCase();
+      if (/criador|matheus|ia|iteraç|commit|reescrev|reescr|conversa|vanilla|firebase|sync/.test(s)) return 'criação';
+      if (/sorocaba|tapiraí|votorantim|salto|itu|porto feliz|ssp|madrugada|am\/pm|^a cobertura|cidades por rota/.test(s)) return 'local';
+      if (/meli|mercado livre|nasdaq|galperin|mercado pago|mercado envios|fulfillment|mercado ads|gmv|meli mais|mercado crédito/.test(s)) return 'meli';
+      if (/dit|orh|mee|last mile|cross-doc|milk run|black friday|rfid|eta dinâmico|janela|drone|sla|rota|pacote|mochileiro|distribuição/.test(s)) return 'logística';
+      return 'site';
+    }
+    const CAT_META = {
+      'criação':   { color: '#FFE600', icon: '⚡', bg: 'rgba(255,230,0,.08)' },
+      'local':     { color: '#16A34A', icon: '📍', bg: 'rgba(22,163,74,.08)' },
+      'meli':      { color: '#3483FA', icon: '🛒', bg: 'rgba(52,131,250,.08)' },
+      'logística': { color: '#F5A623', icon: '🚛', bg: 'rgba(245,166,35,.08)' },
+      'site':      { color: '#A855F7', icon: '✨', bg: 'rgba(168,85,247,.08)' },
+    };
+
+    // Build cards
+    const cards = trivias.map((t, i) => {
+      const cat = pickCat(t);
+      const meta = CAT_META[cat];
+      const num = String(i + 1).padStart(3, '0');
+      return `
+        <article class="ee-cur-card" data-cat="${cat}">
+          <div class="ee-cur-card-head">
+            <span class="ee-cur-card-badge" style="background:${meta.bg};color:${meta.color}">${meta.icon} ${cat}</span>
+            <span class="ee-cur-card-num">#${num}</span>
+          </div>
+          <div class="ee-cur-card-body">${t}</div>
+        </article>
+      `;
+    }).join('');
+
+    overlay.innerHTML = `
+      <div class="ee-cur-modal">
+        <header class="ee-cur-header">
+          <div class="ee-cur-header-left">
+            <div class="ee-cur-eyebrow">📰 READER MODE</div>
+            <h1 class="ee-cur-title">Curiosidades<span>.</span></h1>
+            <div class="ee-cur-sub">${trivias.length} fatos · operação, MELI, criação</div>
+          </div>
+          <button class="ee-cur-close" onclick="document.getElementById('ee-cur-overlay').classList.remove('open')" aria-label="Fechar">✕</button>
+        </header>
+
+        <div class="ee-cur-toolbar">
+          <div class="ee-cur-search">
+            <span class="ee-cur-search-icon">⌕</span>
+            <input type="text" id="ee-cur-input" placeholder="Filtrar curiosidades..." autocomplete="off"/>
+          </div>
+          <div class="ee-cur-chips" id="ee-cur-chips">
+            <button class="ee-cur-chip active" data-filter="all">Tudo</button>
+            <button class="ee-cur-chip" data-filter="logística" style="--ch-color:#F5A623">🚛 Logística</button>
+            <button class="ee-cur-chip" data-filter="meli" style="--ch-color:#3483FA">🛒 MELI</button>
+            <button class="ee-cur-chip" data-filter="local" style="--ch-color:#16A34A">📍 SSP·20</button>
+            <button class="ee-cur-chip" data-filter="criação" style="--ch-color:#FFE600">⚡ Criação</button>
+            <button class="ee-cur-chip" data-filter="site" style="--ch-color:#A855F7">✨ Site</button>
+          </div>
+        </div>
+
+        <div class="ee-cur-body">
+          <div class="ee-cur-grid" id="ee-cur-grid">${cards}</div>
+          <div class="ee-cur-empty" id="ee-cur-empty" style="display:none">
+            <div class="ee-cur-empty-emoji">🔍</div>
+            <div>Nenhuma curiosidade pra esse filtro.</div>
+          </div>
+        </div>
+
+        <footer class="ee-cur-footer">
+          📚 Total: <b>${trivias.length} curiosidades</b> · feito por <b>Matheus Logan</b> + IA · <span style="opacity:.5">esc fecha</span>
+        </footer>
+      </div>
+    `;
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+
+    document.body.appendChild(overlay);
+
+    // Search + filtros
+    let activeFilter = 'all';
+    let activeQuery = '';
+
+    function applyFilters() {
+      const grid = overlay.querySelector('#ee-cur-grid');
+      const empty = overlay.querySelector('#ee-cur-empty');
+      const cards = grid.querySelectorAll('.ee-cur-card');
+      let visible = 0;
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-cat');
+        const txt = card.textContent.toLowerCase();
+        const matchCat = activeFilter === 'all' || cat === activeFilter;
+        const matchQ = !activeQuery || txt.includes(activeQuery.toLowerCase());
+        const show = matchCat && matchQ;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      empty.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    overlay.querySelector('#ee-cur-input').addEventListener('input', (e) => {
+      activeQuery = e.target.value.trim();
+      applyFilters();
+    });
+
+    overlay.querySelectorAll('.ee-cur-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        overlay.querySelectorAll('.ee-cur-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeFilter = chip.getAttribute('data-filter');
+        applyFilters();
+      });
+    });
+
+    // Esc dentro do input/overlay
+    overlay.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') overlay.classList.remove('open');
+    });
   }
 
   // ── Toast genérico pra eggs ──
