@@ -7,7 +7,7 @@
   window.__eeInit = true;
 
   const STORAGE_KEY = 'ee_found_v1';
-  const TOTAL_EGGS = 14;
+  const TOTAL_EGGS = 13;
 
   // ── Persistência de descobertas ──
   function getFound() {
@@ -331,7 +331,6 @@
     'meli':     { emoji: '⭐', title: 'Meli Confetti' },
     'sql':      { emoji: '💎', title: 'SQL Secret' },
     'sorocaba': { emoji: '🏭', title: 'Manchester Paulista' },
-    'sparkle':  { emoji: '✨', title: 'Sparkle Title' },
     'mee':      { emoji: '📦', title: 'MEE Decoded' },
     'eggs':     { emoji: '🔍', title: 'Egg Hunter' },
   };
@@ -496,40 +495,26 @@
     showCustomToast('📦 MEE = MERCADO ENVIOS EXTRA', 'Não confundir com Express! Modal de entrega especial pro 1CR.');
   }
 
-  // ── 12. SPARKLES ao clicar no título ──
-  // Esse depende do título estar visível — vou enganchar quando DOM tiver pronto
-  function attachSparkleToTitle() {
+  // ── 12. CLICK 5x no título → modal de créditos (sem sparkles) ──
+  function attachClickToTitle() {
     const titles = document.querySelectorAll('.hub-title, .header-title');
     titles.forEach(t => {
-      if (t.__eeSparkled) return;
-      t.__eeSparkled = true;
+      if (t.__eeAttached) return;
+      t.__eeAttached = true;
+      t.style.userSelect = 'none';
       let clickCount = 0;
       let clickTimer = null;
-      t.addEventListener('click', (e) => {
+      t.addEventListener('click', () => {
         clickCount++;
-        // Sparkles a cada click
-        const emojis = ['✨','⭐','💫','🌟','⚡'];
-        for (let i = 0; i < 4; i++) {
-          const s = document.createElement('span');
-          s.className = 'ee-sparkle';
-          s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-          s.style.left = (e.clientX + (Math.random()*40 - 20)) + 'px';
-          s.style.top = (e.clientY + (Math.random()*20 - 10)) + 'px';
-          s.style.setProperty('--ee-dx', ((Math.random()-.5)*100) + 'px');
-          document.body.appendChild(s);
-          setTimeout(() => s.remove(), 1300);
-        }
-        if (clickCount === 3) markFound('sparkle');
         if (clickCount >= 5) { clickCount = 0; eeCredits(); }
         clearTimeout(clickTimer);
         clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
       });
     });
   }
-  setTimeout(attachSparkleToTitle, 600);
-  // Observer caso o DOM mude depois (SPA)
+  setTimeout(attachClickToTitle, 600);
   setTimeout(() => {
-    const obs = new MutationObserver(() => attachSparkleToTitle());
+    const obs = new MutationObserver(() => attachClickToTitle());
     obs.observe(document.body, { childList: true, subtree: true });
   }, 1200);
 
@@ -570,7 +555,7 @@
     const found = getFound();
     const total = TOTAL_EGGS;
     const pct = (found.length / total * 100).toFixed(0);
-    const order = ['click5x','konami','matrix','vapor','disco','claude','tapirai','moon','meli','sql','sorocaba','sparkle','mee','eggs'];
+    const order = ['click5x','konami','matrix','vapor','disco','claude','tapirai','moon','meli','sql','sorocaba','mee','eggs'];
     const itemsHtml = order.map(k => {
       const meta = EGG_META[k];
       const isFound = found.includes(k);
